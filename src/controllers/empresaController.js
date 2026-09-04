@@ -1,4 +1,4 @@
-var empresaModel = require("../models/empresaModel");
+/*var empresaModel = require("../models/empresaModel");
 
 function buscarPorCnpj(req, res) {
   var cnpj = req.query.cnpj;
@@ -8,7 +8,7 @@ function buscarPorCnpj(req, res) {
   });
 }
 
-function listar(req, res) {
+/*function listar(req, res) {
   empresaModel.listar().then((resultado) => {
     res.status(200).json(resultado);
   });
@@ -42,6 +42,7 @@ function cadastrar(req, res) {
 module.exports = {
   buscarPorCnpj,
   buscarPorId,
-  cadastrar,
-  listar,
+  cadastrar
+  //listar,
 };
+*/

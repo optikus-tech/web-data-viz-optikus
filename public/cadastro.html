@@ -15,7 +15,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" />
 </head>
 
-<body onload="listar()">
   <!--header inicio-->
   <div class="header">
     <div class="container">
@@ -46,46 +45,57 @@
       </div>
     </div>
     <div class="container">
-      <div class="card card-cadastro">
-        <h2>Bem-vindo!</h2>
-        <div class="formulario">
+      <div class="card ">
+        
+               <div class="formulario">
           <!--
                          Para inserir mais um campo, copie uma das inputs abaixo.
                          Assim que inserir vá para o script abaixo.
                      -->
-          <div class="campo">
-            <span>Código de ativação:</span>
-            <input id="codigo_input" type="text" placeholder="Insira aqui seu código" />
-          </div>
-          <div class="campo">
-            <span>Nome:</span>
-            <input id="nome_input" type="text" placeholder="Seu nome" />
-          </div>
-          <div class="campo">
-            <span>CPF: (Sem traços e pontos)</span>
-            <input id="cpf_input" type="text" placeholder="Seu cpf" />
-          </div>
-          <div class="campo">
-            <span>E-mail:</span>
-            <input id="email_input" type="text" placeholder="meuemail@provedor.com" />
-          </div>
-          <div class="campo">
-            <span>Senha:</span>
-            <input id="senha_input" type="password" placeholder="******" />
-          </div>
-          <div class="campo">
-            <span>Confirmação da Senha:</span>
-            <input id="confirmacao_senha_input" type="password" placeholder="******" />
-          </div>
-          <button class="botao" onclick="cadastrar()">Cadastrar</button>
+        <div class="campo">
+          <span>Nome Completo:</span>
+          <input class='ipt' id="nome_input" type="text" placeholder="Seu nome" />
         </div>
-        <div id="div_aguardar" class="loading-div">
-          <img src="./assets/circle-loading.gif" id="loading-gif" />
+        <div class="campo">
+          <span>CPF:</span>
+          <input class='ipt' id="cpf_input" type="text" placeholder="111.222.333-44" />
+        </div>
+
+        <div class="campo">
+          <span>Telefone:</span>
+          <input class='ipt' id="telefone_input" type="text" placeholder="11 23456-7890" />
+        </div>
+
+        <div class="campo">
+          <span>E-mail:</span>
+          <input class='ipt' id="email_input" type="text" placeholder="seu@email.com" />
+        </div>
+
+        <div class="campo">
+          <span>Senha:</span>
+          <input class='ipt' id="senha_input" type="password" placeholder="Sua senha" />
+        </div>
+
+        <div class="campo">
+          <span>Confirmação da Senha:</span>
+          <input class='ipt' id="confirmacao_senha_input" type="password" placeholder="Confirme sua senha" />
+        </div>
+
+          <button class="botao" onclick="cadastrar()">Cadastrar</button>
+           <a class='acesso' href="login.html" onclick="irLogin()">Já tem conta? Faça Login</a>
+
+          <div id="div_aguardar" class="loading-div">
+            <img src="./assets/circle-loading.gif" id="loading-gif" />
+          </div>
+        </div>
+        <div class = "imagem_cadastro">
+          <div class = "quadrado_cadastro"></div>
         </div>
 
         <div id="div_erros_login"></div>
       </div>
     </div>
+  </div>
   </div>
 
   <!--footer inicio-->
@@ -102,8 +112,6 @@
 
 <script>
 
-  // Array para armazenar empresas cadastradas para validação de código de ativação 
-  let listaEmpresasCadastradas = [];
 
   function cadastrar() {
     // aguardar();
@@ -112,24 +120,52 @@
     // Agora vá para o método fetch logo abaixo
     var nomeVar = nome_input.value;
     var cpfVar = cpf_input.value;
+    var telefoneVar = telefone_input.value;
     var emailVar = email_input.value;
     var senhaVar = senha_input.value;
     var confirmacaoSenhaVar = confirmacao_senha_input.value;
-    var codigoVar = codigo_input.value;
-    var idEmpresaVincular
 
     // Verificando se há algum campo em branco
     if (
       nomeVar == "" ||
       cpfVar == "" ||
+      telefoneVar == "" ||
+      senhaVar == "" ||
       emailVar == "" ||
       senhaVar == "" ||
-      confirmacaoSenhaVar == "" ||
-      codigoVar == ""
+      confirmacaoSenhaVar == ""
     ) {
       cardErro.style.display = "block";
       mensagem_erro.innerHTML =
-        "(Mensagem de erro para todos os campos em branco)";
+        "Mensagem de erro para todos os campos em branco";
+
+      finalizarAguardar();
+      return false;
+    } else if (cpfVar.length > 11) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "Mensagem de erro para cpf com caracteres a mais";
+
+      finalizarAguardar();
+      return false;
+    } else if (!(emailVar.includes('@') && (emailVar.includes('.')))) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "Mensagem de erro para email deve incluir @ e .";
+
+      finalizarAguardar();
+      return false;
+    } else if (senhaVar.length < 8) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "Mensagem de erro para senha deve conter pelo menos 8 caracteres";
+
+      finalizarAguardar();
+      return false;
+    } else if (confirmacaoSenhaVar != senhaVar) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "Mensagem de erro para senhas conflitantes";
 
       finalizarAguardar();
       return false;
@@ -138,20 +174,7 @@
     }
 
     // Verificando se o código de ativação é de alguma empresa cadastrada
-    for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
-      if (listaEmpresasCadastradas[i].codigo_ativacao == codigoVar) {
-        idEmpresaVincular = listaEmpresasCadastradas[i].id
-        console.log("Código de ativação válido.");
-        break;
-      } else {
-        cardErro.style.display = "block";
-        mensagem_erro.innerHTML = "(Mensagem de erro para código inválido)";
-        finalizarAguardar();
-      }
-    }
-
-    // Enviando o valor da nova input
-    fetch("/usuarios/cadastrar", {
+  fetch("/usuarios/cadastrar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -161,9 +184,9 @@
         // Agora vá para o arquivo routes/usuario.js
         nomeServer: nomeVar,
         cpfServer: cpfVar,
+        telefoneServer: telefoneVar,
         emailServer: emailVar,
-        senhaServer: senhaVar,
-        idEmpresaVincularServer: idEmpresaVincular
+        senhaServer: senhaVar
       }),
     })
       .then(function (resposta) {
@@ -193,25 +216,6 @@
     return false;
   }
 
-  // Listando empresas cadastradas 
-  function listar() {
-    fetch("/empresas/listar", {
-      method: "GET",
-    })
-      .then(function (resposta) {
-        resposta.json().then((empresas) => {
-          empresas.forEach((empresa) => {
-            listaEmpresasCadastradas.push(empresa);
-
-            console.log("listaEmpresasCadastradas")
-            console.log(listaEmpresasCadastradas[0].codigo_ativacao)
-          });
-        });
-      })
-      .catch(function (resposta) {
-        console.log(`#ERRO: ${resposta}`);
-      });
-  }
 
   function sumirMensagem() {
     cardErro.style.display = "none";
