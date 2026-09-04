@@ -15,7 +15,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" />
 </head>
 
-  <!--header inicio-->
   <div class="header">
     <div class="container">
       <h1 class="titulo">AquaTech</h1>
@@ -36,7 +35,6 @@
       </ul>
     </div>
   </div>
-  <!--header fim-->
 
   <div class="login">
     <div class="alerta_erro">
@@ -48,10 +46,7 @@
       <div class="card ">
         
                <div class="formulario">
-          <!--
-                         Para inserir mais um campo, copie uma das inputs abaixo.
-                         Assim que inserir vá para o script abaixo.
-                     -->
+          
         <div class="campo">
           <span>Nome Completo:</span>
           <input class='ipt' id="nome_input" type="text" placeholder="Seu nome" />
@@ -98,14 +93,12 @@
   </div>
   </div>
 
-  <!--footer inicio-->
   <div class="footer">
     <div class="container">
       <h4>Feito com amor por aluno &hearts; SPTech &copy; 2023</h4>
       <span class="version">v1.0.0</span>
     </div>
   </div>
-  <!--footer fim-->
 </body>
 
 </html>
@@ -114,10 +107,7 @@
 
 
   function cadastrar() {
-    // aguardar();
 
-    //Recupere o valor da nova input pelo nome do id
-    // Agora vá para o método fetch logo abaixo
     var nomeVar = nome_input.value;
     var cpfVar = cpf_input.value;
     var telefoneVar = telefone_input.value;
@@ -125,7 +115,7 @@
     var senhaVar = senha_input.value;
     var confirmacaoSenhaVar = confirmacao_senha_input.value;
 
-    // Verificando se há algum campo em branco
+
     if (
       nomeVar == "" ||
       cpfVar == "" ||
