@@ -1,0 +1,73 @@
+.funcionalidades {
+  padding-top: 60px;
+  padding-bottom: 80px;
+}
+
+.funcionalidades h2 {
+  margin-bottom: 60px;
+  font-size: 3rem;
+  line-height: 1.1;
+  color: var(--cor-10);
+}
+
+.funcionalidades h3 {
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.funcionalidades ul {
+  padding: 0 20px;
+  max-width: 1400px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0 auto;
+  gap: 20px;
+}
+
+.funcionalidades li {
+  height: fit-content;
+  min-height: 250px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 40px;
+  gap: 16px;
+  border: 2px solid var(--cor-1);
+}
+
+.funcionalidades p {
+  color: var(--cor-7);
+  font-size: 0.925rem;
+  line-height: 1.5;
+}
+
+.funcionalidades li:hover img {
+  transition: 0.3s ease;
+  scale: 1.1;
+}
+
+.funcionalidades li:hover{
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--cor-2);
+}
+
+@media (max-width: 1200px){
+  .funcionalidades ul{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+@media (max-width: 800px) {
+  .funcionalidades {
+    padding-bottom: 60px;
+  }
+  .funcionalidades h2 {
+    margin-bottom: 20px;
+  }
+  .funcionalidades ul {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

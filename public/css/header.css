@@ -1,0 +1,97 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+  width: 100%;
+  background: transparent;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header-container{
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.header-menu {
+  padding: 20px 40px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.header-menu ul {
+  display: flex;
+  gap: 40px;
+}
+
+.header-menu a {
+  display: inline-block;
+  color: var(--cor-0);
+  padding: 16px 0px;
+  font-size: 1rem;
+  font-weight: 500;
+  position: relative;
+}
+
+.header.scrolled {
+    background: var(--cor-p3);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-menu .area-cliente{
+  padding: 16px 24px;
+  outline: 1px solid white;
+  background: rgba(171, 171, 171, 0.2);
+  border-radius: 40px;
+  transition: 0.3s ease;
+}
+
+.header-menu .area-cliente:hover{
+  background: var(--cor-p6);
+  outline: 1px solid var(--cor-p6);
+  color: var(--cor-1);
+  filter:
+        drop-shadow(0 0 10px #9b96f5)
+}
+
+.header-menu svg:hover{
+  scale: 1.015;
+  transition: 0.3s ease;
+}
+
+.header-menu .header-itens::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 0px;
+  background: var(--cor-0);
+  position: absolute;
+  margin-top: 4px;
+  transition: 0.3s;
+}
+
+.header-menu .header-itens:hover::after,
+.header-menu .header-itens.ativo::after {
+  width: 100%;
+}
+
+@media (max-width: 800px) {
+  .header-menu .header-itens, .header-menu .area-cliente {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .header-menu {
+    gap: 12px;
+  }
+  .header-menu .header-itens {
+    padding: 8px 12px;
+    font-size: 0.875rem;
+  }
+}

@@ -1,82 +1,341 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>AquaTech | Página Inicial</title>
-
-    <script src="./js/sessao.js"></script>
-
-    <link rel="stylesheet" href="./css/estilo.css">
-    <link rel="icon" href="./assets/icon/favicon2.ico">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <meta name="description" content="." />
+  <title>Optikus - Monitoramento Inteligente de Componentes</title>
+  <link rel="shortcut icon" href="./img/svg/favicon.svg" type="image/x-icon">
 </head>
 
 <body>
-    <div class="header">
-      <div class="container">
-        <h1 class="titulo">AquaTech</h1>
-        <ul class="navbar">
-          <li class="agora">
-            <a href="#">Inicial</a>
-          </li>
-          <li>
-            <a href="simulador.html">Simulador</a>
-          </li>
-          <li>|</li>
-          <li>
-            <a href="login.html">Login</a>
-          </li>
-          <li>
-            <a href="cadastro.html">Cadastro</a>
-          </li>
+  <header class="header">
+    <div class="header-container">
+      <nav class="header-menu">
+        <a href="./">
+          <svg width="200" height="44" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2594.18 581.35">
+            <defs>
+              <style>
+                .cls-1 {
+                  fill: #fff;
+                }
+              </style>
+            </defs>
+            <g id="Layer_1-2" data-name="Layer 1">
+              <g>
+                <path class="cls-1" d="M419.33,227.11c-2.37,8.69-6.96,16.9-13.79,23.73-20.9,20.9-54.78,20.9-75.67,0-20.9-20.9-20.9-54.78,0-75.67,6.71-6.71,14.76-11.26,23.29-13.66-53.43-25.85-119.57-16.62-163.92,27.73-56.03,56.03-56.03,146.85,0,202.88,56.03,56.03,146.85,56.03,202.88,0,44.64-44.64,53.71-111.37,27.21-165Z" />
+                <path class="cls-1" d="M109.42,309.15H0c4.25,68.29,32.45,135.38,84.64,187.56,52.19,52.19,119.27,80.39,187.56,84.64v-109.42c-41.64-4.14-80.48-22.45-110.41-52.37-29.92-29.92-48.23-68.77-52.37-110.41Z" />
+                <path class="cls-1" d="M149.58,175.86l-77.4-77.4C27.95,148.51,3.89,210.14,0,272.78h109.42c3.54-35.63,17.46-69.21,40.15-96.91Z" />
+                <path class="cls-1" d="M456.24,216.21c10.48,23.23,16.02,48.63,16.02,74.75,0,48.42-19.03,94.35-53.27,128.6-29.93,29.93-68.77,48.23-110.41,52.37v109.42c68.29-4.25,135.38-32.45,187.56-84.64,90.7-90.7,109-226.38,54.9-335.24l-94.81,54.73Z" />
+                <path class="cls-1" d="M290.39,109.1c48.42,0,94.35,19.03,128.59,53.27,6.99,6.99,13.35,14.47,19.04,22.36l94.81-54.74c-10.52-15.81-22.75-30.83-36.69-44.77C386.83-24.1,212.19-28.23,97.91,72.77l77.38,77.38c32.37-26.52,72.78-41.05,115.1-41.05Z" />
+                <path class="cls-1" d="M1006.19,217.36c0-90.28-70.02-151.93-160.74-151.93s-160.74,61.65-160.74,151.93,70.02,151.93,160.74,151.93,160.74-61.65,160.74-151.93ZM845.45,290.91c-42.72,0-70.46-32.59-70.46-73.54s27.74-73.55,70.46-73.55,70.46,32.59,70.46,73.55-27.74,73.54-70.46,73.54Z" />
+                <path class="cls-1" d="M1126.85,269.77h67.82c68.7,0,105.69-44.04,105.69-98.65s-36.99-100.85-105.69-100.85h-156.78v293.74h88.96v-94.24ZM1126.85,144.26h56.37c14.97,0,26.86,10.13,26.86,25.98s-11.89,25.54-26.86,25.54h-56.37v-51.53Z" />
+                <polygon class="cls-1" points="1559.74 70.27 1313.56 70.27 1313.56 147.78 1392.39 147.78 1392.39 364.01 1481.35 364.01 1481.35 147.78 1559.74 147.78 1559.74 70.27" />
+                <rect class="cls-1" x="1591.44" y="70.27" width="88.96" height="293.74" />
+                <polygon class="cls-1" points="2002.75 70.27 1893.98 70.27 1816.91 180.37 1816.91 70.27 1727.95 70.27 1727.95 364.01 1816.91 364.01 1816.91 282.54 1833.2 260.52 1899.26 364.01 2007.6 364.01 1891.78 206.79 2002.75 70.27" />
+                <path class="cls-1" d="M2215.45,240.26c0,28.18-14.53,50.65-50.65,50.65s-51.09-22.46-51.09-50.65V70.27h-90.28v173.07c0,72.66,42.28,125.95,141.36,125.95s140.92-53.29,140.92-126.39V70.27h-90.28v169.99Z" />
+                <path class="cls-1" d="M2473.95,176.85c-31.27-5.28-43.16-9.25-43.16-20.7,0-7.49,4.84-15.41,26.86-15.41,23.34,0,56.37,9.69,81.91,29.07l47.56-62.98c-33.47-27.31-76.63-40.96-124.63-40.96-80.59,0-121.99,45.36-121.99,95.12,0,73.54,73.98,84.99,122.43,93.8,29.07,5.28,41.4,11.01,41.4,22.46s-15.85,17.17-32.59,17.17c-39.63,0-72.66-16.73-94.68-37.87l-46.24,66.06c31.27,28.18,73.99,46.68,136.52,46.68,78.83,0,126.83-37.43,126.83-102.17s-71.78-81.91-120.23-90.28Z" />
+                <polygon class="cls-1" points="759.49 512.81 742.45 469.04 721.51 469.04 721.51 539.21 736.45 539.21 736.45 488.71 756.23 539.21 762.75 539.21 782.53 488.71 782.53 539.21 797.58 539.21 797.58 469.04 776.54 469.04 759.49 512.81" />
+                <path class="cls-1" d="M849.96,467.88c-21.15,0-36.61,15.15-36.61,36.3s15.47,36.3,36.61,36.3,36.72-15.15,36.72-36.3-15.47-36.3-36.72-36.3ZM849.96,527.22c-12.94,0-21.25-9.99-21.25-23.04s8.31-23.04,21.25-23.04,21.36,9.89,21.36,23.04-8.42,23.04-21.36,23.04Z" />
+                <polygon class="cls-1" points="950.32 514.49 917.81 469.04 902.45 469.04 902.45 539.21 917.39 539.21 917.39 492.08 950.85 539.21 965.26 539.21 965.26 469.04 950.32 469.04 950.32 514.49" />
+                <rect class="cls-1" x="984.4" y="469.04" width="14.94" height="70.17" />
+                <polygon class="cls-1" points="1014.17 482.19 1034.68 482.19 1034.68 539.21 1049.73 539.21 1049.73 482.19 1070.14 482.19 1070.14 469.04 1014.17 469.04 1014.17 482.19" />
+                <path class="cls-1" d="M1115.68,467.88c-21.15,0-36.61,15.15-36.61,36.3s15.47,36.3,36.61,36.3,36.72-15.15,36.72-36.3-15.47-36.3-36.72-36.3ZM1115.68,527.22c-12.94,0-21.25-9.99-21.25-23.04s8.31-23.04,21.25-23.04,21.36,9.89,21.36,23.04-8.42,23.04-21.36,23.04Z" />
+                <path class="cls-1" d="M1224.57,491.66c0-13.05-8.94-22.62-23.57-22.62h-32.82v70.17h14.94v-25.14h10.94l13.78,25.14h17.15l-15.78-26.72c7.58-1.79,15.36-8.42,15.36-20.83ZM1198.79,501.23h-15.68v-19.36h15.68c6,0,10.52,3.79,10.52,9.68s-4.52,9.68-10.52,9.68Z" />
+                <path class="cls-1" d="M1260.75,469.04l-27.14,70.17h16.41l4.42-12.1h31.35l4.42,12.1h16.31l-27.04-70.17h-18.73ZM1258.43,514.17l11.68-32.19,11.57,32.19h-23.25Z" />
+                <polygon class="cls-1" points="1356.27 512.81 1339.22 469.04 1318.29 469.04 1318.29 539.21 1333.23 539.21 1333.23 488.71 1353.01 539.21 1359.53 539.21 1379.31 488.71 1379.31 539.21 1394.35 539.21 1394.35 469.04 1373.31 469.04 1356.27 512.81" />
+                <polygon class="cls-1" points="1413.49 539.21 1463.15 539.21 1463.15 526.27 1428.43 526.27 1428.43 509.97 1462.41 509.97 1462.41 497.13 1428.43 497.13 1428.43 481.88 1463.15 481.88 1463.15 469.04 1413.49 469.04 1413.49 539.21" />
+                <polygon class="cls-1" points="1527.95 514.49 1495.44 469.04 1480.08 469.04 1480.08 539.21 1495.02 539.21 1495.02 492.08 1528.47 539.21 1542.89 539.21 1542.89 469.04 1527.95 469.04 1527.95 514.49" />
+                <polygon class="cls-1" points="1557.71 482.19 1578.23 482.19 1578.23 539.21 1593.27 539.21 1593.27 482.19 1613.68 482.19 1613.68 469.04 1557.71 469.04 1557.71 482.19" />
+                <path class="cls-1" d="M1659.23,467.88c-21.15,0-36.61,15.15-36.61,36.3s15.47,36.3,36.61,36.3,36.72-15.15,36.72-36.3-15.46-36.3-36.72-36.3ZM1659.23,527.22c-12.94,0-21.25-9.99-21.25-23.04s8.31-23.04,21.25-23.04,21.36,9.89,21.36,23.04-8.42,23.04-21.36,23.04Z" />
+                <rect class="cls-1" x="1743.91" y="469.04" width="14.94" height="70.17" />
+                <polygon class="cls-1" points="1825.86 514.49 1793.35 469.04 1777.99 469.04 1777.99 539.21 1792.93 539.21 1792.93 492.08 1826.39 539.21 1840.8 539.21 1840.8 469.04 1825.86 469.04 1825.86 514.49" />
+                <polygon class="cls-1" points="1855.63 482.19 1876.14 482.19 1876.14 539.21 1891.18 539.21 1891.18 482.19 1911.59 482.19 1911.59 469.04 1855.63 469.04 1855.63 482.19" />
+                <polygon class="cls-1" points="1926.42 539.21 1976.08 539.21 1976.08 526.27 1941.36 526.27 1941.36 509.97 1975.34 509.97 1975.34 497.13 1941.36 497.13 1941.36 481.88 1976.08 481.88 1976.08 469.04 1926.42 469.04 1926.42 539.21" />
+                <polygon class="cls-1" points="2007.95 469.04 1993.01 469.04 1993.01 539.21 2037.62 539.21 2037.62 526.06 2007.95 526.06 2007.95 469.04" />
+                <rect class="cls-1" x="2053.29" y="469.04" width="14.94" height="70.17" />
+                <path class="cls-1" d="M2117.77,513.33h18.73v8.52c-3.05,2.74-8.73,5.37-15.15,5.37-12.73,0-21.99-9.78-21.99-23.04s9.26-23.04,21.99-23.04c7.36,0,13.36,3.89,16.62,8.84l12.41-6.73c-5.37-8.31-14.52-15.36-29.04-15.36-20.52,0-37.35,14.1-37.35,36.3s16.83,36.4,37.35,36.4c12.73,0,22.72-5.26,29.88-13.26v-26.83h-33.45v12.84Z" />
+                <polygon class="cls-1" points="2168.37 539.21 2218.03 539.21 2218.03 526.27 2183.31 526.27 2183.31 509.97 2217.29 509.97 2217.29 497.13 2183.31 497.13 2183.31 481.88 2218.03 481.88 2218.03 469.04 2168.37 469.04 2168.37 539.21" />
+                <polygon class="cls-1" points="2282.83 514.49 2250.32 469.04 2234.96 469.04 2234.96 539.21 2249.9 539.21 2249.9 492.08 2283.35 539.21 2297.76 539.21 2297.76 469.04 2282.83 469.04 2282.83 514.49" />
+                <polygon class="cls-1" points="2312.59 482.19 2333.11 482.19 2333.11 539.21 2348.15 539.21 2348.15 482.19 2368.56 482.19 2368.56 469.04 2312.59 469.04 2312.59 482.19" />
+                <polygon class="cls-1" points="2383.38 539.21 2433.04 539.21 2433.04 526.27 2398.32 526.27 2398.32 509.97 2432.31 509.97 2432.31 497.13 2398.32 497.13 2398.32 481.88 2433.04 481.88 2433.04 469.04 2383.38 469.04 2383.38 539.21" />
+              </g>
+            </g>
+          </svg>
+        </a>
+        <ul>
+          <li><a class="header-itens" href="#solucoes">Soluções</a></li>
+          <li><a class="header-itens" href="#funcionalidades">Funcionalidades</a></li>
+          <li><a class="header-itens" href="#faq">Contato</a></li>
+          <li><a class="area-cliente" href="./">Área do Cliente</a></li>
         </ul>
-      </div>
+      </nav>
     </div>
-  
-    <div class="banner">
-      <div class="container">
-        <p>Preservando <span>hoje</span> para existirem <span>amanhã</span>.</p>
+  </header>
+
+  <article class="introducao-bg">
+    <div class="introducao container">
+      <div class="introducao-conteudo">
+        <h1>
+          Segurança em cada frame<span class="detalhe-azul">.</span>
+        </h1>
+        <p>
+          Monitore sua infraestrutura, encontre gargalos rapidamente e mantenha seus fluxos de vídeo disponíveis.
+        </p>
+        <a href="./" class="btn-principal"> Comece Agora! </a>
       </div>
+
+      <picture>
+        <source media="(max-width: 800px)" height="300" width="800" srcset="./img/camera-hero-wide.jpg" />
+        <img src="./img/camera-hero.jpg" alt="Camera de segurança" width="640" height="800" />
+      </picture>
     </div>
-  
-    <div class="social">
-      <div class="container">
-        <div class="boxes">
-          <div class="box">
-            <img src="assets/imgs/planet-earth_color.png">
-            <h4>Missão</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
-          <div class="box">
-            <img src="assets/imgs/lightbulb_color.png">
-            <h4>Visão</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
-          <div class="box">
-            <img src="assets/imgs/growth_color.png">
-            <h4>Valores</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Et, quas cupiditate asperiores provident magnam
-              vitae illum iusto fugiat atque deleniti nulla sed iure suscipit, laborum, aliquid accusantium cum dicta
-              minima.</p>
-          </div>
+  </article>
+
+  <section class="parceiros" aria-label="Nossos Parceiros">
+    <h2 class="container">
+      nossos parceiros<span class="detalhe-amarelo">.</span>
+    </h2>
+    <ul>
+      <li>
+        <img src="./img/parceiros/caravan.svg" alt="Caravan" width="140" height="38" />
+      </li>
+      <li>
+        <img src="./img/parceiros/ranek.svg" alt="Ranek" width="149" height="36" />
+      </li>
+      <li>
+        <img src="./img/parceiros/handel.svg" alt="Handel" width="140" height="50" />
+      </li>
+      <li>
+        <img src="./img/parceiros/dogs.svg" alt="Dogs" width="152" height="39" />
+      </li>
+      <li>
+        <img src="./img/parceiros/lescone.svg" alt="LeScone" width="208" height="41" />
+      </li>
+      <li>
+        <img src="./img/parceiros/flexblog.svg" alt="FlexBlog" width="165" height="38" />
+      </li>
+      <li>
+        <img src="./img/parceiros/wildbeast.svg" alt="Wildbeast" width="196" height="34" />
+      </li>
+      <li>
+        <img src="./img/parceiros/surfbot.svg" alt="Surfbot" width="200" height="49" />
+      </li>
+    </ul>
+  </section>
+
+  <section id="solucoes" class="solucoes" aria-label="Nossas soluções">
+
+    <h2 class="introducao-solucoes container">nossa solução<span class="detalhe-amarelo">.</span></h2>
+
+    <ul>
+      <li>
+        <img src="./img/solucao-dash.jpg" alt="Imagem de gráfico" width="600" height="400">
+        <div class="solucoes-texto">
+          <h3>Gestão</h3>
+          <p>Monitoramento de desempenho com emissão automática de alertas. Para uma gestão de componentes mais eficiente.</p>
+          <a href=""> Saiba mais</a>
+        </div>
+      </li>
+      <li>
+        <img src="./img/solucao-seguranca.jpg" alt="Imagem de gráfico" width="405" height="270">
+        <div class="solucoes-texto">
+          <h3>Prevenção</h3>
+          <p>A única solução que combina acesso remoto com prevenção de interrupções, protegendo contra perda de dados e garantindo continuidade operacional.</p>
+          <a href=""> Saiba mais</a>
+        </div>
+      </li>
+      <li>
+        <img src="./img/solucao-eficiencia.jpg" alt="Imagem de gráfico" width="300" height="200">
+        <div class="solucoes-texto">
+          <h3>Eficiência</h3>
+          <p>Monitoramento de forma rápida e segura, proporcionando praticidade e otimização de tempo para aumentar sua produtividade.</p>
+          <a href=""> Saiba mais</a>
+        </div>
+      </li>
+    </ul>
+
+  </section>
+
+  <section id="funcionalidades" class="funcionalidades" aria-label="Nossas funcionalidades">
+
+    <h2 class="introducao-funcionalidades container">funcionalidades<span class="detalhe-amarelo">.</span></h2>
+
+    <ul>
+      <li>
+        <img width="48" src="./img/svg/web.svg" alt="icone_web">
+        <h3>Acesso Remoto</h3>
+        <p>Controle a sua operação via internet de forma rápida e segura.</p>
+      </li>
+
+      <li>
+        <img width="48" src="./img/svg/data_analytics.svg" alt="icone_monitoramento">
+        <h3>Monitoramento</h3>
+        <p>Monitore em tempo real CPU, memória e armazenamento com alertas instantâneos.</p>
+      </li>
+
+      <li>
+        <img width="68" src="./img/svg/automacao_relatorio.svg" alt="icone_relatorio">
+        <h3>Relatórios Automáticos</h3>
+        <p>Sistema automático de relatórios de performance da operação. Exporte e analise!</p>
+      </li>
+
+      <li>
+        <img width="48" src="./img/svg/analise_preditiva.svg" alt="icone_monitoramento">
+        <h3>Analise Preditiva</h3>
+        <p>Fique de olho nos alertas e previna quedas de performance na sua operação!</p>
+      </li>
+
+    </ul>
+  </section>
+
+  <section id="faq" class="faq" aria-label="Perguntas Frequentes">
+    <div class="faq-header container">
+      <h2>perguntas frequentes<span class="detalhe-amarelo">.</span></h2>
+    </div>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>O que é a Optikus?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>É uma solução desenvolvida para acompanhar a saúde e o desempenho da infraestrutura computacional responsável pelo processamento, decodificação e transmissão de vídeos em operações de CFTV.</p>
         </div>
       </div>
-    </div>
-  
-    <div class="footer">
-      <div class="container">
-        <h4>Feito com amor por aluno &hearts; SPTech &copy; 2023</h4>
-        <span class="version">v1.0.0</span>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>O que exatamente o sistema monitora?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>A plataforma monitora recursos essenciais das instâncias, como utilização de CPU, memória RAM e armazenamento, permitindo acompanhar o comportamento da infraestrutura durante a operação.</p>
+        </div>
       </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>O sistema consegue identificar sobrecargas e gargalos?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>Sim. A partir dos dados coletados, é possível identificar níveis elevados de utilização dos recursos e detectar situações que podem comprometer o processamento dos vídeos.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Como funcionam os alertas de infraestrutura?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>A plataforma utiliza limites definidos para os recursos monitorados. Quando uma métrica ultrapassa um determinado parâmetro, um alerta é gerado para que a equipe possa investigar e agir rapidamente.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>É possível consultar o histórico dos recursos monitorados?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>Sim. Os dados coletados são armazenados e podem ser utilizados para visualizar o histórico de utilização, identificar padrões e analisar ocorrências anteriores.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>O sistema é voltado para operações de CFTV?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>Sim. A solução foi pensada especialmente para infraestruturas de processamento e transmissão de vídeo, como aquelas utilizadas em projetos de videomonitoramento e segurança urbana.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Como funciona o monitoramento das instâncias EC2?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>O sistema coleta dados das instâncias EC2 continuamente e apresenta essas informações em um painel centralizado, facilitando o acompanhamento do desempenho de cada servidor.</p>
+        </div>
+      </div>
+
     </div>
-  </body>
+
+    <div class="faq-footer">
+      <p>Alguma dúvida extra? Fale com nosso atendimento.</p>
+
+      <a href="#" class="jira-button">
+        Entre em contato com o suporte
+      </a>
+    </div>
+  </section>
+
+  <footer class="footer-bg">
+    <div class="footer container">
+      <img src="./img/svg/logo-optikus-vertical.svg" alt="Bikcraft" width="240" height="320">
+      <div class="footer-contato">
+        <h3>Contato</h3>
+        <ul>
+          <li>+55 11 9999-9999</li>
+          <li>contato@optikustech.com</li>
+          <li>Rua Haddock Lobo, 595 - Cerqueira César, 01414-001</li>
+          <li>São Paulo - SP</li>
+        </ul>
+        <div class="footer-redes">
+          <a href="./"><img src="./img/redes/instagram.svg" alt="Instagram" width="32" height="32"></a>
+          <a href="./"><img src="./img/redes/facebook.svg" alt="Facebook" width="32" height="32"></a>
+          <a href="./"><img src="./img/redes/youtube.svg" alt="Youtube" width="32" height="32"></a>
+        </div>
+      </div>
+      <div class="footer-informacoes">
+        <h3>Informações</h3>
+        <nav>
+          <ul>
+            <li><a href="./">Soluções</a></li>
+            <li><a href="./">Funcionalidades</a></li>
+            <li><a href="./">Contato</a></li>
+            <li><a href="./">Termos e Condições</a></li>
+          </ul>
+        </nav>
+      </div>
+      <p class="footer-copy">Optikus © Alguns direitos reservados. Projeto acadêmico - SPTech 2026</p>
+    </div>
+  </footer>
+</body>
 
 </html>
+
+<script>
+  window.addEventListener("scroll", () => {
+    const header = document.querySelector(".header");
+
+    if (window.scrollY > 50) {
+      header.classList.add("scrolled");
+    } else {
+      header.classList.remove("scrolled");
+    }
+  });
+
+  document.querySelectorAll(".faq-question").forEach(button => {
+    button.addEventListener("click", () => {
+      const item = button.parentElement;
+
+      document.querySelectorAll(".faq-item").forEach(otherItem => {
+        if (otherItem !== item) {
+          otherItem.classList.remove("active");
+        }
+      });
+
+      item.classList.toggle("active");
+    });
+  });
+</script>
