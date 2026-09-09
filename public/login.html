@@ -131,9 +131,6 @@
                         <input id="senha_input" type="password" placeholder="******">
                     </div>
                     <button class="botao_login" onclick="entrar()">Entrar</button>
-                    <div id="div_aguardar" class="loading-div">
-                        <img src="./assets/aguarde-preto.gif" id="loading-gif" />
-                    </div>
                 </div>
                 <div class="imagem_cadastro_login">
                     <div class="quadrado_cadastro_login">
@@ -156,7 +153,6 @@
 
 
     function entrar() {
-        aguardar();
 
         var emailVar = email_input.value;
         var senhaVar = senha_input.value;
