@@ -18,6 +18,12 @@ body {
   --tamanho-footer: 65px;
 }
 
+.dashFake img{
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+}
+
 .container {
   display: flex;
   width: 100%;
