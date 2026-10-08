@@ -16,12 +16,18 @@ function cadastrar(nome, cpf, telefone ,email, senha) {
     // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
     //  e na ordem de inserção dos dados.
    var instrucaoSql = `
-        INSERT INTO usuario (nome, cpf, telefone, email, senha, empresa_id, cargo_id) VALUES ('${nome}', '${cpf}', '${telefone}', '${email}', '${senha}', 1, 1);`;
+        INSERT INTO usuario (nome, cpf, telefone, email, senha, id_empresa, id_cargo) VALUES ('${nome}', '${cpf}', '${telefone}', '${email}', '${senha}', 1, 1);`;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
 
+function atualizar(nome, cpf, email, telefone, senha, stats, id_usuario) {
+    var instrucaoSql = `Update usuario set nome = ? and cpf = ? and email = ? and telefone = ? and senha = ? and stats = ? where id_usuario = ?`
+    return database.executar(instrucaoSql, [nome,cpf,email,telefone,senha,stats,id_usuario])
+}
+
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    atualizar
 };
