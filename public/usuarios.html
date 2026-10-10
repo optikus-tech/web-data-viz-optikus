@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários | Optikus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./css/dashboard-admin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./js/admin-sidebar.js" defer></script>
+</head>
+
+<body>
+  <aside class="sidebar" data-admin-sidebar></aside>
+
+  <main class="dashboard-content users-page">
+    <header class="users-page-header">
+      <div>
+        <h2>Usuários</h2>
+        <p class="dash-breadcrumb">Gerencie os membros da equipe e suas permissões de acesso no workspace</p>
+      </div>
+      <button class="user-create" type="button">
+        <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Criar usuário
+      </button>
+    </header>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>USUÁRIO</th>
+            <th>FUNÇÃO</th>
+            <th>STATUS</th>
+            <th>ÚLTIMO ACESSO</th>
+            <th>AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-usuarios-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  
+</body>
+</html>
