@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     sidebar.innerHTML = await response.text();
 
+    const topBar = sidebar.querySelector('.top-bar');
+    if (topBar) document.body.prepend(topBar);
+
     const currentPage = window.location.pathname.split('/').pop() || 'dashboard-admin.html';
     const activePage = currentPage === 'dashboard-admin.html' ? 'overview.html' : currentPage;
 

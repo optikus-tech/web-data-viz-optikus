@@ -2,50 +2,172 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Usuários | Optikus</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="./css/dashboard-admin.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="./js/admin-sidebar.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários | Optikus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashboard-admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="./js/admin-sidebar.js" defer></script>
 </head>
 
 <body>
-  <aside class="sidebar" data-admin-sidebar></aside>
+    <aside class="sidebar" data-admin-sidebar></aside>
 
-  <main class="dashboard-content users-page">
-    <header class="users-page-header">
-      <div>
-        <h2>Usuários</h2>
-        <p class="dash-breadcrumb">Gerencie os membros da equipe e suas permissões de acesso no workspace</p>
-      </div>
-      <button class="user-create" type="button">
-        <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        Criar usuário
-      </button>
-    </header>
 
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>USUÁRIO</th>
-            <th>FUNÇÃO</th>
-            <th>STATUS</th>
-            <th>ÚLTIMO ACESSO</th>
-            <th>AÇÕES</th>
-          </tr>
-        </thead>
-        <tbody id="tabela-usuarios-body"></tbody>
-      </table>
+    <main class="dashboard-content users-page">
+        <header class="users-page-header">
+            <div>
+                <h2>Usuários</h2>
+                <p class="dash-breadcrumb">Gerencie os membros da equipe e suas permissões de acesso no workspace</p>
+            </div>
+        </header>
+
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <div class="search-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="search" id="search-input" placeholder="Buscar usuário..." aria-label="Buscar usuário">
+                </div>
+                <button class="btn-filter" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Filtrar
+                </button>
+            </div>
+
+            <button class="user-create" type="button" id="btn-abrir-modal">
+                <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Criar usuário
+            </button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>USUÁRIO</th>
+                        <th>FUNÇÃO</th>
+                        <th>STATUS</th>
+                        <th>ÚLTIMO ACESSO</th>
+                        <th>AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-usuarios-body"></tbody>
+            </table>
+        </div>
+    </main>
+
+
+
+    <div class="modal-overlay" id="modal-usuario" aria-hidden="true">
+        <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-usuario">
+            <header class="modal-header">
+                <h3 id="titulo-modal-usuario">Criar Novo Usuário</h3>
+                <button class="btn-close" id="btn-fechar-modal" type="button" aria-label="Fechar">&times;</button>
+            </header>
+            <form id="form-usuario">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" id="nome" name="nome" class="form-control"
+                            placeholder="Ex: Fernanda Caramico" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control"
+                            placeholder="Ex: Fernanda@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cpf">CPF</label>
+                        <input type="text" id="cpf" name="cpf" class="form-control" placeholder="Ex: 123.345.678-90"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" name="telefone" class="form-control"
+                            placeholder="Ex: (11) 95187-9922">
+                    </div>
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        <input type="text" id="senha" name="senha" class="form-control" placeholder="Ex: senha123@"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="funcao">Função no Sistema</label>
+                        <select id="funcao" name="funcao" class="form-control" required>
+                            <option value="">Selecione uma função...</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Editor">Gestor</option>
+                            <option value="Visualizador">Analista</option>
+                        </select>
+                    </div>
+                </div>
+                <footer class="modal-footer">
+                    <button type="button" class="btn-secondary" id="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Usuário</button>
+                </footer>
+            </form>
+        </section>
     </div>
-  </main>
 
-  
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('modal-usuario');
+            const form = document.getElementById('form-usuario');
+            const openButton = document.getElementById('btn-abrir-modal');
+            const closeButton = document.getElementById('btn-fechar-modal');
+            const cancelButton = document.getElementById('btn-cancelar');
+            const nameInput = document.getElementById('nome');
+
+            function openModal() {
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+                nameInput.focus();
+            }
+
+            function closeModal() {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+                form.reset();
+                openButton.focus();
+            }
+
+            openButton.addEventListener('click', openModal);
+            closeButton.addEventListener('click', closeModal);
+            cancelButton.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) closeModal();
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modal.classList.contains('active')) closeModal();
+            });
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                if (!form.reportValidity()) return;
+
+                alert('Usuário salvo com sucesso!');
+                closeModal();
+            });
+        });
+    </script>
 </body>
+
 </html>
