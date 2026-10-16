@@ -9,7 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="./css/dashboard-admin.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="./js/admin-sidebar.js" defer></script>
@@ -30,21 +32,21 @@
         <div class="toolbar">
             <div class="toolbar-left">
                 <div class="search-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                     <input type="search" id="search-input" placeholder="Buscar usuário..." aria-label="Buscar usuário">
                 </div>
                 <button class="btn-filter" type="button" id="btn-abrir-modal-filtrar">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
                         <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                     </svg>
                     Filtrar
                 </button>
-                </div>
+            </div>
 
             <button class="user-create" type="button" id="btn-abrir-modal">
                 <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -56,7 +58,7 @@
             </button>
         </div>
 
-       <div class="table-container">
+        <div class="table-container">
             <table>
                 <thead>
                     <tr>
@@ -93,7 +95,8 @@
             <td class="user-acesso text-muted">Acesso</td>
             <td>
                 <button class="action-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
                         <circle cx="12" cy="12" r="1"></circle>
                         <circle cx="12" cy="5" r="1"></circle>
                         <circle cx="12" cy="19" r="1"></circle>
@@ -156,15 +159,16 @@
         </section>
     </div>
 
-       <div class="modal-overlay" id="modal-filtro" aria-hidden="true">
+    <div class="modal-overlay" id="modal-filtro" aria-hidden="true">
         <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-usuario">
             <header class="modal-header">
                 <h3 id="titulo-modal-usuario">Filtrar</h3>
-                <button class="btn-close" id="btn-fechar-modal-filtrar" type="button" aria-label="Fechar">&times;</button>
+                <button class="btn-close" id="btn-fechar-modal-filtrar" type="button"
+                    aria-label="Fechar">&times;</button>
             </header>
             <form id="form-filtrar">
                 <div class="modal-body">
-                <div class="form-group">
+                    <div class="form-group">
                         <label for="funcao">Função no Sistema</label>
                         <select id="funcao" name="funcao" class="form-control" required>
                             <option value="">Selecione uma função...</option>
@@ -173,7 +177,7 @@
                             <option value="Visualizador">Analista</option>
                         </select>
                     </div>
-                <div class="form-group">
+                    <div class="form-group">
                         <label for="funcao">Status</label>
                         <select id="funcao" name="funcao" class="form-control" required>
                             <option value="">Selecione um Status...</option>
@@ -182,7 +186,7 @@
                             <option value="Pendente">Pendente</option>
                         </select>
                     </div>
-                <div class="form-group">
+                    <div class="form-group">
                         <label for="funcao">Último Acesso</label>
                         <select id="funcao" name="funcao" class="form-control" required>
                             <option value="">Selecione um Período</option>
@@ -202,9 +206,79 @@
         </section>
     </div>
 
-    
+
 
     <script>
+
+        function cadastrar() {
+
+                    var nomeVar = nome.value;
+                    var cpfVar = cpf.value;
+                    var telefoneVar = telefone.value;
+                    var emailVar = email.value;
+                    var senhaVar = senha.value;
+
+
+                    if (
+                        nomeVar == "" ||
+                        cpfVar == "" ||
+                        telefoneVar == "" ||
+                        senhaVar == "" ||
+                        emailVar == "" ||
+                        senhaVar == ""
+                    ) {
+                        cardErro.style.display = "block";
+                        mensagem_erro.innerHTML =
+                            "Mensagem de erro para todos os campos em branco";
+
+                        finalizarAguardar();
+                        return false;
+                    } else if (cpfVar.length > 11) {
+                        cardErro.style.display = "block";
+                        mensagem_erro.innerHTML =
+                            "Mensagem de erro para cpf com caracteres a mais";
+
+                        finalizarAguardar();
+                        return false;
+                    } else if (!(emailVar.includes('@') && (emailVar.includes('.')))) {
+                        cardErro.style.display = "block";
+                        mensagem_erro.innerHTML =
+                            "Mensagem de erro para email deve incluir @ e .";
+
+                        finalizarAguardar();
+                        return false;
+                    } else if (senhaVar.length < 8) {
+                        cardErro.style.display = "block";
+                        mensagem_erro.innerHTML =
+                            "Mensagem de erro para senha deve conter pelo menos 8 caracteres";
+
+                        finalizarAguardar();
+                        return false;
+                    } 
+                    fetch("/empresas/cadastrar", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            nomeServer: nomeVar,
+                            cpfServer: cpfVar,
+                            telefoneServer: telefoneVar,
+                            emailServer: emailVar,
+                            senhaServer: senhaVar
+                        }),
+                    })
+                        .then(function (resposta) {
+                            console.log("resposta: ", resposta);
+
+                        })
+                        .catch(function (resposta) {
+                            console.log(`#ERRO: ${resposta}`);
+                            finalizarAguardar();
+                        });
+
+                    return false;
+                }
         document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('modal-filtro');
             const form = document.getElementById('form-filtrar');
@@ -225,7 +299,7 @@
                 openButton.focus();
             }
 
-            function limparFiltros(){
+            function limparFiltros() {
                 form.reset();
                 funcao.focus();
                 buscarUsuarios({});
@@ -247,12 +321,12 @@
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
                 const filtros = Object.fromEntries(new FormData(form));
-                buscarUsuarios(filtros); 
+                buscarUsuarios(filtros);
                 closeModal();
             });
         });
 
-            document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('modal-usuario');
             const form = document.getElementById('form-usuario');
             const openButton = document.getElementById('btn-abrir-modal');
@@ -288,6 +362,9 @@
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
                 if (!form.reportValidity()) return;
+
+                cadastrar();
+
 
                 alert('Usuário salvo com sucesso!');
                 closeModal();
