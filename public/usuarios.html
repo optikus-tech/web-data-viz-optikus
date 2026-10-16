@@ -69,7 +69,6 @@
                         <th>AÇÕES</th>
                     </tr>
                 </thead>
-                <!-- O corpo da tabela fica vazio aguardando os dados -->
                 <tbody id="tabela-usuarios-body"></tbody>
             </table>
         </div>
@@ -187,21 +186,22 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="funcao">Último Acesso</label>
-                        <select id="funcao" name="funcao" class="form-control" required>
-                            <option value="">Selecione um Período</option>
-                            <option value="Hoje">Hoje</option>
-                            <option value="SeteDias">Últimos 7 dias</option>
-                            <option value="TrintaDias">Últimos 30 dias</option>
-                            <option value="MaisTrinta">Há mais de 30 dias</option>
-                            <option value="Nunca">Nunca Acessou</option>
-                        </select>
+                        <div class="form-group">
+                            <label for="funcao">Último Acesso</label>
+                            <select id="funcao" name="funcao" class="form-control" required>
+                                <option value="">Selecione um Período</option>
+                                <option value="Hoje">Hoje</option>
+                                <option value="SeteDias">Últimos 7 dias</option>
+                                <option value="TrintaDias">Últimos 30 dias</option>
+                                <option value="MaisTrinta">Há mais de 30 dias</option>
+                                <option value="Nunca">Nunca Acessou</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <footer class="modal-footer">
-                    <button type="button" class="btn-secondary" id="btn-limpar-filtrar">Limpar</button>
-                    <button type="submit" class="btn-primary">Buscar</button>
-                </footer>
+                    <footer class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-limpar-filtrar">Limpar</button>
+                        <button type="submit" class="btn-primary">Buscar</button>
+                    </footer>
             </form>
         </section>
     </div>
@@ -209,7 +209,6 @@
 
 
     <script>
-
         function listarFuncionarios() {
             var fk_empresa = sessionStorage.getItem("empresa");
 
@@ -231,7 +230,6 @@
                     if (!resposta.ok) {
                         throw new Error("Erro ao buscar funcionários!");
                     }
-
                     return resposta.json();
                 })
                 .then(function (usuarios) {
@@ -271,97 +269,180 @@
                 });
         }
 
+        function cadastrar() {
+
+            var nomeVar = nome.value;
+            var cpfVar = cpf.value;
+            var telefoneVar = telefone.value;
+            var emailVar = email.value;
+            var senhaVar = senha.value;
+
+
+            if (
+                nomeVar == "" ||
+                cpfVar == "" ||
+                telefoneVar == "" ||
+                senhaVar == "" ||
+                emailVar == "" ||
+                senhaVar == ""
+            ) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML =
+                    "Mensagem de erro para todos os campos em branco";
+
+                finalizarAguardar();
+                return false;
+            } else if (cpfVar.length > 11) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML =
+                    "Mensagem de erro para cpf com caracteres a mais";
+
+                finalizarAguardar();
+                return false;
+            } else if (!(emailVar.includes('@') && (emailVar.includes('.')))) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML =
+                    "Mensagem de erro para email deve incluir @ e .";
+
+                finalizarAguardar();
+                return false;
+            } else if (senhaVar.length < 8) {
+                cardErro.style.display = "block";
+                mensagem_erro.innerHTML =
+                    "Mensagem de erro para senha deve conter pelo menos 8 caracteres";
+
+                finalizarAguardar();
+                return false;
+            }
+            fetch("/empresas/cadastrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    nomeServer: nomeVar,
+                    cpfServer: cpfVar,
+                    telefoneServer: telefoneVar,
+                    emailServer: emailVar,
+                    senhaServer: senhaVar
+                }),
+            })
+                .then(function (resposta) {
+                    console.log("resposta: ", resposta);
+                })
+                .catch(function (resposta) {
+                    console.log(`#ERRO: ${resposta}`);
+                    finalizarAguardar();
+                });
+
+            return false;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             listarFuncionarios();
-            const modal = document.getElementById('modal-filtro');
-            const form = document.getElementById('form-filtrar');
-            const openButton = document.getElementById('btn-abrir-modal-filtrar');
-            const closeButton = document.getElementById('btn-fechar-modal-filtrar');
-            const clearButton = document.getElementById('btn-limpar-filtrar');
+
+            const modalFiltro = document.getElementById('modal-filtro');
+            const formFiltro = document.getElementById('form-filtrar');
+            const openFiltro = document.getElementById('btn-abrir-modal-filtrar');
+            const closeFiltro = document.getElementById('btn-fechar-modal-filtrar');
+            const clearFiltro = document.getElementById('btn-limpar-filtrar');
             const funcao = document.getElementById('funcao');
 
-            function openModal() {
-                modal.classList.add('active');
-                modal.setAttribute('aria-hidden', 'false');
+            function openModalFiltro() {
+                modalFiltro.classList.add('active');
+                modalFiltro.setAttribute('aria-hidden', 'false');
                 funcao.focus();
             }
 
-            function closeModal() {
-                modal.classList.remove('active');
-                modal.setAttribute('aria-hidden', 'true');
-                openButton.focus();
+            function closeModalFiltro() {
+                modalFiltro.classList.remove('active');
+                modalFiltro.setAttribute('aria-hidden', 'true');
+                openFiltro.focus();
             }
 
             function limparFiltros() {
-                form.reset();
+                formFiltro.reset();
                 funcao.focus();
                 buscarUsuarios({});
             }
 
-            clearButton.addEventListener('click', limparFiltros)
-            openButton.addEventListener('click', openModal);
-            closeButton.addEventListener('click', closeModal);
-            cancelButton.addEventListener('click', closeModal);
+            clearFiltro.addEventListener('click', limparFiltros);
+            openFiltro.addEventListener('click', openModalFiltro);
+            closeFiltro.addEventListener('click', closeModalFiltro);
 
-            modal.addEventListener('click', (event) => {
-                if (event.target === modal) closeModal();
+            const cancelFiltro = document.getElementById('btn-cancelar-filtrar');
+
+            if (cancelFiltro != null) {
+                cancelFiltro.addEventListener('click', closeModalFiltro);
+            }
+
+            modalFiltro.addEventListener('click', (event) => {
+                if (event.target === modalFiltro) {
+                    closeModalFiltro();
+                }
             });
 
             document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape' && modal.classList.contains('active')) closeModal();
+                if (event.key === 'Escape' && modalFiltro.classList.contains('active')) {
+                    closeModalFiltro();
+                }
             });
 
-            form.addEventListener('submit', (event) => {
+            formFiltro.addEventListener('submit', (event) => {
                 event.preventDefault();
-                const filtros = Object.fromEntries(new FormData(form));
+
+                const filtros = Object.fromEntries(new FormData(formFiltro));
                 buscarUsuarios(filtros);
-                closeModal();
+                closeModalFiltro();
             });
-        });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('modal-usuario');
-            const form = document.getElementById('form-usuario');
-            const openButton = document.getElementById('btn-abrir-modal');
-            const closeButton = document.getElementById('btn-fechar-modal');
-            const cancelButton = document.getElementById('btn-cancelar');
-            const nameInput = document.getElementById('nome');
+            const modalUsuario = document.getElementById('modal-usuario');
+            const formUsuario = document.getElementById('form-usuario');
+            const openUsuario = document.getElementById('btn-abrir-modal');
+            const closeUsuario = document.getElementById('btn-fechar-modal');
+            const cancelUsuario = document.getElementById('btn-cancelar');
+            const nomeInput = document.getElementById('nome');
 
-            function openModal() {
-                modal.classList.add('active');
-                modal.setAttribute('aria-hidden', 'false');
-                nameInput.focus();
+            function openModalUsuario() {
+                modalUsuario.classList.add('active');
+                modalUsuario.setAttribute('aria-hidden', 'false');
+                nomeInput.focus();
             }
 
-            function closeModal() {
-                modal.classList.remove('active');
-                modal.setAttribute('aria-hidden', 'true');
-                form.reset();
-                openButton.focus();
+            function closeModalUsuario() {
+                modalUsuario.classList.remove('active');
+                modalUsuario.setAttribute('aria-hidden', 'true');
+                formUsuario.reset();
+                openUsuario.focus();
             }
 
-            openButton.addEventListener('click', openModal);
-            closeButton.addEventListener('click', closeModal);
-            cancelButton.addEventListener('click', closeModal);
+            openUsuario.addEventListener('click', openModalUsuario);
+            closeUsuario.addEventListener('click', closeModalUsuario);
+            cancelUsuario.addEventListener('click', closeModalUsuario);
 
-            modal.addEventListener('click', (event) => {
-                if (event.target === modal) closeModal();
+            modalUsuario.addEventListener('click', (event) => {
+                if (event.target === modalUsuario) {
+                    closeModalUsuario();
+                }
             });
 
             document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape' && modal.classList.contains('active')) closeModal();
+                if (event.key === 'Escape' && modalUsuario.classList.contains('active')) {
+                    closeModalUsuario();
+                }
             });
 
-            form.addEventListener('submit', (event) => {
+            formUsuario.addEventListener('submit', (event) => {
                 event.preventDefault();
-                if (!form.reportValidity()) return;
 
-                alert('Usuário salvo com sucesso!');
-                closeModal();
+                if (!formUsuario.reportValidity()) {
+                    return;
+                }
+
+                cadastrar();
+                listarFuncionarios();
             });
         });
-
-
 
     </script>
 </body>

@@ -7,4 +7,8 @@ router.post("/listarFuncionarios", function (req, res) {
     empresaController.listarFuncionarios(req, res);
 });
 
+router.post("/cadastrar", function (req, res) {
+    empresaController.cadastrar(req, res);
+})
+
 module.exports = router;
