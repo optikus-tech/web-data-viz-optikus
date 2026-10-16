@@ -37,7 +37,7 @@
                     </svg>
                     <input type="search" id="search-input" placeholder="Buscar usuário..." aria-label="Buscar usuário">
                 </div>
-                <button class="btn-filter" type="button">
+                <button class="btn-filter" type="button" id="btn-abrir-modal-filtrar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
@@ -125,8 +125,103 @@
         </section>
     </div>
 
+       <div class="modal-overlay" id="modal-filtro" aria-hidden="true">
+        <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-usuario">
+            <header class="modal-header">
+                <h3 id="titulo-modal-usuario">Filtrar</h3>
+                <button class="btn-close" id="btn-fechar-modal-filtrar" type="button" aria-label="Fechar">&times;</button>
+            </header>
+            <form id="form-filtrar">
+                <div class="modal-body">
+                <div class="form-group">
+                        <label for="funcao">Função no Sistema</label>
+                        <select id="funcao" name="funcao" class="form-control" required>
+                            <option value="">Selecione uma função...</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Editor">Gestor</option>
+                            <option value="Visualizador">Analista</option>
+                        </select>
+                    </div>
+                <div class="form-group">
+                        <label for="funcao">Status</label>
+                        <select id="funcao" name="funcao" class="form-control" required>
+                            <option value="">Selecione um Status...</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Inativo">Inativo</option>
+                            <option value="Pendente">Pendente</option>
+                        </select>
+                    </div>
+                <div class="form-group">
+                        <label for="funcao">Último Acesso</label>
+                        <select id="funcao" name="funcao" class="form-control" required>
+                            <option value="">Selecione um Período</option>
+                            <option value="Hoje">Hoje</option>
+                            <option value="SeteDias">Últimos 7 dias</option>
+                            <option value="TrintaDias">Últimos 30 dias</option>
+                            <option value="MaisTrinta">Há mais de 30 dias</option>
+                            <option value="Nunca">Nunca Acessou</option>
+                        </select>
+                    </div>
+                </div>
+                <footer class="modal-footer">
+                    <button type="button" class="btn-secondary" id="btn-limpar-filtrar">Limpar</button>
+                    <button type="submit" class="btn-primary">Buscar</button>
+                </footer>
+            </form>
+        </section>
+    </div>
+
+    
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('modal-filtro');
+            const form = document.getElementById('form-filtrar');
+            const openButton = document.getElementById('btn-abrir-modal-filtrar');
+            const closeButton = document.getElementById('btn-fechar-modal-filtrar');
+            const clearButton = document.getElementById('btn-limpar-filtrar');
+            const funcao = document.getElementById('funcao');
+
+            function openModal() {
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+                funcao.focus();
+            }
+
+            function closeModal() {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+                openButton.focus();
+            }
+
+            function limparFiltros(){
+                form.reset();
+                funcao.focus();
+                buscarUsuarios({});
+            }
+
+            clearButton.addEventListener('click', limparFiltros)
+            openButton.addEventListener('click', openModal);
+            closeButton.addEventListener('click', closeModal);
+            cancelButton.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) closeModal();
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modal.classList.contains('active')) closeModal();
+            });
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const filtros = Object.fromEntries(new FormData(form));
+                buscarUsuarios(filtros); 
+                closeModal();
+            });
+        });
+
+            document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('modal-usuario');
             const form = document.getElementById('form-usuario');
             const openButton = document.getElementById('btn-abrir-modal');
@@ -167,6 +262,9 @@
                 closeModal();
             });
         });
+
+
+
     </script>
 </body>
 
