@@ -9,7 +9,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="./css/dashboard-admin.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="./js/admin-sidebar.js" defer></script>
@@ -30,21 +32,21 @@
         <div class="toolbar">
             <div class="toolbar-left">
                 <div class="search-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
                         <circle cx="11" cy="11" r="8"></circle>
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                     <input type="search" id="search-input" placeholder="Buscar usuário..." aria-label="Buscar usuário">
                 </div>
                 <button class="btn-filter" type="button" id="btn-abrir-modal-filtrar">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
                         <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                     </svg>
                     Filtrar
                 </button>
-                </div>
+            </div>
 
             <button class="user-create" type="button" id="btn-abrir-modal">
                 <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -56,7 +58,7 @@
             </button>
         </div>
 
-       <div class="table-container">
+        <div class="table-container">
             <table>
                 <thead>
                     <tr>
@@ -93,7 +95,8 @@
             <td class="user-acesso text-muted">Acesso</td>
             <td>
                 <button class="action-btn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
                         <circle cx="12" cy="12" r="1"></circle>
                         <circle cx="12" cy="5" r="1"></circle>
                         <circle cx="12" cy="19" r="1"></circle>
@@ -156,15 +159,16 @@
         </section>
     </div>
 
-       <div class="modal-overlay" id="modal-filtro" aria-hidden="true">
+    <div class="modal-overlay" id="modal-filtro" aria-hidden="true">
         <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-usuario">
             <header class="modal-header">
                 <h3 id="titulo-modal-usuario">Filtrar</h3>
-                <button class="btn-close" id="btn-fechar-modal-filtrar" type="button" aria-label="Fechar">&times;</button>
+                <button class="btn-close" id="btn-fechar-modal-filtrar" type="button"
+                    aria-label="Fechar">&times;</button>
             </header>
             <form id="form-filtrar">
                 <div class="modal-body">
-                <div class="form-group">
+                    <div class="form-group">
                         <label for="funcao">Função no Sistema</label>
                         <select id="funcao" name="funcao" class="form-control" required>
                             <option value="">Selecione uma função...</option>
@@ -173,7 +177,7 @@
                             <option value="Visualizador">Analista</option>
                         </select>
                     </div>
-                <div class="form-group">
+                    <div class="form-group">
                         <label for="funcao">Status</label>
                         <select id="funcao" name="funcao" class="form-control" required>
                             <option value="">Selecione um Status...</option>
@@ -182,7 +186,7 @@
                             <option value="Pendente">Pendente</option>
                         </select>
                     </div>
-                <div class="form-group">
+                    <div class="form-group">
                         <label for="funcao">Último Acesso</label>
                         <select id="funcao" name="funcao" class="form-control" required>
                             <option value="">Selecione um Período</option>
@@ -202,10 +206,73 @@
         </section>
     </div>
 
-    
+
 
     <script>
+
+        function listarFuncionarios() {
+            var fk_empresa = sessionStorage.getItem("empresa");
+
+            if (fk_empresa == null) {
+                console.log("ID da empresa não encontrado no sessionStorage!");
+                return;
+            }
+
+            fetch("/empresas/listarFuncionarios", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    fk_empresa: fk_empresa
+                })
+            })
+                .then(function (resposta) {
+                    if (!resposta.ok) {
+                        throw new Error("Erro ao buscar funcionários!");
+                    }
+
+                    return resposta.json();
+                })
+                .then(function (usuarios) {
+                    var tabela = document.getElementById("tabela-usuarios-body");
+                    var modelo = document.getElementById("modelo-linha-usuario");
+
+                    tabela.innerHTML = "";
+
+                    usuarios.forEach(function (usuario) {
+                        var linha = modelo.content.cloneNode(true);
+
+                        linha.querySelector(".avatar").textContent =
+                            usuario.nome.substring(0, 2).toUpperCase();
+
+                        linha.querySelector(".user-name").textContent = usuario.nome;
+                        linha.querySelector(".user-email").textContent = usuario.email;
+                        linha.querySelector(".user-funcao").textContent = usuario.cargo;
+
+                        var status = linha.querySelector(".status-container");
+                        var textoStatus = linha.querySelector(".status-text");
+
+                        textoStatus.textContent = usuario.stats;
+
+                        if (usuario.stats == "ATIVO") {
+                            status.classList.add("badge-active");
+                        } else {
+                            status.classList.remove("badge-active");
+                        }
+
+                        linha.querySelector(".user-acesso").textContent = "-";
+
+                        tabela.appendChild(linha);
+                    });
+                })
+                .catch(function (erro) {
+                    console.log("Erro ao listar funcionários:", erro);
+                });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            listarFuncionarios();
             const modal = document.getElementById('modal-filtro');
             const form = document.getElementById('form-filtrar');
             const openButton = document.getElementById('btn-abrir-modal-filtrar');
@@ -225,7 +292,7 @@
                 openButton.focus();
             }
 
-            function limparFiltros(){
+            function limparFiltros() {
                 form.reset();
                 funcao.focus();
                 buscarUsuarios({});
@@ -247,12 +314,12 @@
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
                 const filtros = Object.fromEntries(new FormData(form));
-                buscarUsuarios(filtros); 
+                buscarUsuarios(filtros);
                 closeModal();
             });
         });
 
-            document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('modal-usuario');
             const form = document.getElementById('form-usuario');
             const openButton = document.getElementById('btn-abrir-modal');

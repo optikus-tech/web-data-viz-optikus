@@ -20,8 +20,8 @@ var usuarioRouter = require("./src/routes/usuarios");
 var avisosRouter = require("./src/routes/avisos");
 var medidasRouter = require("./src/routes/medidas");
 var loginRouter = require("./src/routes/login")
+var empresasRouter = require("./src/routes/empresas");
 //var aquariosRouter = require("./src/routes/aquarios");
-//var empresasRouter = require("./src/routes/empresas");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -34,8 +34,8 @@ app.use("/usuarios", usuarioRouter);
 app.use("/avisos", avisosRouter);
 app.use("/medidas", medidasRouter);
 app.use("/login", loginRouter);
+app.use("/empresas", empresasRouter);
 //app.use("/aquarios", aquariosRouter);
-//app.use("/empresas", empresasRouter);
 
 app.listen(PORTA_APP, function () {
     console.log(`
