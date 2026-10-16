@@ -209,6 +209,34 @@
 
 
     <script>
+        function formatarUltimoAcesso(dataString) {
+            if (!dataString) return "Aguardando confirmação";
+
+            var data = new Date(dataString);
+            var hoje = new Date();
+
+            var apenasHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            var apenasDataUser = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+
+            var diffDias = Math.floor((apenasHoje - apenasDataUser) / (1000 * 60 * 60 * 24));
+
+            var horas = String(data.getHours()).padStart(2, '0');
+            var minutos = String(data.getMinutes()).padStart(2, '0');
+            var horaFormatada = `${horas}:${minutos}`;
+
+            if (diffDias === 0) {
+                return `Hoje, ${horaFormatada}`;
+            } else if (diffDias === 1) {
+                return `Ontem, ${horaFormatada}`;
+            } else {
+                var meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+                var dia = data.getDate();
+                var mes = meses[data.getMonth()];
+                var ano = data.getFullYear();
+
+                return `${dia} ${mes} ${ano}, ${horaFormatada}`;
+            }
+        }
         function listarFuncionarios() {
             var fk_empresa = sessionStorage.getItem("empresa");
 
@@ -234,34 +262,47 @@
                 })
                 .then(function (usuarios) {
                     var tabela = document.getElementById("tabela-usuarios-body");
-                    var modelo = document.getElementById("modelo-linha-usuario");
-
                     tabela.innerHTML = "";
 
                     usuarios.forEach(function (usuario) {
-                        var linha = modelo.content.cloneNode(true);
+                        var iniciais = usuario.nome ? usuario.nome.substring(0, 2).toUpperCase() : "--";
 
-                        linha.querySelector(".avatar").textContent =
-                            usuario.nome.substring(0, 2).toUpperCase();
-
-                        linha.querySelector(".user-name").textContent = usuario.nome;
-                        linha.querySelector(".user-email").textContent = usuario.email;
-                        linha.querySelector(".user-funcao").textContent = usuario.cargo;
-
-                        var status = linha.querySelector(".status-container");
-                        var textoStatus = linha.querySelector(".status-text");
-
-                        textoStatus.textContent = usuario.stats;
-
-                        if (usuario.stats == "ATIVO") {
-                            status.classList.add("badge-active");
-                        } else {
-                            status.classList.remove("badge-active");
+                        let classeStatus = "badge-active";
+                        if (usuario.stats === "INATIVO") {
+                            classeStatus = "badge-inactive";
+                        } else if (usuario.stats !== "ATIVO") {
+                            classeStatus = "badge-pending";
                         }
-
-                        linha.querySelector(".user-acesso").textContent = "-";
-
-                        tabela.appendChild(linha);
+                        var acessoFormatado = formatarUltimoAcesso(usuario.acesso);
+                        tabela.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <div class="avatar">${iniciais}</div>
+                                <div class="user-details">
+                                    <span class="user-name">${usuario.nome}</span>
+                                    <span class="user-email">${usuario.email}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="user-funcao text-dark">${usuario.cargo}</td>
+                        <td>
+                            <span class="status-container status ${classeStatus}">
+                                <span class="dot"></span> <span class="status-text">${usuario.stats}</span>
+                            </span>
+                        </td>
+                        <td class="user-acesso text-muted">${acessoFormatado}</td>
+                        <td>
+                            <button class="action-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
                     });
                 })
                 .catch(function (erro) {

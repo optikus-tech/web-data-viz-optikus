@@ -1,7 +1,7 @@
  var database = require("../database/config");
 
 function listarFuncionarios(fk_empresa) {
-  var instrucaoSql = `SELECT u.nome, u.email, c.nome AS cargo, u.stats
+  var instrucaoSql = `SELECT u.nome, u.email, c.nome AS cargo, u.stats, u.atualizado_em as acesso
     FROM usuario AS u
     JOIN cargo AS c
       ON u.id_cargo = c.id
