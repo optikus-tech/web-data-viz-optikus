@@ -132,7 +132,10 @@ body {
 /* LOGIN */
 
 .login {
- height: var(--tamanho-login);
+ min-height: var(--tamanho-login);
+ height: auto;
+ box-sizing: border-box;
+ padding: 104px 24px 32px;
  background: linear-gradient(
     -140deg,
     var(--cor-p2) 0%,
@@ -144,13 +147,17 @@ body {
 .login .container {
   justify-content: center;
   align-items: center;
-  height: 100%;
+  width: 100%;
+  min-height: calc(100vh - 136px);
+  height: auto;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .card_login {
   display: grid;
   grid-template-columns:1fr 1fr;
-  width: 95%;
+  width: min(1200px, 100%);
   background-color: #f5f2f2;
   border-radius: 30px;
   place-content: center;
@@ -159,8 +166,9 @@ body {
   flex-direction: column;
   height: fit-content;
   padding: 30px 0;
-  margin-top: 80px;
+  margin-top: 0;
   min-height: 700px;
+  box-sizing: border-box;
 }
 
 .card_login h2 {
@@ -570,4 +578,106 @@ input {
   50%  {transform: rotate(25deg)}
   75%  {transform: rotate(-25deg)}
   100% {transform: rotate(25deg)}
+}
+
+@media (max-width: 800px) {
+  .login {
+    min-height: 100vh;
+    height: auto;
+    box-sizing: border-box;
+    padding: 96px 20px 32px;
+  }
+
+  .login .container {
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 128px);
+    padding: 0;
+  }
+
+  .login .card_login {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(520px, 100%);
+    min-height: 0;
+    height: auto;
+    margin: 0 auto;
+    padding: 16px;
+    box-sizing: border-box;
+    gap: 16px;
+  }
+
+  .login .formulario_login {
+    order: 0;
+    width: 100%;
+    min-width: 0;
+    padding: 24px;
+    box-sizing: border-box;
+  }
+
+  .login .formulario_login h2 {
+    font-size: clamp(24px, 5vw, 30px);
+  }
+
+  .login .formulario_login .campo input {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 6px 0 0;
+  }
+
+  .login .quadrado_cadastro_login {
+    width: 100%;
+    height: 300px;
+    min-height: 0;
+    margin: 0;
+    border-radius: 22px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .login .quadrado_cadastro_login h2 {
+    padding: 24px 20px 0;
+    margin: 0;
+    font-size: clamp(20px, 4vw, 26px);
+  }
+
+  .login .quadrado_cadastro_login h4 {
+    margin: 12px 16px 0;
+    text-align: center;
+  }
+
+  .login .quadrado_cadastro_login img {
+    width: min(70%, 280px);
+    height: 48%;
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 480px) {
+  .login {
+    padding: 84px 12px 20px;
+  }
+
+  .login .container {
+    min-height: calc(100vh - 104px);
+  }
+
+  .login .card_login {
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .login .formulario_login {
+    padding: 20px 12px;
+    gap: 18px;
+  }
+
+  .login .quadrado_cadastro_login {
+    height: 260px;
+    border-radius: 16px;
+  }
+
+  .login .acesso {
+    transform: none;
+    line-height: 1.5;
+  }
 }
