@@ -24,15 +24,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         link.setAttribute('aria-current', 'page');
       }
     });
+    var nome = sessionStorage.getItem("nome")
+    var iniciais = nome ? nome.substring(0, 2).toUpperCase() : "--";
 
     const profileButton = sidebar.querySelector('.user-profile');
     const workspaceMenu = sidebar.querySelector('.workspace-menu');
-
-    profileButton.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const isOpen = workspaceMenu.classList.toggle('open');
-      profileButton.setAttribute('aria-expanded', String(isOpen));
-    });
+    sidebar.querySelector('.user-name').textContent = nome
+    sidebar.querySelector('.avatar').textContent = iniciais
+      profileButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = workspaceMenu.classList.toggle('open');
+        profileButton.setAttribute('aria-expanded', String(isOpen));
+      });
 
     workspaceMenu.querySelectorAll('.workspace-option').forEach((option) => {
       option.addEventListener('click', () => {
