@@ -172,8 +172,8 @@
                 resposta.json().then(function (dados) {
                     sessionStorage.nome = dados.nome;
                     sessionStorage.email = dados.email;
-                    sessionStorage.cargo = dados.id_cargo;
-                    sessionStorage.empresa = dados.id_empresa;
+                    sessionStorage.cargo = dados.cargo;
+                    sessionStorage.empresa = dados.empresa;
 
                     setTimeout(function () {
                         window.location = "./usuarios.html";

@@ -5,7 +5,8 @@ function listarFuncionarios(fk_empresa) {
     FROM usuario AS u
     JOIN cargo AS c
       ON u.id_cargo = c.id
-    WHERE u.id_empresa = ${Number(fk_empresa)};`
+    WHERE u.id_empresa = (select id from empresa where razao_social = '${fk_empresa}');`
+    console.log("cheguei")
 
   return database.executar(instrucaoSql)
 }

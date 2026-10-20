@@ -3,7 +3,7 @@ var empresaModel = require("../models/empresaModel");
 function listarFuncionarios(req, res) {
   var fk_empresa = req.body.fk_empresa;
 
-  if (fk_empresa == undefined || !Number.isInteger(Number(fk_empresa)) || Number(fk_empresa) <= 0) {
+  if (fk_empresa == undefined) {
     return res.status(400).send("ID da empresa inválido!");
   }
 
