@@ -157,7 +157,7 @@
         var emailVar = document.getElementById("email_input").value;
         var senhaVar = document.getElementById("senha_input").value;
 
-        fetch("/login/login", {
+        fetch("/usuarios/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -170,13 +170,13 @@
             if (resposta.ok) {
                 console.log(resposta)
                 resposta.json().then(function (dados) {
-                    sessionStorage.empresa = dados.id_empresa;
-                    sessionStorage.cargo = dados.id_cargo;
                     sessionStorage.nome = dados.nome;
                     sessionStorage.email = dados.email;
+                    sessionStorage.cargo = dados.id_cargo;
+                    sessionStorage.empresa = dados.id_empresa;
 
                     setTimeout(function () {
-                        window.location = "./dashboard.html";
+                        window.location = "./usuarios.html";
                     }, 1000);
                 })
             } else {
