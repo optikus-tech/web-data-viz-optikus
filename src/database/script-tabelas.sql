@@ -3,9 +3,6 @@ USE optikus;
 
 CREATE TABLE IF NOT EXISTS empresa (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(120) NOT NULL,
-	email VARCHAR(120) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
     razao_social VARCHAR(150) NOT NULL,
     cnpj CHAR(14) NOT NULL UNIQUE,
     stats ENUM('ATIVA', 'INATIVA') DEFAULT 'ATIVA',
@@ -132,3 +129,26 @@ CREATE TABLE IF NOT EXISTS alerta (
     FOREIGN KEY (id_parametro) REFERENCES parametro_limite(id),
     FOREIGN KEY (id_incidente) REFERENCES incidente(id)
 );
+
+INSERT INTO empresa (razao_social, cnpj, stats)
+VALUES ('Nexus Tecnologia LTDA', '12345678000199', 'ATIVA');
+
+INSERT INTO cargo (nome, descricao, nivel_acesso)
+VALUES
+('Admin', 'Acesso completo ao sistema', 3),
+('Gestor', 'Gerenciamento de usuarios e operacoes', 2),
+('Analista', 'Visualizacao e analise de dados', 1);
+
+INSERT INTO usuario
+(nome, cpf, email, telefone, senha, stats, id_empresa, id_cargo, criado_em, atualizado_em)
+VALUES
+('Lucas Martins', '12345678901', 'lucas@exemplo.com', '11987654321', 'Teste123', 'ATIVO', 1, 1, '2026-01-10 08:30:00', '2026-10-16 09:15:00'),
+('Mariana Costa', '23456789012', 'mariana@exemplo.com', '11987654322', 'Teste123', 'ATIVO', 1, 2, '2026-02-15 10:20:00', '2026-10-15 14:40:00'),
+('Pedro Almeida', '34567890123', 'pedro@exemplo.com', '11987654323', 'Teste123', 'ATIVO', 1, 3, '2026-03-05 13:45:00', '2026-10-14 16:10:00'),
+('Ana Souza', '45678901234', 'ana@exemplo.com', '11987654324', 'Teste123', 'INATIVO', 1, 3, '2026-03-20 09:00:00', '2026-09-30 11:25:00'),
+('Gabriel Santos', '56789012345', 'gabriel@exemplo.com', '11987654325', 'Teste123', 'ATIVO', 1, 2, '2026-04-12 15:30:00', '2026-10-13 08:50:00'),
+('Julia Oliveira', '67890123456', 'julia@exemplo.com', '11987654326', 'Teste123', 'ATIVO', 1, 3, '2026-05-08 11:15:00', '2026-10-12 17:30:00'),
+('Rafael Lima', '78901234567', 'rafael@exemplo.com', '11987654327', 'Teste123', 'INATIVO', 1, 3, '2026-06-18 14:00:00', '2026-08-25 10:00:00'),
+('Beatriz Ferreira', '89012345678', 'beatriz@exemplo.com', '11987654328', 'Teste123', 'ATIVO', 1, 1, '2026-07-02 07:45:00', '2026-10-16 12:20:00'),
+('Matheus Rodrigues', '90123456789', 'matheus@exemplo.com', '11987654329', 'Teste123', 'ATIVO', 1, 2, '2026-08-21 16:50:00', '2026-10-11 13:35:00'),
+('Camila Pereira', '01234567890', 'camila@exemplo.com', '11987654330', 'Teste123', 'ATIVO', 1, 3, '2026-10-01 09:10:00', '2026-10-16 15:45:00');
