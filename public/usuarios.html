@@ -93,7 +93,9 @@
             </td>
             <td class="user-acesso text-muted">Acesso</td>
             <td>
-                <button class="action-btn">
+                <div class="action-menu-wrapper">
+                <button class="action-btn" type="button" aria-label="Abrir ações do usuário" aria-haspopup="true"
+                    aria-expanded="false">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                         stroke-linejoin="round">
                         <circle cx="12" cy="12" r="1"></circle>
@@ -101,6 +103,13 @@
                         <circle cx="12" cy="19" r="1"></circle>
                     </svg>
                 </button>
+
+                <div class="action-menu" role="menu" aria-label="Ações do usuário" hidden>
+                    <button class="action-option" type="button" role="menuitem" data-user-action="view">Visualizar informações</button>
+                    <button class="action-option" type="button" role="menuitem" data-user-action="edit">Atualizar dados</button>
+                    <button class="action-option action-option-danger" type="button" role="menuitem">Excluir conta</button>
+                </div>
+                </div>
             </td>
         </tr>
     </template>
@@ -206,7 +215,47 @@
         </section>
     </div>
 
-
+    <div class="modal-overlay" id="modal-dados-usuario" aria-hidden="true">
+        <section class="modal-content user-data-modal-content" role="dialog" aria-modal="true"
+            aria-labelledby="titulo-modal-dados-usuario">
+            <header class="modal-header">
+                <h3 id="titulo-modal-dados-usuario">Informações do usuário</h3>
+                <button class="btn-close" id="btn-fechar-dados-usuario" type="button" aria-label="Fechar">&times;</button>
+            </header>
+            <form id="form-dados-usuario">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="dados-usuario-nome">Nome</label>
+                        <input class="form-control" id="dados-usuario-nome" name="nome" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dados-usuario-email">Email</label>
+                        <input class="form-control" id="dados-usuario-email" name="email" type="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dados-usuario-cargo">Função</label>
+                        <input class="form-control" id="dados-usuario-cargo" name="cargo" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dados-usuario-status">Status</label>
+                        <select class="form-control" id="dados-usuario-status" name="status" required>
+                            <option value="ATIVO">Ativo</option>
+                            <option value="INATIVO">Inativo</option>
+                            <option value="PENDENTE">Pendente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dados-usuario-acesso">Último acesso</label>
+                        <input class="form-control" id="dados-usuario-acesso" name="acesso" type="text" readonly>
+                    </div>
+                </div>
+                <footer class="modal-footer">
+                    <button class="btn-secondary" id="btn-cancelar-dados-usuario" type="button">Cancelar</button>
+                    <button class="btn-primary" id="btn-salvar-dados-usuario" type="submit">Salvar alterações</button>
+                </footer>
+            </form>
+        </section>
+    </div>
 
     <script>
         function formatarUltimoAcesso(dataString) {
@@ -237,7 +286,7 @@
                 return `${dia} ${mes} ${ano}, ${horaFormatada}`;
             }
         }
-        
+
         function listarFuncionarios() {
             var fk_empresa = sessionStorage.getItem("empresa");
 
@@ -294,17 +343,26 @@
                         </td>
                         <td class="user-acesso text-muted">${acessoFormatado}</td>
                         <td>
-                            <button class="action-btn">
+                            <div class="action-menu-wrapper">
+                            <button class="action-btn" type="button" aria-label="Abrir ações de ${usuario.nome}"
+                                aria-haspopup="true" aria-expanded="false">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="1"></circle>
                                     <circle cx="12" cy="5" r="1"></circle>
                                     <circle cx="12" cy="19" r="1"></circle>
                                 </svg>
                             </button>
+                            <div class="action-menu" role="menu" aria-label="Ações de ${usuario.nome}" hidden>
+                                <button class="action-option" type="button" role="menuitem" data-user-action="view">Visualizar informações</button>
+                                <button class="action-option" type="button" role="menuitem" data-user-action="edit">Atualizar dados</button>
+                                <button class="action-option action-option-danger" type="button" role="menuitem">Excluir conta</button>
+                            </div>
+                            </div>
                         </td>
                     </tr>
                 `;
                     });
+                    buscarUsuario();
                 })
                 .catch(function (erro) {
                     console.log("Erro ao listar funcionários:", erro);
@@ -382,6 +440,155 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             listarFuncionarios();
+            document.getElementById('search-input').addEventListener('input', buscarUsuario);
+
+            const tabelaUsuarios = document.getElementById('tabela-usuarios-body');
+            const modalDadosUsuario = document.getElementById('modal-dados-usuario');
+            const formDadosUsuario = document.getElementById('form-dados-usuario');
+            const tituloModalDadosUsuario = document.getElementById('titulo-modal-dados-usuario');
+            const campoNomeUsuario = document.getElementById('dados-usuario-nome');
+            const campoEmailUsuario = document.getElementById('dados-usuario-email');
+            const campoCargoUsuario = document.getElementById('dados-usuario-cargo');
+            const campoStatusUsuario = document.getElementById('dados-usuario-status');
+            const campoAcessoUsuario = document.getElementById('dados-usuario-acesso');
+            const botaoSalvarDadosUsuario = document.getElementById('btn-salvar-dados-usuario');
+            let linhaUsuarioSelecionada = null;
+            let botaoAcaoSelecionado = null;
+            let modoModalUsuario = 'view';
+
+            function abrirModalDadosUsuario(linha, modo, botaoAcao) {
+                linhaUsuarioSelecionada = linha;
+                botaoAcaoSelecionado = botaoAcao;
+                modoModalUsuario = modo;
+
+                campoNomeUsuario.value = linha.querySelector('.user-name').textContent.trim();
+                campoEmailUsuario.value = linha.querySelector('.user-email').textContent.trim();
+                campoCargoUsuario.value = linha.querySelector('.user-funcao').textContent.trim();
+                campoStatusUsuario.value = linha.querySelector('.status-text').textContent.trim().toUpperCase();
+                campoAcessoUsuario.value = linha.querySelector('.user-acesso').textContent.trim();
+
+                const somenteLeitura = modo === 'view';
+                tituloModalDadosUsuario.textContent = somenteLeitura
+                    ? 'Informações do usuário'
+                    : 'Atualizar dados do usuário';
+                campoNomeUsuario.readOnly = somenteLeitura;
+                campoEmailUsuario.readOnly = somenteLeitura;
+                campoCargoUsuario.readOnly = somenteLeitura;
+                campoStatusUsuario.disabled = somenteLeitura;
+                campoAcessoUsuario.readOnly = somenteLeitura;
+                botaoSalvarDadosUsuario.hidden = somenteLeitura;
+
+                modalDadosUsuario.classList.add('active');
+                modalDadosUsuario.setAttribute('aria-hidden', 'false');
+                (somenteLeitura ? document.getElementById('btn-fechar-dados-usuario') : campoNomeUsuario).focus();
+            }
+
+            function fecharModalDadosUsuario() {
+                modalDadosUsuario.classList.remove('active');
+                modalDadosUsuario.setAttribute('aria-hidden', 'true');
+                formDadosUsuario.reset();
+                if (botaoAcaoSelecionado) botaoAcaoSelecionado.focus();
+                linhaUsuarioSelecionada = null;
+                botaoAcaoSelecionado = null;
+            }
+
+            document.getElementById('btn-fechar-dados-usuario').addEventListener('click', fecharModalDadosUsuario);
+            document.getElementById('btn-cancelar-dados-usuario').addEventListener('click', fecharModalDadosUsuario);
+            modalDadosUsuario.addEventListener('click', (event) => {
+                if (event.target === modalDadosUsuario) fecharModalDadosUsuario();
+            });
+            formDadosUsuario.addEventListener('submit', (event) => {
+                event.preventDefault();
+                if (modoModalUsuario !== 'edit' || !linhaUsuarioSelecionada || !formDadosUsuario.reportValidity()) return;
+
+                const nomeAtualizado = campoNomeUsuario.value.trim();
+                const emailAtualizado = campoEmailUsuario.value.trim();
+                const cargoAtualizado = campoCargoUsuario.value.trim();
+                const statusAtualizado = campoStatusUsuario.value;
+                const acessoAtualizado = campoAcessoUsuario.value.trim();
+                const classeStatus = {
+                    ATIVO: 'badge-active',
+                    INATIVO: 'badge-inactive',
+                    PENDENTE: 'badge-pending'
+                }[statusAtualizado];
+
+                linhaUsuarioSelecionada.querySelector('.user-name').textContent = nomeAtualizado;
+                linhaUsuarioSelecionada.querySelector('.user-email').textContent = emailAtualizado;
+                linhaUsuarioSelecionada.querySelector('.user-funcao').textContent = cargoAtualizado;
+                linhaUsuarioSelecionada.querySelector('.user-acesso').textContent = acessoAtualizado;
+                linhaUsuarioSelecionada.querySelector('.avatar').textContent =
+                    nomeAtualizado.substring(0, 2).toUpperCase() || '--';
+
+                const statusContainer = linhaUsuarioSelecionada.querySelector('.status-container');
+                statusContainer.classList.remove('badge-active', 'badge-inactive', 'badge-pending');
+                statusContainer.classList.add(classeStatus);
+                linhaUsuarioSelecionada.querySelector('.status-text').textContent = statusAtualizado;
+                linhaUsuarioSelecionada.querySelector('.action-btn').setAttribute(
+                    'aria-label', `Abrir ações de ${nomeAtualizado}`
+                );
+                linhaUsuarioSelecionada.querySelector('.action-menu').setAttribute(
+                    'aria-label', `Ações de ${nomeAtualizado}`
+                );
+
+                fecharModalDadosUsuario();
+            });
+
+            function fecharMenus(excecao) {
+                tabelaUsuarios.querySelectorAll('.action-menu:not([hidden])').forEach((menu) => {
+                    if (menu !== excecao) {
+                        menu.hidden = true;
+                        menu.parentElement.querySelector('.action-btn').setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            tabelaUsuarios.addEventListener('click', (event) => {
+                const alvo = event.target instanceof Element ? event.target : null;
+                if (!alvo) return;
+
+                const botaoAcao = alvo.closest('.action-btn');
+                if (botaoAcao) {
+                    const menu = botaoAcao.parentElement.querySelector('.action-menu');
+                    const abrir = menu.hidden;
+                    fecharMenus(menu);
+                    menu.hidden = !abrir;
+                    botaoAcao.setAttribute('aria-expanded', String(abrir));
+                    return;
+                }
+
+                const opcao = alvo.closest('.action-option');
+                if (opcao) {
+                    const acaoUsuario = opcao.dataset.userAction;
+                    if (acaoUsuario) {
+                        const linha = opcao.closest('tr');
+                        fecharMenus();
+                        abrirModalDadosUsuario(linha, acaoUsuario, linha.querySelector('.action-btn'));
+                        return;
+                    }
+                    fecharMenus();
+                }
+            });
+
+            document.addEventListener('click', (event) => {
+                const alvo = event.target instanceof Element ? event.target : null;
+                if (!alvo || !alvo.closest('.action-menu-wrapper')) {
+                    fecharMenus();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    if (modalDadosUsuario.classList.contains('active')) {
+                        fecharModalDadosUsuario();
+                        return;
+                    }
+                    const menuAberto = tabelaUsuarios.querySelector('.action-menu:not([hidden])');
+                    if (menuAberto) {
+                        fecharMenus();
+                        menuAberto.parentElement.querySelector('.action-btn').focus();
+                    }
+                }
+            });
 
             const modalFiltro = document.getElementById('modal-filtro');
             const formFiltro = document.getElementById('form-filtrar');
@@ -485,6 +692,19 @@
                 listarFuncionarios();
             });
         });
+
+        function buscarUsuario() {
+            const termo = document.getElementById('search-input').value.trim().toLocaleLowerCase('pt-BR');
+            const linhas = document.querySelectorAll('#tabela-usuarios-body tr');
+
+            linhas.forEach((linha) => {
+                const textoUsuario = [
+                    linha.querySelector('.user-name').textContent
+                ].join(' ').toLocaleLowerCase('pt-BR');
+
+                linha.hidden = !textoUsuario.includes(termo);
+            });
+        }
 
     </script>
 </body>

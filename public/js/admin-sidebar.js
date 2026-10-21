@@ -12,11 +12,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     sidebar.innerHTML = await response.text();
 
+    const cargos = {
+      admin: 'Admin',
+      gestor: 'Gestor',
+      analista: 'Analista'
+    };
+    const cargoInformado = (sessionStorage.getItem('cargo') || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase();
+    const cargoAliases = {
+      editor: 'gestor',
+      visualizador: 'analista'
+    };
+    const cargo = cargoAliases[cargoInformado] || cargoInformado;
+
+    if (!cargos[cargo]) {
+      console.error(`Cargo sem sidebar configurada: ${sessionStorage.getItem('cargo') || '(vazio)'}`);
+    }
+
+    sidebar.querySelector('[data-sidebar-role-label]').textContent = cargos[cargo] || 'Workspace';
+    const overviewLink = sidebar.querySelector('.nav-item a');
+    overviewLink.href = cargo === 'gestor' ? 'overview-gestor.html' : 'overview.html';
+
     const topBar = sidebar.querySelector('.top-bar');
     if (topBar) document.body.prepend(topBar);
 
     const currentPage = window.location.pathname.split('/').pop() || 'dashboard-admin.html';
-    const activePage = currentPage === 'dashboard-admin.html' ? 'overview.html' : currentPage;
+    const activePage = currentPage === 'dashboard-admin.html' ? overviewLink.getAttribute('href') : currentPage;
 
     sidebar.querySelectorAll('.nav-item a').forEach((link) => {
       if (link.getAttribute('href') === activePage) {
@@ -24,35 +48,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         link.setAttribute('aria-current', 'page');
       }
     });
-    var nome = sessionStorage.getItem("nome")
-    var iniciais = nome ? nome.substring(0, 2).toUpperCase() : "--";
 
-    const profileButton = sidebar.querySelector('.user-profile');
-    const workspaceMenu = sidebar.querySelector('.workspace-menu');
-    sidebar.querySelector('.user-name').textContent = nome
-    sidebar.querySelector('.avatar').textContent = iniciais
-      profileButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        const isOpen = workspaceMenu.classList.toggle('open');
-        profileButton.setAttribute('aria-expanded', String(isOpen));
-      });
-
-    workspaceMenu.querySelectorAll('.workspace-option').forEach((option) => {
-      option.addEventListener('click', () => {
-        workspaceMenu.querySelectorAll('.workspace-option').forEach((item) => item.classList.remove('active'));
-        option.classList.add('active');
-        sidebar.querySelector('.user-role').textContent = option.textContent.trim();
-        workspaceMenu.classList.remove('open');
-        profileButton.setAttribute('aria-expanded', 'false');
-      });
-    });
-
-    document.addEventListener('click', (event) => {
-      if (!profileButton.contains(event.target) && !workspaceMenu.contains(event.target)) {
-        workspaceMenu.classList.remove('open');
-        profileButton.setAttribute('aria-expanded', 'false');
-      }
-    });
+    const nome = sessionStorage.getItem('nome') || 'Usuário';
+    sidebar.querySelector('.user-name').textContent = nome;
+    sidebar.querySelector('.avatar').textContent = nome.substring(0, 2).toUpperCase();
   } catch (error) {
     console.error(error);
   }

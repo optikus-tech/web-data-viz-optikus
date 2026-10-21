@@ -203,27 +203,14 @@ body {
     margin: 0 24px;
 }
 
-.user-profile-wrapper {
-    position: relative;
-}
-
 .user-profile {
     display: flex;
     align-items: center;
     gap: 12px;
     width: 100%;
     padding: 16px 24px;
-    cursor: pointer;
-    transition: background 0.2s;
-    border: none;
-    background: transparent;
-    text-align: left;
     color: inherit;
     font: inherit;
-}
-
-.user-profile:hover {
-    background-color: rgba(219, 237, 252, 0.1);
 }
 
 .sidebar .user-profile .avatar {
@@ -233,11 +220,6 @@ body {
 
 .sidebar .user-profile .user-name {
     color: #ffffff;
-}
-
-.sidebar .user-profile .user-role,
-.sidebar .user-profile .chevron-icon {
-    color: #b8d2e8;
 }
 
 .avatar {
@@ -266,60 +248,6 @@ body {
     margin-bottom: 2px;
 }
 
-.user-role {
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
-.chevron-icon {
-    width: 16px;
-    height: 16px;
-    color: var(--text-muted);
-    transition: transform 0.2s ease;
-}
-
-.user-profile[aria-expanded="true"] .chevron-icon {
-    transform: rotate(180deg);
-}
-
-.workspace-menu {
-    position: absolute;
-    left: 16px;
-    right: 16px;
-    top: calc(100% + 6px);
-    padding: 8px;
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-    display: none;
-    z-index: 20;
-}
-
-.workspace-menu.open {
-    display: block;
-}
-
-.workspace-option {
-    width: 100%;
-    padding: 10px 12px;
-    border: none;
-    background: transparent;
-    border-radius: 8px;
-    text-align: left;
-    font: inherit;
-    font-size: 13px;
-    color: var(--text-main);
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
-}
-
-.workspace-option:hover,
-.workspace-option.active {
-    background: var(--active-bg);
-    color: var(--active-color);
-}
-
 .nav-section {
     padding: 16px 12px;
 }
@@ -341,6 +269,10 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
+}
+
+.nav-item[hidden] {
+    display: none;
 }
 
 .nav-item a {
@@ -423,6 +355,36 @@ table {
     text-align: left;
 }
 
+.users-page table {
+    min-width: 760px;
+    table-layout: fixed;
+}
+
+.users-page th:nth-child(1),
+.users-page td:nth-child(1) {
+    width: 34%;
+}
+
+.users-page th:nth-child(2),
+.users-page td:nth-child(2) {
+    width: 17%;
+}
+
+.users-page th:nth-child(3),
+.users-page td:nth-child(3) {
+    width: 16%;
+}
+
+.users-page th:nth-child(4),
+.users-page td:nth-child(4) {
+    width: 23%;
+}
+
+.users-page th:nth-child(5),
+.users-page td:nth-child(5) {
+    width: 10%;
+}
+
 th {
   background-color: rgb(252, 252, 253);
     color: rgb(102, 112, 133);
@@ -450,8 +412,9 @@ tbody tr:last-child td {
 
 .user-info {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 12px;
+    gap: 20px;
 }
 
 .avatar {
@@ -472,6 +435,10 @@ tbody tr:last-child td {
     flex-direction: column;
 }
 
+.users-page .user-details {
+    min-width: 0;
+}
+
 .user-name {
     font-size: 14px;
     font-weight: 600;
@@ -482,6 +449,10 @@ tbody tr:last-child td {
     font-size: 12px;
     color: #667085;
     margin-top: 2px;
+}
+
+.users-page .user-email {
+    overflow-wrap: anywhere;
 }
 
 .text-dark {
@@ -563,6 +534,52 @@ tbody tr:last-child td {
 
 .action-menu-wrapper {
     position: relative;
+    display: inline-flex;
+}
+
+.action-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 20;
+    min-width: 180px;
+    padding: 4px 0;
+    background-color: #ffffff;
+    border: 1px solid #eaecf0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.12);
+}
+
+.action-menu[hidden] {
+    display: none;
+}
+
+.action-option {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    border: 0;
+    background: transparent;
+    color: #344054;
+    font: inherit;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.action-option:hover,
+.action-option:focus-visible {
+    background-color: #f9fafb;
+    outline: none;
+}
+
+.action-option-danger {
+    color: #d92d20;
+}
+
+.action-option-danger:hover,
+.action-option-danger:focus-visible {
+    background-color: #fef3f2;
 }
 
 .dropdown-menu {
@@ -733,6 +750,10 @@ tbody tr:last-child td {
     border: 1px solid #eaecf0;
     border-radius: 12px;
     box-shadow: 0 24px 48px rgba(16, 24, 40, 0.2);
+}
+
+.user-data-modal-content {
+    overflow-y: auto;
 }
 
 .modal-header,

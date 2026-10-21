@@ -147,11 +147,30 @@
         </div>
     </div>
     </div>
+
+    <div id="custom-alert" class="alert-toast hidden" role="status" aria-live="polite" aria-hidden="true">
+        <div class="alert-icon" id="alert-icon" aria-hidden="true">✓</div>
+        <div class="alert-content">
+            <h3 id="alert-title">Sucesso!</h3>
+            <p id="alert-message">Login realizado com sucesso.</p>
+        </div>
+    </div>
 </body>
 
 </html>
 
 <script>
+
+
+function exibirAlerta(titulo, mensagem) {
+    const alertContainer = document.getElementById("custom-alert");
+    document.getElementById("alert-title").innerText = titulo;
+    document.getElementById("alert-message").innerText = mensagem;
+
+    alertContainer.setAttribute("aria-hidden", "false");
+    alertContainer.classList.remove("hidden");
+}
+
     function entrar() {
 
         var emailVar = document.getElementById("email_input").value;
@@ -174,6 +193,8 @@
                     sessionStorage.email = dados.email;
                     sessionStorage.cargo = dados.cargo;
                     sessionStorage.empresa = dados.empresa;
+
+                    exibirAlerta("Acesso liberado", `Bem-vindo(a), ${dados.nome}.`);
 
                     setTimeout(function () {
                         window.location = "./usuarios.html";
