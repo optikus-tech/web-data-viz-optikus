@@ -117,7 +117,8 @@
 
 
     <div class="modal-overlay" id="modal-usuario" aria-hidden="true">
-        <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-usuario">
+        <section class="modal-content create-user-modal-content" role="dialog" aria-modal="true"
+            aria-labelledby="titulo-modal-usuario">
             <header class="modal-header">
                 <h3 id="titulo-modal-usuario">Criar Novo Usuário</h3>
                 <button class="btn-close" id="btn-fechar-modal" type="button" aria-label="Fechar">&times;</button>
@@ -146,18 +147,18 @@
                     </div>
                     <div class="form-group">
                         <label for="senha">Senha</label>
-                        <input type="text" id="senha" name="senha" class="form-control" placeholder="Ex: senha123@"
+                        <input type="password" id="senha" name="senha" class="form-control" placeholder="Ex: senha123@"
                             required>
                     </div>
                     <div class="form-group">
-                        <label for="funcao">Função no Sistema</label>
-                        <select id="funcao" name="funcao" class="form-control" required>
+                        <label for="cargo-novo-usuario">Função no Sistema</label>
+                        <select id="cargo-novo-usuario" name="cargo" class="form-control" required>
                             <option value="">Selecione uma função...</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Editor">Gestor</option>
-                            <option value="Visualizador">Analista</option>
+                            <option value="Gestor">Gestor</option>
+                            <option value="Analista">Analista</option>
                         </select>
                     </div>
+                    <p class="form-feedback" id="mensagem-cadastro-usuario" role="alert" hidden></p>
                 </div>
                 <footer class="modal-footer">
                     <button type="button" class="btn-secondary" id="btn-cancelar">Cancelar</button>
@@ -290,12 +291,11 @@
         function listarFuncionarios() {
             var fk_empresa = sessionStorage.getItem("empresa");
 
-            if (fk_empresa == null) {
-                console.log("ID da empresa não encontrado no sessionStorage!");
-                return;
+            if (!fk_empresa) {
+                return Promise.reject(new Error("Empresa não encontrada na sessão. Faça login novamente."));
             }
 
-            fetch("/empresas/listarFuncionarios", {
+            return fetch("/empresas/listarFuncionarios", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -366,80 +366,51 @@
                 })
                 .catch(function (erro) {
                     console.log("Erro ao listar funcionários:", erro);
+                    throw erro;
                 });
         }
 
-        function cadastrar() {
+        async function cadastrar(formulario) {
+            const dados = new FormData(formulario);
+            const empresa = sessionStorage.getItem("empresa");
+            const cpf = String(dados.get("cpf")).replace(/\D/g, "");
+            const telefone = String(dados.get("telefone")).trim();
 
-            var nomeVar = nome.value;
-            var cpfVar = cpf.value;
-            var telefoneVar = telefone.value;
-            var emailVar = email.value;
-            var senhaVar = senha.value;
-
-
-            if (
-                nomeVar == "" ||
-                cpfVar == "" ||
-                telefoneVar == "" ||
-                senhaVar == "" ||
-                emailVar == "" ||
-                senhaVar == ""
-            ) {
-                cardErro.style.display = "block";
-                mensagem_erro.innerHTML =
-                    "Mensagem de erro para todos os campos em branco";
-
-                finalizarAguardar();
-                return false;
-            } else if (cpfVar.length > 11) {
-                cardErro.style.display = "block";
-                mensagem_erro.innerHTML =
-                    "Mensagem de erro para cpf com caracteres a mais";
-
-                finalizarAguardar();
-                return false;
-            } else if (!(emailVar.includes('@') && (emailVar.includes('.')))) {
-                cardErro.style.display = "block";
-                mensagem_erro.innerHTML =
-                    "Mensagem de erro para email deve incluir @ e .";
-
-                finalizarAguardar();
-                return false;
-            } else if (senhaVar.length < 8) {
-                cardErro.style.display = "block";
-                mensagem_erro.innerHTML =
-                    "Mensagem de erro para senha deve conter pelo menos 8 caracteres";
-
-                finalizarAguardar();
-                return false;
+            if (!empresa) {
+                throw new Error("Empresa não encontrada na sessão. Faça login novamente.");
             }
-            fetch("/empresas/cadastrar", {
+            if (cpf.length !== 11) {
+                throw new Error("Informe um CPF com 11 números.");
+            }
+            if (String(dados.get("senha")).length < 8) {
+                throw new Error("A senha deve conter pelo menos 8 caracteres.");
+            }
+
+            const resposta = await fetch("/empresas/cadastrar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    nomeServer: nomeVar,
-                    cpfServer: cpfVar,
-                    telefoneServer: telefoneVar,
-                    emailServer: emailVar,
-                    senhaServer: senhaVar
+                    nomeServer: String(dados.get("nome")).trim(),
+                    cpfServer: cpf,
+                    telefoneServer: telefone || null,
+                    emailServer: String(dados.get("email")).trim(),
+                    senhaServer: String(dados.get("senha")),
+                    cargoServer: String(dados.get("cargo")),
+                    empresaServer: empresa
                 }),
-            })
-                .then(function (resposta) {
-                    console.log("resposta: ", resposta);
-                })
-                .catch(function (resposta) {
-                    console.log(`#ERRO: ${resposta}`);
-                    finalizarAguardar();
-                });
+            });
 
-            return false;
+            if (!resposta.ok) {
+                const erro = await resposta.text();
+                throw new Error(erro || "Não foi possível cadastrar o usuário.");
+            }
+
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            listarFuncionarios();
+            listarFuncionarios().catch((erro) => console.error("Erro ao listar funcionários:", erro));
             document.getElementById('search-input').addEventListener('input', buscarUsuario);
 
             const tabelaUsuarios = document.getElementById('tabela-usuarios-body');
@@ -647,12 +618,15 @@
 
             const modalUsuario = document.getElementById('modal-usuario');
             const formUsuario = document.getElementById('form-usuario');
+            const mensagemCadastroUsuario = document.getElementById('mensagem-cadastro-usuario');
             const openUsuario = document.getElementById('btn-abrir-modal');
             const closeUsuario = document.getElementById('btn-fechar-modal');
             const cancelUsuario = document.getElementById('btn-cancelar');
             const nomeInput = document.getElementById('nome');
 
             function openModalUsuario() {
+                mensagemCadastroUsuario.hidden = true;
+                mensagemCadastroUsuario.textContent = "";
                 modalUsuario.classList.add('active');
                 modalUsuario.setAttribute('aria-hidden', 'false');
                 nomeInput.focus();
@@ -688,8 +662,29 @@
                     return;
                 }
 
-                cadastrar();
-                listarFuncionarios();
+                const botaoSalvar = formUsuario.querySelector('button[type="submit"]');
+                const textoOriginal = botaoSalvar.textContent;
+                mensagemCadastroUsuario.hidden = true;
+                mensagemCadastroUsuario.textContent = "";
+                botaoSalvar.disabled = true;
+                botaoSalvar.textContent = "Salvando...";
+
+                cadastrar(formUsuario)
+                    .then(() => {
+                        closeModalUsuario();
+                        document.getElementById('search-input').value = "";
+                        listarFuncionarios().catch((erro) => {
+                            console.error("Usuário criado, mas não foi possível atualizar a lista:", erro);
+                        });
+                    })
+                    .catch((erro) => {
+                        mensagemCadastroUsuario.textContent = erro.message;
+                        mensagemCadastroUsuario.hidden = false;
+                    })
+                    .finally(() => {
+                        botaoSalvar.disabled = false;
+                        botaoSalvar.textContent = textoOriginal;
+                    });
             });
         });
 

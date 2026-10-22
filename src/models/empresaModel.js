@@ -5,17 +5,28 @@ function listarFuncionarios(fk_empresa) {
     FROM usuario AS u
     JOIN cargo AS c
       ON u.id_cargo = c.id
-    WHERE u.id_empresa = (select id from empresa where razao_social = '${fk_empresa}');`
-    console.log("cheguei")
+    WHERE u.id_empresa = (SELECT id FROM empresa WHERE razao_social = ?);`;
 
-  return database.executar(instrucaoSql)
+  return database.executar(instrucaoSql, [fk_empresa]);
 }
 
-function cadastrar(nome,cpf,email,telefone,senha) {
+function cadastrar(nome, cpf, email, telefone, senha, cargo, empresa) {
   var instrucaoSql = `
-          INSERT INTO usuario (nome, cpf, email, telefone, senha, id_empresa, id_cargo) VALUES ('${nome}', '${cpf}', '${telefone}', '${email}', '${senha}', 1, 1);`;
-      console.log("Executando a instrução SQL: \n" + instrucaoSql);
-      return database.executar(instrucaoSql);
+    INSERT INTO usuario (nome, cpf, email, telefone, senha, id_empresa, id_cargo)
+    SELECT ?, ?, ?, ?, ?, empresa.id, cargo.id
+    FROM empresa
+    JOIN cargo ON cargo.nome = ?
+    WHERE empresa.razao_social = ?;`;
+
+  return database.executar(instrucaoSql, [
+    nome,
+    cpf,
+    email,
+    telefone,
+    senha,
+    cargo,
+    empresa
+  ]);
 }
 
 module.exports = {

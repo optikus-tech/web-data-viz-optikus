@@ -752,6 +752,27 @@ tbody tr:last-child td {
     box-shadow: 0 24px 48px rgba(16, 24, 40, 0.2);
 }
 
+.create-user-modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-user-modal-content #form-usuario {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.create-user-modal-content .modal-body {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.create-user-modal-content .modal-footer {
+    flex: 0 0 auto;
+}
+
 .user-data-modal-content {
     overflow-y: auto;
 }
@@ -806,6 +827,17 @@ tbody tr:last-child td {
     color: #344054;
     font-size: 13px;
     font-weight: 500;
+}
+
+.form-feedback {
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #fef3f2;
+    color: #b42318;
+    font-size: 13px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
 }
 
 .form-control {

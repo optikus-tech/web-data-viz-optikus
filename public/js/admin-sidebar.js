@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     sidebar.querySelector('[data-sidebar-role-label]').textContent = cargos[cargo] || 'Workspace';
     const overviewLink = sidebar.querySelector('.nav-item a');
     overviewLink.href = cargo === 'gestor' ? 'overview-gestor.html' : 'overview.html';
+    const linkUsuarios = sidebar.querySelector('[data-sidebar-admin-only]');
+    linkUsuarios.hidden = cargo !== 'admin';
 
     const topBar = sidebar.querySelector('.top-bar');
     if (topBar) document.body.prepend(topBar);
