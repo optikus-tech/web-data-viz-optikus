@@ -5,9 +5,24 @@ function login(req, res) {
     var senha = req.body.senha;
     usuarioModel.login(email,senha).then((resultado) => {
 
-        res.status(200).json(resultado[0]);
+        if(resultado.length > 0) {
+            var id_usuario = resultado[0].id_usuario;
+            usuarioModel.atualizarUltimoAcesso(id_usuario)
+            .then(() => {
+                res.status(200).json(resultado[0]);
+            })
+            .catch((erro) => {
+                console.log("erro em atualizar o ultimo acesso", erro);
+                res.status(500).json(erro.sqlMessage);
+            });
+        } else {
+            res.status(401).json({
+                mensagem: "Email ou senha invalido"
+            })
+        }
 
     }).catch(function(erro){
+        console.log("Erro ao realizar o login", erro)
          res.status(500).json(erro.sqlMessage);
     })
    
