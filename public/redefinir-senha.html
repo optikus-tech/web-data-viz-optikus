@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redefinir Senha</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./css/dashboard-admin.css">
+  <link rel="stylesheet" href="./css/redefinir-senha.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./js/admin-sidebar.js" defer></script>
+</head>
+
+<body>
+  <aside class="sidebar" data-admin-sidebar></aside>
+
+
+    <main class="dashboard-content users-page">
+        <header class="users-page-header">
+            <div>
+                <h2>Redefinir Senha</h2>
+            </div>
+        </header>
+<div class="container-senha">
+    <h2>Senha Atual</h2>
+
+    <div class="campo-senha">
+        <input type="password" id="senhaAtual">
+        <button type="button" class="olho" onclick="toggleSenha(this)" aria-label="Mostrar senha">
+            <svg class="icone-mostrar" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="icone-esconder" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94"/>
+                <path d="M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+        </button>
+    </div>
+
+    <h4>Coloque sua senha atual aqui</h4>
+
+    <h2>Nova Senha</h2>
+    <div class="campo-senha">
+        <input type="password" id="novaSenha">
+        <button type="button" class="olho" onclick="toggleSenha(this)" aria-label="Mostrar senha">
+            <svg class="icone-mostrar" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="icone-esconder" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94"/>
+                <path d="M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+        </button>
+    </div>
+    <h4>Coloque sua nova senha aqui</h4>
+
+    <div class="btnSenha">
+        <button class="user-create" id="btn-atualizar" type="button">Atualizar</button>
+    </div>
+
+</div>
+      </main>
+
+</body>
+<script>
+function toggleSenha(botao) {
+  const input = botao.closest('.campo-senha').querySelector('input');
+  const mostrando = input.type === 'text';
+
+  input.type = mostrando ? 'password' : 'text';
+
+  botao.querySelector('.icone-mostrar').style.display = mostrando ? 'block' : 'none';
+  botao.querySelector('.icone-esconder').style.display = mostrando ? 'none' : 'block';
+}
+</script>
+</html>

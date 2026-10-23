@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários | Optikus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./css/dashboard-admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="./js/admin-sidebar.js" defer></script>
+</head>
+
+<body>
+    <aside class="sidebar" data-admin-sidebar></aside>
+
+
+    <main class="dashboard-content users-page">
+        <header class="users-page-header">
+            <div>
+                <h2>Usuários</h2>
+                <p class="dash-breadcrumb">Gerencie os membros da equipe e suas permissões de acesso no workspace</p>
+            </div>
+        </header>
+
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <div class="search-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="search" id="search-input" placeholder="Buscar usuário..." aria-label="Buscar usuário">
+                </div>
+                <button class="btn-filter" type="button" id="btn-abrir-modal-filtrar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Filtrar
+                </button>
+            </div>
+
+            <button class="user-create" type="button" id="btn-abrir-modal">
+                <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Criar usuário
+            </button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>USUÁRIO</th>
+                        <th>FUNÇÃO</th>
+                        <th>STATUS</th>
+                        <th>ÚLTIMO ACESSO</th>
+                        <th>AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-usuarios-body"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <template id="modelo-linha-usuario">
+        <tr>
+            <td>
+                <div class="user-info">
+                    <div class="avatar">--</div>
+                    <div class="user-details">
+                        <span class="user-name">Nome do Usuário</span>
+                        <span class="user-email">email@exemplo.com</span>
+                    </div>
+                </div>
+            </td>
+            <td class="user-funcao text-dark">Função</td>
+            <td>
+                <span class="status-container status badge-active">
+                    <span class="dot"></span> <span class="status-text">Ativo</span>
+                </span>
+            </td>
+            <td class="user-acesso text-muted">Acesso</td>
+            <td>
+                <div class="action-menu-wrapper">
+                <button class="action-btn" type="button" aria-label="Abrir ações do usuário" aria-haspopup="true"
+                    aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="12" cy="5" r="1"></circle>
+                        <circle cx="12" cy="19" r="1"></circle>
+                    </svg>
+                </button>
+
+                <div class="action-menu" role="menu" aria-label="Ações do usuário" hidden>
+                    <button class="action-option" type="button" role="menuitem" data-user-action="view">Visualizar informações</button>
+                    <button class="action-option" type="button" role="menuitem" data-user-action="edit">Atualizar dados</button>
+                    <button class="action-option action-option-danger" type="button" role="menuitem">Excluir conta</button>
+                </div>
+                </div>
+            </td>
+        </tr>
+    </template>
+
+
+
+    <div class="modal-overlay" id="modal-usuario" aria-hidden="true">
+        <section class="modal-content create-user-modal-content" role="dialog" aria-modal="true"
+            aria-labelledby="titulo-modal-usuario">
+            <header class="modal-header">
+                <h3 id="titulo-modal-usuario">Criar Novo Usuário</h3>
+                <button class="btn-close" id="btn-fechar-modal" type="button" aria-label="Fechar">&times;</button>
+            </header>
+            <form id="form-usuario">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" id="nome" name="nome" class="form-control"
+                            placeholder="Ex: Fernanda Caramico" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control"
+                            placeholder="Ex: Fernanda@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cpf">CPF</label>
+                        <input type="text" id="cpf" name="cpf" class="form-control" placeholder="Ex: 123.345.678-90"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" name="telefone" class="form-control"
+                            placeholder="Ex: (11) 95187-9922">
+                    </div>
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha" class="form-control" placeholder="Ex: senha123@"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cargo-novo-usuario">Função no Sistema</label>
+                        <select id="cargo-novo-usuario" name="cargo" class="form-control" required>
+                            <option value="">Selecione uma função...</option>
+                            <option value="Gestor">Gestor</option>
+                            <option value="Analista">Analista</option>
+                        </select>
+                    </div>
+                    <p class="form-feedback" id="mensagem-cadastro-usuario" role="alert" hidden></p>
+                </div>
+                <footer class="modal-footer">
+                    <button type="button" class="btn-secondary" id="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Usuário</button>
+                </footer>
+            </form>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="modal-filtro" aria-hidden="true">
+        <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-usuario">
+            <header class="modal-header">
+                <h3 id="titulo-modal-usuario">Filtrar</h3>
+                <button class="btn-close" id="btn-fechar-modal-filtrar" type="button"
+                    aria-label="Fechar">&times;</button>
+            </header>
+            <form id="form-filtrar">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="funcao">Função no Sistema</label>
+                        <select id="funcao" name="funcao" class="form-control" required>
+                            <option value="">Selecione uma função...</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Editor">Gestor</option>
+                            <option value="Visualizador">Analista</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="funcao">Status</label>
+                        <select id="funcao" name="funcao" class="form-control" required>
+                            <option value="">Selecione um Status...</option>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Inativo">Inativo</option>
+                            <option value="Pendente">Pendente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label for="funcao">Último Acesso</label>
+                            <select id="funcao" name="funcao" class="form-control" required>
+                                <option value="">Selecione um Período</option>
+                                <option value="Hoje">Hoje</option>
+                                <option value="SeteDias">Últimos 7 dias</option>
+                                <option value="TrintaDias">Últimos 30 dias</option>
+                                <option value="MaisTrinta">Há mais de 30 dias</option>
+                                <option value="Nunca">Nunca Acessou</option>
+                            </select>
+                        </div>
+                    </div>
+                    <footer class="modal-footer">
+                        <button type="button" class="btn-secondary" id="btn-limpar-filtrar">Limpar</button>
+                        <button type="submit" class="btn-primary">Buscar</button>
+                    </footer>
+            </form>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="modal-dados-usuario" aria-hidden="true">
+        <section class="modal-content user-data-modal-content" role="dialog" aria-modal="true"
+            aria-labelledby="titulo-modal-dados-usuario">
+            <header class="modal-header">
+                <h3 id="titulo-modal-dados-usuario">Informações do usuário</h3>
+                <button class="btn-close" id="btn-fechar-dados-usuario" type="button" aria-label="Fechar">&times;</button>
+            </header>
+            <form id="form-dados-usuario">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="dados-usuario-nome">Nome</label>
+                        <input class="form-control" id="dados-usuario-nome" name="nome" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dados-usuario-email">Email</label>
+                        <input class="form-control" id="dados-usuario-email" name="email" type="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dados-usuario-cargo">Função</label>
+                        <input class="form-control" id="dados-usuario-cargo" name="cargo" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dados-usuario-status">Status</label>
+                        <select class="form-control" id="dados-usuario-status" name="status" required>
+                            <option value="ATIVO">Ativo</option>
+                            <option value="INATIVO">Inativo</option>
+                            <option value="PENDENTE">Pendente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dados-usuario-acesso">Último acesso</label>
+                        <input class="form-control" id="dados-usuario-acesso" name="acesso" type="text" readonly>
+                    </div>
+                </div>
+                <footer class="modal-footer">
+                    <button class="btn-secondary" id="btn-cancelar-dados-usuario" type="button">Cancelar</button>
+                    <button class="btn-primary" id="btn-salvar-dados-usuario" type="submit">Salvar alterações</button>
+                </footer>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        function formatarUltimoAcesso(dataString) {
+            if (!dataString) return "Aguardando confirmação";
+
+            var data = new Date(dataString);
+            var hoje = new Date();
+
+            var apenasHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            var apenasDataUser = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+
+            var diffDias = Math.floor((apenasHoje - apenasDataUser) / (1000 * 60 * 60 * 24));
+
+            var horas = String(data.getHours()).padStart(2, '0');
+            var minutos = String(data.getMinutes()).padStart(2, '0');
+            var horaFormatada = `${horas}:${minutos}`;
+
+            if (diffDias === 0) {
+                return `Hoje, ${horaFormatada}`;
+            } else if (diffDias === 1) {
+                return `Ontem, ${horaFormatada}`;
+            } else {
+                var meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+                var dia = data.getDate();
+                var mes = meses[data.getMonth()];
+                var ano = data.getFullYear();
+
+                return `${dia} ${mes} ${ano}, ${horaFormatada}`;
+            }
+        }
+
+        function listarFuncionarios() {
+            var fk_empresa = sessionStorage.getItem("empresa");
+
+            if (!fk_empresa) {
+                return Promise.reject(new Error("Empresa não encontrada na sessão. Faça login novamente."));
+            }
+
+            return fetch("/empresas/listarFuncionarios", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    fk_empresa: fk_empresa
+                })
+            })
+                .then(function (resposta) {
+                    if (!resposta.ok) {
+                        throw new Error("Erro ao buscar funcionários!");
+                    }
+                    return resposta.json();
+                })
+                .then(function (usuarios) {
+                    var tabela = document.getElementById("tabela-usuarios-body");
+                    tabela.innerHTML = "";
+
+                    usuarios.forEach(function (usuario) {
+                        var iniciais = usuario.nome ? usuario.nome.substring(0, 2).toUpperCase() : "--";
+
+                        let classeStatus = "badge-active";
+                        if (usuario.stats === "INATIVO") {
+                            classeStatus = "badge-inactive";
+                        } else if (usuario.stats !== "ATIVO") {
+                            classeStatus = "badge-pending";
+                        }
+                        var acessoFormatado = formatarUltimoAcesso(usuario.acesso);
+                        tabela.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <div class="avatar">${iniciais}</div>
+                                <div class="user-details">
+                                    <span class="user-name">${usuario.nome}</span>
+                                    <span class="user-email">${usuario.email}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="user-funcao text-dark">${usuario.cargo}</td>
+                        <td>
+                            <span class="status-container status ${classeStatus}">
+                                <span class="dot"></span> <span class="status-text">${usuario.stats}</span>
+                            </span>
+                        </td>
+                        <td class="user-acesso text-muted">${acessoFormatado}</td>
+                        <td>
+                            <div class="action-menu-wrapper">
+                            <button class="action-btn" type="button" aria-label="Abrir ações de ${usuario.nome}"
+                                aria-haspopup="true" aria-expanded="false">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                            <div class="action-menu" role="menu" aria-label="Ações de ${usuario.nome}" hidden>
+                                <button class="action-option" type="button" role="menuitem" data-user-action="view">Visualizar informações</button>
+                                <button class="action-option" type="button" role="menuitem" data-user-action="edit">Atualizar dados</button>
+                                <button class="action-option action-option-danger" type="button" role="menuitem" onclick="deletar(${usuario.id_usuario})">Excluir conta</button>
+                            </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                    });
+                    buscarUsuario();
+                })
+                .catch(function (erro) {
+                    console.log("Erro ao listar funcionários:", erro);
+                    throw erro;
+                });
+        }
+
+        async function cadastrar(formulario) {
+            const dados = new FormData(formulario);
+            const empresa = sessionStorage.getItem("empresa");
+            const cpf = String(dados.get("cpf")).replace(/\D/g, "");
+            const telefone = String(dados.get("telefone")).trim();
+
+            if (!empresa) {
+                throw new Error("Empresa não encontrada na sessão. Faça login novamente.");
+            }
+            if (cpf.length !== 11) {
+                throw new Error("Informe um CPF com 11 números.");
+            }
+            if (String(dados.get("senha")).length < 8) {
+                throw new Error("A senha deve conter pelo menos 8 caracteres.");
+            }
+
+            const resposta = await fetch("/empresas/cadastrar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    nomeServer: String(dados.get("nome")).trim(),
+                    cpfServer: cpf,
+                    telefoneServer: telefone || null,
+                    emailServer: String(dados.get("email")).trim(),
+                    senhaServer: String(dados.get("senha")),
+                    cargoServer: String(dados.get("cargo")),
+                    empresaServer: empresa
+                }),
+            });
+
+            if (!resposta.ok) {
+                const erro = await resposta.text();
+                throw new Error(erro || "Não foi possível cadastrar o usuário.");
+            }
+            listarFuncionarios()
+        }
+
+        async function deletar(id_usuario) {
+            const resposta = await fetch("/empresas/deletar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    idServer: id_usuario
+                }),
+            });
+
+            if (!resposta.ok) {
+                const erro = await resposta.text();
+                throw new Error(erro || "Não foi possível deletar o usuário.");
+            }
+            listarFuncionarios()
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            listarFuncionarios().catch((erro) => console.error("Erro ao listar funcionários:", erro));
+            document.getElementById('search-input').addEventListener('input', buscarUsuario);
+
+            const tabelaUsuarios = document.getElementById('tabela-usuarios-body');
+            const modalDadosUsuario = document.getElementById('modal-dados-usuario');
+            const formDadosUsuario = document.getElementById('form-dados-usuario');
+            const tituloModalDadosUsuario = document.getElementById('titulo-modal-dados-usuario');
+            const campoNomeUsuario = document.getElementById('dados-usuario-nome');
+            const campoEmailUsuario = document.getElementById('dados-usuario-email');
+            const campoCargoUsuario = document.getElementById('dados-usuario-cargo');
+            const campoStatusUsuario = document.getElementById('dados-usuario-status');
+            const campoAcessoUsuario = document.getElementById('dados-usuario-acesso');
+            const botaoSalvarDadosUsuario = document.getElementById('btn-salvar-dados-usuario');
+            let linhaUsuarioSelecionada = null;
+            let botaoAcaoSelecionado = null;
+            let modoModalUsuario = 'view';
+
+            function abrirModalDadosUsuario(linha, modo, botaoAcao) {
+                linhaUsuarioSelecionada = linha;
+                botaoAcaoSelecionado = botaoAcao;
+                modoModalUsuario = modo;
+
+                campoNomeUsuario.value = linha.querySelector('.user-name').textContent.trim();
+                campoEmailUsuario.value = linha.querySelector('.user-email').textContent.trim();
+                campoCargoUsuario.value = linha.querySelector('.user-funcao').textContent.trim();
+                campoStatusUsuario.value = linha.querySelector('.status-text').textContent.trim().toUpperCase();
+                campoAcessoUsuario.value = linha.querySelector('.user-acesso').textContent.trim();
+
+                const somenteLeitura = modo === 'view';
+                tituloModalDadosUsuario.textContent = somenteLeitura
+                    ? 'Informações do usuário'
+                    : 'Atualizar dados do usuário';
+                campoNomeUsuario.readOnly = somenteLeitura;
+                campoEmailUsuario.readOnly = somenteLeitura;
+                campoCargoUsuario.readOnly = somenteLeitura;
+                campoStatusUsuario.disabled = somenteLeitura;
+                campoAcessoUsuario.readOnly = somenteLeitura;
+                botaoSalvarDadosUsuario.hidden = somenteLeitura;
+
+                modalDadosUsuario.classList.add('active');
+                modalDadosUsuario.setAttribute('aria-hidden', 'false');
+                (somenteLeitura ? document.getElementById('btn-fechar-dados-usuario') : campoNomeUsuario).focus();
+            }
+
+            function fecharModalDadosUsuario() {
+                modalDadosUsuario.classList.remove('active');
+                modalDadosUsuario.setAttribute('aria-hidden', 'true');
+                formDadosUsuario.reset();
+                if (botaoAcaoSelecionado) botaoAcaoSelecionado.focus();
+                linhaUsuarioSelecionada = null;
+                botaoAcaoSelecionado = null;
+            }
+
+            document.getElementById('btn-fechar-dados-usuario').addEventListener('click', fecharModalDadosUsuario);
+            document.getElementById('btn-cancelar-dados-usuario').addEventListener('click', fecharModalDadosUsuario);
+            modalDadosUsuario.addEventListener('click', (event) => {
+                if (event.target === modalDadosUsuario) fecharModalDadosUsuario();
+            });
+            formDadosUsuario.addEventListener('submit', (event) => {
+                event.preventDefault();
+                if (modoModalUsuario !== 'edit' || !linhaUsuarioSelecionada || !formDadosUsuario.reportValidity()) return;
+
+                const nomeAtualizado = campoNomeUsuario.value.trim();
+                const emailAtualizado = campoEmailUsuario.value.trim();
+                const cargoAtualizado = campoCargoUsuario.value.trim();
+                const statusAtualizado = campoStatusUsuario.value;
+                const acessoAtualizado = campoAcessoUsuario.value.trim();
+                const classeStatus = {
+                    ATIVO: 'badge-active',
+                    INATIVO: 'badge-inactive',
+                    PENDENTE: 'badge-pending'
+                }[statusAtualizado];
+
+                linhaUsuarioSelecionada.querySelector('.user-name').textContent = nomeAtualizado;
+                linhaUsuarioSelecionada.querySelector('.user-email').textContent = emailAtualizado;
+                linhaUsuarioSelecionada.querySelector('.user-funcao').textContent = cargoAtualizado;
+                linhaUsuarioSelecionada.querySelector('.user-acesso').textContent = acessoAtualizado;
+                linhaUsuarioSelecionada.querySelector('.avatar').textContent =
+                    nomeAtualizado.substring(0, 2).toUpperCase() || '--';
+
+                const statusContainer = linhaUsuarioSelecionada.querySelector('.status-container');
+                statusContainer.classList.remove('badge-active', 'badge-inactive', 'badge-pending');
+                statusContainer.classList.add(classeStatus);
+                linhaUsuarioSelecionada.querySelector('.status-text').textContent = statusAtualizado;
+                linhaUsuarioSelecionada.querySelector('.action-btn').setAttribute(
+                    'aria-label', `Abrir ações de ${nomeAtualizado}`
+                );
+                linhaUsuarioSelecionada.querySelector('.action-menu').setAttribute(
+                    'aria-label', `Ações de ${nomeAtualizado}`
+                );
+
+                fecharModalDadosUsuario();
+            });
+
+            function fecharMenus(excecao) {
+                tabelaUsuarios.querySelectorAll('.action-menu:not([hidden])').forEach((menu) => {
+                    if (menu !== excecao) {
+                        menu.hidden = true;
+                        menu.parentElement.querySelector('.action-btn').setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            tabelaUsuarios.addEventListener('click', (event) => {
+                const alvo = event.target instanceof Element ? event.target : null;
+                if (!alvo) return;
+
+                const botaoAcao = alvo.closest('.action-btn');
+                if (botaoAcao) {
+                    const menu = botaoAcao.parentElement.querySelector('.action-menu');
+                    const abrir = menu.hidden;
+                    fecharMenus(menu);
+                    menu.hidden = !abrir;
+                    botaoAcao.setAttribute('aria-expanded', String(abrir));
+                    return;
+                }
+
+                const opcao = alvo.closest('.action-option');
+                if (opcao) {
+                    const acaoUsuario = opcao.dataset.userAction;
+                    if (acaoUsuario) {
+                        const linha = opcao.closest('tr');
+                        fecharMenus();
+                        abrirModalDadosUsuario(linha, acaoUsuario, linha.querySelector('.action-btn'));
+                        return;
+                    }
+                    fecharMenus();
+                }
+            });
+
+            document.addEventListener('click', (event) => {
+                const alvo = event.target instanceof Element ? event.target : null;
+                if (!alvo || !alvo.closest('.action-menu-wrapper')) {
+                    fecharMenus();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    if (modalDadosUsuario.classList.contains('active')) {
+                        fecharModalDadosUsuario();
+                        return;
+                    }
+                    const menuAberto = tabelaUsuarios.querySelector('.action-menu:not([hidden])');
+                    if (menuAberto) {
+                        fecharMenus();
+                        menuAberto.parentElement.querySelector('.action-btn').focus();
+                    }
+                }
+            });
+
+            const modalFiltro = document.getElementById('modal-filtro');
+            const formFiltro = document.getElementById('form-filtrar');
+            const openFiltro = document.getElementById('btn-abrir-modal-filtrar');
+            const closeFiltro = document.getElementById('btn-fechar-modal-filtrar');
+            const clearFiltro = document.getElementById('btn-limpar-filtrar');
+            const funcao = document.getElementById('funcao');
+
+            function openModalFiltro() {
+                modalFiltro.classList.add('active');
+                modalFiltro.setAttribute('aria-hidden', 'false');
+                funcao.focus();
+            }
+
+            function closeModalFiltro() {
+                modalFiltro.classList.remove('active');
+                modalFiltro.setAttribute('aria-hidden', 'true');
+                openFiltro.focus();
+            }
+
+            function limparFiltros() {
+                formFiltro.reset();
+                funcao.focus();
+                buscarUsuarios({});
+            }
+
+            clearFiltro.addEventListener('click', limparFiltros);
+            openFiltro.addEventListener('click', openModalFiltro);
+            closeFiltro.addEventListener('click', closeModalFiltro);
+
+            const cancelFiltro = document.getElementById('btn-cancelar-filtrar');
+
+            if (cancelFiltro != null) {
+                cancelFiltro.addEventListener('click', closeModalFiltro);
+            }
+
+            modalFiltro.addEventListener('click', (event) => {
+                if (event.target === modalFiltro) {
+                    closeModalFiltro();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modalFiltro.classList.contains('active')) {
+                    closeModalFiltro();
+                }
+            });
+
+            formFiltro.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const filtros = Object.fromEntries(new FormData(formFiltro));
+                buscarUsuarios(filtros);
+                closeModalFiltro();
+            });
+
+            const modalUsuario = document.getElementById('modal-usuario');
+            const formUsuario = document.getElementById('form-usuario');
+            const mensagemCadastroUsuario = document.getElementById('mensagem-cadastro-usuario');
+            const openUsuario = document.getElementById('btn-abrir-modal');
+            const closeUsuario = document.getElementById('btn-fechar-modal');
+            const cancelUsuario = document.getElementById('btn-cancelar');
+            const nomeInput = document.getElementById('nome');
+
+            function openModalUsuario() {
+                mensagemCadastroUsuario.hidden = true;
+                mensagemCadastroUsuario.textContent = "";
+                modalUsuario.classList.add('active');
+                modalUsuario.setAttribute('aria-hidden', 'false');
+                nomeInput.focus();
+            }
+
+            function closeModalUsuario() {
+                modalUsuario.classList.remove('active');
+                modalUsuario.setAttribute('aria-hidden', 'true');
+                formUsuario.reset();
+                openUsuario.focus();
+            }
+
+            openUsuario.addEventListener('click', openModalUsuario);
+            closeUsuario.addEventListener('click', closeModalUsuario);
+            cancelUsuario.addEventListener('click', closeModalUsuario);
+
+            modalUsuario.addEventListener('click', (event) => {
+                if (event.target === modalUsuario) {
+                    closeModalUsuario();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modalUsuario.classList.contains('active')) {
+                    closeModalUsuario();
+                }
+            });
+
+            formUsuario.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                if (!formUsuario.reportValidity()) {
+                    return;
+                }
+
+                const botaoSalvar = formUsuario.querySelector('button[type="submit"]');
+                const textoOriginal = botaoSalvar.textContent;
+                mensagemCadastroUsuario.hidden = true;
+                mensagemCadastroUsuario.textContent = "";
+                botaoSalvar.disabled = true;
+                botaoSalvar.textContent = "Salvando...";
+
+                cadastrar(formUsuario)
+                    .then(() => {
+                        closeModalUsuario();
+                        document.getElementById('search-input').value = "";
+                        listarFuncionarios().catch((erro) => {
+                            console.error("Usuário criado, mas não foi possível atualizar a lista:", erro);
+                        });
+                    })
+                    .catch((erro) => {
+                        mensagemCadastroUsuario.textContent = erro.message;
+                        mensagemCadastroUsuario.hidden = false;
+                    })
+                    .finally(() => {
+                        botaoSalvar.disabled = false;
+                        botaoSalvar.textContent = textoOriginal;
+                    });
+            });
+        });
+
+        function buscarUsuario() {
+            const termo = document.getElementById('search-input').value.trim().toLocaleLowerCase('pt-BR');
+            const linhas = document.querySelectorAll('#tabela-usuarios-body tr');
+
+            linhas.forEach((linha) => {
+                const textoUsuario = [
+                    linha.querySelector('.user-name').textContent
+                ].join(' ').toLocaleLowerCase('pt-BR');
+
+                linha.hidden = !textoUsuario.includes(termo);
+            });
+        }
+
+    </script>
+</body>
+
+</html>
