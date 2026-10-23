@@ -11,4 +11,8 @@ router.post("/cadastrar", function (req, res) {
     empresaController.cadastrar(req, res);
 })
 
+router.post("/deletar", function (req, res) {
+    empresaController.deletar(req, res)
+})
+
 module.exports = router;

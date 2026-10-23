@@ -355,7 +355,7 @@
                             <div class="action-menu" role="menu" aria-label="Ações de ${usuario.nome}" hidden>
                                 <button class="action-option" type="button" role="menuitem" data-user-action="view">Visualizar informações</button>
                                 <button class="action-option" type="button" role="menuitem" data-user-action="edit">Atualizar dados</button>
-                                <button class="action-option action-option-danger" type="button" role="menuitem">Excluir conta</button>
+                                <button class="action-option action-option-danger" type="button" role="menuitem" onclick="deletar(${usuario.id_usuario})">Excluir conta</button>
                             </div>
                             </div>
                         </td>
@@ -406,7 +406,25 @@
                 const erro = await resposta.text();
                 throw new Error(erro || "Não foi possível cadastrar o usuário.");
             }
+            listarFuncionarios()
+        }
 
+        async function deletar(id_usuario) {
+            const resposta = await fetch("/empresas/deletar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    idServer: id_usuario
+                }),
+            });
+
+            if (!resposta.ok) {
+                const erro = await resposta.text();
+                throw new Error(erro || "Não foi possível deletar o usuário.");
+            }
+            listarFuncionarios()
         }
 
         document.addEventListener('DOMContentLoaded', () => {

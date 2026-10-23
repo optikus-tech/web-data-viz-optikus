@@ -57,7 +57,30 @@ function cadastrar(req, res) {
     });
 }
 
+function deletar(req, res) {
+  var id_usuario = req.body.idServer;
+  if (id_usuario <= 0 || isNaN(id_usuario) || id_usuario == undefined) {
+    return res.status(400).send("O id do usuário selecionado está: ", id_usuario);
+  }
+
+  empresaModel.deletar(id_usuario)
+    .then(function (resultado) {
+      if (resultado.affectedRows === 0) {
+        return res.status(400).send("Não foi possível localizar o usuário.");
+      }
+      return res.status(201).json({ mensagem: "Usuário removido com sucesso." });
+    })
+    .catch(function (erro) {
+      console.error("Erro ao cadastrar usuário:", erro.sqlMessage || erro);
+      if (erro.code === "ER_DUP_ENTRY") {
+        return res.status(409).send("Usuário informado não encontrado.");
+      }
+      return res.status(500).send("Erro ao deletar usuário.");
+    });
+}
+
 module.exports = {
   cadastrar,
-  listarFuncionarios
+  listarFuncionarios,
+  deletar,
 };
