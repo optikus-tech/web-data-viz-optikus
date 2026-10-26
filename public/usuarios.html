@@ -169,49 +169,48 @@
     </div>
 
     <div class="modal-overlay" id="modal-filtro" aria-hidden="true">
-        <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-usuario">
+        <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-filtro">
             <header class="modal-header">
-                <h3 id="titulo-modal-usuario">Filtrar</h3>
+                <h3 id="titulo-modal-filtro">Filtrar</h3>
                 <button class="btn-close" id="btn-fechar-modal-filtrar" type="button"
                     aria-label="Fechar">&times;</button>
             </header>
             <form id="form-filtrar">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="funcao">Função no Sistema</label>
-                        <select id="funcao" name="funcao" class="form-control" required>
-                            <option value="">Selecione uma função...</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Editor">Gestor</option>
-                            <option value="Visualizador">Analista</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="funcao">Status</label>
-                        <select id="funcao" name="funcao" class="form-control" required>
-                            <option value="">Selecione um Status...</option>
-                            <option value="Ativo">Ativo</option>
-                            <option value="Inativo">Inativo</option>
-                            <option value="Pendente">Pendente</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <div class="form-group">
-                            <label for="funcao">Último Acesso</label>
-                            <select id="funcao" name="funcao" class="form-control" required>
-                                <option value="">Selecione um Período</option>
-                                <option value="Hoje">Hoje</option>
-                                <option value="SeteDias">Últimos 7 dias</option>
-                                <option value="TrintaDias">Últimos 30 dias</option>
-                                <option value="MaisTrinta">Há mais de 30 dias</option>
-                                <option value="Nunca">Nunca Acessou</option>
-                            </select>
-                        </div>
-                    </div>
-                    <footer class="modal-footer">
-                        <button type="button" class="btn-secondary" id="btn-limpar-filtrar">Limpar</button>
-                        <button type="submit" class="btn-primary">Buscar</button>
-                    </footer>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="filtro-funcao">Função no Sistema</label>
+            <select id="filtro-funcao" name="funcao" class="form-control">
+                <option value="">Todas</option>
+                <option value="Admin">Admin</option>
+                <option value="Gestor">Gestor</option>
+                <option value="Analista">Analista</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="filtro-status">Status</label>
+            <select id="filtro-status" name="status" class="form-control">
+                <option value="">Todos</option>
+                <option value="ATIVO">Ativo</option>
+                <option value="INATIVO">Inativo</option>
+                <option value="PENDENTE">Pendente</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="filtro-acesso">Último Acesso</label>
+                <select id="filtro-acesso" name="acesso" class="form-control">
+                    <option value="">Qualquer período</option>
+                    <option value="Hoje">Hoje</option>
+                    <option value="SeteDias">Últimos 7 dias</option>
+                    <option value="TrintaDias">Últimos 30 dias</option>
+                    <option value="MaisTrinta">Há mais de 30 dias</option>
+                    <option value="Nunca">Nunca Acessou</option>
+                </select>
+            </div>
+        </div>
+            <footer class="modal-footer">
+                <button type="button" class="btn-secondary" id="btn-limpar-filtrar">Limpar</button>
+                <button type="submit" class="btn-primary">Buscar</button>
+            </footer>
             </form>
         </section>
     </div>
@@ -311,62 +310,8 @@
                     return resposta.json();
                 })
                 .then(function (usuarios) {
-                    var tabela = document.getElementById("tabela-usuarios-body");
-                    tabela.innerHTML = "";
-
-                    usuarios.forEach(function (usuario) {
-                        var iniciais = usuario.nome ? usuario.nome.substring(0, 2).toUpperCase() : "--";
-
-                        let classeStatus = "badge-active";
-                        if (usuario.stats === "INATIVO") {
-                            classeStatus = "badge-inactive";
-                        } else if (usuario.stats !== "ATIVO") {
-                            classeStatus = "badge-pending";
-                        }
-                        var acessoFormatado = formatarUltimoAcesso(usuario.acesso);
-                        tabela.innerHTML += `
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="avatar">${iniciais}</div>
-                                <div class="user-details">
-                                    <span class="user-name">${usuario.nome}</span>
-                                    <span class="user-email">${usuario.email}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="user-funcao text-dark">${usuario.cargo}</td>
-                        <td>
-                            <span class="status-container status ${classeStatus}">
-                                <span class="dot"></span> <span class="status-text">${usuario.stats}</span>
-                            </span>
-                        </td>
-                        <td class="user-acesso text-muted">${acessoFormatado}</td>
-                        <td>
-                            <div class="action-menu-wrapper">
-                            <button class="action-btn" type="button" aria-label="Abrir ações de ${usuario.nome}"
-                                aria-haspopup="true" aria-expanded="false">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="1"></circle>
-                                    <circle cx="12" cy="5" r="1"></circle>
-                                    <circle cx="12" cy="19" r="1"></circle>
-                                </svg>
-                            </button>
-                            <div class="action-menu" role="menu" aria-label="Ações de ${usuario.nome}" hidden>
-                                <button class="action-option" type="button" role="menuitem" data-user-action="view">Visualizar informações</button>
-                                <button class="action-option" type="button" role="menuitem" data-user-action="edit">Atualizar dados</button>
-                                <button class="action-option action-option-danger" type="button" role="menuitem" onclick="deletar(${usuario.id_usuario})">Excluir conta</button>
-                            </div>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                    });
-                    buscarUsuario();
-                })
-                .catch(function (erro) {
-                    console.log("Erro ao listar funcionários:", erro);
-                    throw erro;
+                    usuariosCache = usuarios;
+                    renderizarUsuarios();
                 });
         }
 
@@ -425,6 +370,104 @@
                 throw new Error(erro || "Não foi possível deletar o usuário.");
             }
             listarFuncionarios()
+        }
+
+        let usuariosCache = [];
+        let filtrosAtivos = {};
+
+        function diasDesdeAcesso(dataString){
+            const data = new Date(dataString);
+            const hoje = new Date();
+            const diaAtual = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            const ultimoLogin = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+            return Math.floor((diaAtual - ultimoLogin) / (1000 * 60 * 60 * 24));
+        }
+
+        function passaNoFiltro(usuario, f) {
+            if (f.funcao && usuario.cargo !== f.funcao) return false;
+
+            if (f.status) {
+            const status = String(usuario.stats || "").toUpperCase();
+            if (f.status === "PENDENTE") {
+                if (status === "ATIVO" || status === "INATIVO") return false;
+            } else if (status !== f.status) {
+                return false;
+            }
+        }
+
+        if (f.acesso) {
+            if (f.acesso === "Nunca") return !usuario.acesso;
+            if (!usuario.acesso) return false;
+
+            const dias = diasDesdeAcesso(usuario.acesso);
+            if (f.acesso === "Hoje" && dias !== 0) return false;
+            if (f.acesso === "SeteDias" && dias > 7) return false;
+            if (f.acesso === "TrintaDias" && dias > 30) return false;
+            if (f.acesso === "MaisTrinta" && dias <= 30) return false;
+        }
+
+        return true;
+    }
+
+        function buscarUsuarios(filtros){
+            filtrosAtivos = filtros || {};
+            renderizarUsuarios();
+        }
+
+        function renderizarUsuarios(){
+            const tabela = document.getElementById("tabela-usuarios-body");
+            const lista = usuariosCache.filter((u) => passaNoFiltro(u, filtrosAtivos));
+
+            tabela.innerHTML = "";
+            lista.forEach(function (usuario){
+                var iniciais = usuario.nome ? usuario.nome.substring(0, 2).toUpperCase() : "--";
+
+                        let classeStatus = "badge-active";
+                        if (usuario.stats === "INATIVO") {
+                            classeStatus = "badge-inactive";
+                        } else if (usuario.stats !== "ATIVO") {
+                            classeStatus = "badge-pending";
+                        }
+                        var acessoFormatado = formatarUltimoAcesso(usuario.acesso);
+                        tabela.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <div class="avatar">${iniciais}</div>
+                                <div class="user-details">
+                                    <span class="user-name">${usuario.nome}</span>
+                                    <span class="user-email">${usuario.email}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="user-funcao text-dark">${usuario.cargo}</td>
+                        <td>
+                            <span class="status-container status ${classeStatus}">
+                                <span class="dot"></span> <span class="status-text">${usuario.stats}</span>
+                            </span>
+                        </td>
+                        <td class="user-acesso text-muted">${acessoFormatado}</td>
+                        <td>
+                            <div class="action-menu-wrapper">
+                            <button class="action-btn" type="button" aria-label="Abrir ações de ${usuario.nome}"
+                                aria-haspopup="true" aria-expanded="false">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                            <div class="action-menu" role="menu" aria-label="Ações de ${usuario.nome}" hidden>
+                                <button class="action-option" type="button" role="menuitem" data-user-action="view">Visualizar informações</button>
+                                <button class="action-option" type="button" role="menuitem" data-user-action="edit">Atualizar dados</button>
+                                <button class="action-option action-option-danger" type="button" role="menuitem" onclick="deletar(${usuario.id_usuario})">Excluir conta</button>
+                            </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            buscarUsuario();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -584,7 +627,7 @@
             const openFiltro = document.getElementById('btn-abrir-modal-filtrar');
             const closeFiltro = document.getElementById('btn-fechar-modal-filtrar');
             const clearFiltro = document.getElementById('btn-limpar-filtrar');
-            const funcao = document.getElementById('funcao');
+            const funcao = document.getElementById('filtro-funcao');
 
             function openModalFiltro() {
                 modalFiltro.classList.add('active');
