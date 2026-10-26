@@ -70,7 +70,38 @@ function cadastrar(req, res) {
     }
 }
 
+function redefinirSenha(req,res) {
+    var id_usuario = req.body.id_usuarioServer;
+    var senha_atual = req.body.senha_atualServer;
+    var nova_senha = req.body.nova_senhaServer;
+
+    console.log("ID:", id_usuario);
+    console.log("Senha Atual:", senha_atual);
+    console.log("Nova Senha:", nova_senha);
+
+    if(id_usuario == undefined || senha_atual == undefined || nova_senha == undefined) {
+       res.status(400).send(`Valores inválidos - ID: ${id_usuario}, Senha Atual: ${senha_atual}, Nova Senha: ${nova_senha}`);
+
+    } else {
+        usuarioModel.redefinirSenha(id_usuario, senha_atual, nova_senha)
+            .then(function(resultado) {
+                if(resultado.affectedRows > 0) {
+                    res.status(200).json({ mensagem: "Senha atualizada!"})
+                } else {
+                    res.status(403).json({ mensagem: "A senha atual esta incorreta"})
+
+                }
+            })
+            .catch(function(erro) {
+                console.log(erro);
+                console.log("Erro ao redefinir a senha", erro.sqlMessage)
+                res.status(500).json(erro.sqlMessage)
+            });
+    }
+}
+
 module.exports = {
     login,
-    cadastrar
+    cadastrar,
+    redefinirSenha
 }

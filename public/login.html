@@ -189,6 +189,7 @@ function exibirAlerta(titulo, mensagem) {
             if (resposta.ok) {
                 console.log(resposta)
                 resposta.json().then(function (dados) {
+                    sessionStorage.ID_USUARIO = dados.id_usuario;
                     sessionStorage.nome = dados.nome;
                     sessionStorage.email = dados.email;
                     sessionStorage.cargo = dados.cargo;

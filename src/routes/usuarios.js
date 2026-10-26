@@ -12,4 +12,8 @@ router.post("/login", function(req,res) {
     usuarioController.login(req, res);
 });
 
+router.post("/redefinir-senha", function(req,res) {
+    usuarioController.redefinirSenha(req,res);
+})
+
 module.exports = router;

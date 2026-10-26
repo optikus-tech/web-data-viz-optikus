@@ -61,7 +61,7 @@
     <h4>Coloque sua nova senha aqui</h4>
 
     <div class="btnSenha">
-        <button class="user-create" id="btn-atualizar" type="button">Atualizar</button>
+        <button class="user-create" id="btn-atualizar" type="button" onclick="atualizarSenha()">Atualizar</button>
     </div>
 
 </div>
@@ -77,6 +77,43 @@ function toggleSenha(botao) {
 
   botao.querySelector('.icone-mostrar').style.display = mostrando ? 'block' : 'none';
   botao.querySelector('.icone-esconder').style.display = mostrando ? 'none' : 'block';
+}
+
+function atualizarSenha() {
+    var senhaAtualVar = senhaAtual.value;
+    var novaSenhaVar = novaSenha.value;
+    var idUsuarioVar = sessionStorage.ID_USUARIO;
+
+    
+
+    if (senhaAtualVar == "" || novaSenhaVar == "") {
+        window.alert("Preencha todos os campos!");
+        return;
+    }
+
+    fetch("/usuarios/redefinir-senha", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+           id_usuarioServer: idUsuarioVar,
+           senha_atualServer: senhaAtualVar,
+           nova_senhaServer: novaSenhaVar
+        })
+    }).then(function (resposta) {
+        if (resposta.ok) {
+            window.alert("Senha alterada com sucesso! Faça login novamente.");
+            sessionStorage.clear();
+            window.location = "login.html";
+        } else if (resposta.status == 403) {
+            window.alert("A senha atual está incorreta!");
+        } else {
+            window.alert("Houve um erro ao tentar atualizar a senha!");
+        }
+    }).catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+    });
 }
 </script>
 </html>

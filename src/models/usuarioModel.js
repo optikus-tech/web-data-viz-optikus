@@ -26,8 +26,18 @@ function atualizarUltimoAcesso(id_usuario) {
     return database.executar(instrucaoSql, [id_usuario])
 }
 
+function redefinirSenha(id_usuario, senha_atual, nova_senha) {
+    var instrucaoSql = `
+        UPDATE usuario 
+        SET senha = '${nova_senha}' 
+        WHERE id = ${id_usuario} AND senha = '${senha_atual}' `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     login,
     atualizar,
-    atualizarUltimoAcesso
+    atualizarUltimoAcesso,
+    redefinirSenha
 };
