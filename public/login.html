@@ -198,7 +198,12 @@ function exibirAlerta(titulo, mensagem) {
                     exibirAlerta("Acesso liberado", `Bem-vindo(a), ${dados.nome}.`);
 
                     setTimeout(function () {
-                        window.location = "./usuarios.html";
+                        if (dados.cargo == "Admin") {
+                            window.location = "./usuarios.html";
+                        }
+                        else {
+                            window.location = "./overview-gestor.html";
+                        }
                     }, 1000);
                 })
             } else {
