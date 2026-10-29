@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="./css/dashboard-admin.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="./js/admin-sidebar.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
 </head>
 
 <body>
@@ -94,21 +97,24 @@
             <td class="user-acesso text-muted">Acesso</td>
             <td>
                 <div class="action-menu-wrapper">
-                <button class="action-btn" type="button" aria-label="Abrir ações do usuário" aria-haspopup="true"
-                    aria-expanded="false">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="1"></circle>
-                        <circle cx="12" cy="5" r="1"></circle>
-                        <circle cx="12" cy="19" r="1"></circle>
-                    </svg>
-                </button>
+                    <button class="action-btn" type="button" aria-label="Abrir ações do usuário" aria-haspopup="true"
+                        aria-expanded="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="1"></circle>
+                            <circle cx="12" cy="5" r="1"></circle>
+                            <circle cx="12" cy="19" r="1"></circle>
+                        </svg>
+                    </button>
 
-                <div class="action-menu" role="menu" aria-label="Ações do usuário" hidden>
-                    <button class="action-option" type="button" role="menuitem" data-user-action="view">Visualizar informações</button>
-                    <button class="action-option" type="button" role="menuitem" data-user-action="edit">Atualizar dados</button>
-                    <button class="action-option action-option-danger" type="button" role="menuitem">Excluir conta</button>
-                </div>
+                    <div class="action-menu" role="menu" aria-label="Ações do usuário" hidden>
+                        <button class="action-option" type="button" role="menuitem" data-user-action="view">Visualizar
+                            informações</button>
+                        <button class="action-option" type="button" role="menuitem" data-user-action="edit">Atualizar
+                            dados</button>
+                        <button class="action-option action-option-danger" type="button" role="menuitem">Excluir
+                            conta</button>
+                    </div>
                 </div>
             </td>
         </tr>
@@ -176,41 +182,41 @@
                     aria-label="Fechar">&times;</button>
             </header>
             <form id="form-filtrar">
-    <div class="modal-body">
-        <div class="form-group">
-            <label for="filtro-funcao">Função no Sistema</label>
-            <select id="filtro-funcao" name="funcao" class="form-control">
-                <option value="">Todas</option>
-                <option value="Admin">Admin</option>
-                <option value="Gestor">Gestor</option>
-                <option value="Analista">Analista</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="filtro-status">Status</label>
-            <select id="filtro-status" name="status" class="form-control">
-                <option value="">Todos</option>
-                <option value="ATIVO">Ativo</option>
-                <option value="INATIVO">Inativo</option>
-                <option value="PENDENTE">Pendente</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="filtro-acesso">Último Acesso</label>
-                <select id="filtro-acesso" name="acesso" class="form-control">
-                    <option value="">Qualquer período</option>
-                    <option value="Hoje">Hoje</option>
-                    <option value="SeteDias">Últimos 7 dias</option>
-                    <option value="TrintaDias">Últimos 30 dias</option>
-                    <option value="MaisTrinta">Há mais de 30 dias</option>
-                    <option value="Nunca">Nunca Acessou</option>
-                </select>
-            </div>
-        </div>
-            <footer class="modal-footer">
-                <button type="button" class="btn-secondary" id="btn-limpar-filtrar">Limpar</button>
-                <button type="submit" class="btn-primary">Buscar</button>
-            </footer>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="filtro-funcao">Função no Sistema</label>
+                        <select id="filtro-funcao" name="funcao" class="form-control">
+                            <option value="">Todas</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Gestor">Gestor</option>
+                            <option value="Analista">Analista</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filtro-status">Status</label>
+                        <select id="filtro-status" name="status" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="ATIVO">Ativo</option>
+                            <option value="INATIVO">Inativo</option>
+                            <option value="PENDENTE">Pendente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filtro-acesso">Último Acesso</label>
+                        <select id="filtro-acesso" name="acesso" class="form-control">
+                            <option value="">Qualquer período</option>
+                            <option value="Hoje">Hoje</option>
+                            <option value="SeteDias">Últimos 7 dias</option>
+                            <option value="TrintaDias">Últimos 30 dias</option>
+                            <option value="MaisTrinta">Há mais de 30 dias</option>
+                            <option value="Nunca">Nunca Acessou</option>
+                        </select>
+                    </div>
+                </div>
+                <footer class="modal-footer">
+                    <button type="button" class="btn-secondary" id="btn-limpar-filtrar">Limpar</button>
+                    <button type="submit" class="btn-primary">Buscar</button>
+                </footer>
             </form>
         </section>
     </div>
@@ -220,7 +226,8 @@
             aria-labelledby="titulo-modal-dados-usuario">
             <header class="modal-header">
                 <h3 id="titulo-modal-dados-usuario">Informações do usuário</h3>
-                <button class="btn-close" id="btn-fechar-dados-usuario" type="button" aria-label="Fechar">&times;</button>
+                <button class="btn-close" id="btn-fechar-dados-usuario" type="button"
+                    aria-label="Fechar">&times;</button>
             </header>
             <form id="form-dados-usuario">
                 <div class="modal-body">
@@ -258,6 +265,15 @@
     </div>
 
     <script>
+
+        $(document).ready(function () {
+            // CPF: 000.000.000-00
+            $('#cpf').mask('000.000.000-00');
+
+            // Telefone: (00) 00000-0000 (5 dígitos para celular, 4 para fixo)
+            $('#telefone').mask('(00) 00000-0000');
+        });
+
         function formatarUltimoAcesso(dataString) {
             if (!dataString) return "Aguardando confirmação";
 
@@ -375,7 +391,7 @@
         let usuariosCache = [];
         let filtrosAtivos = {};
 
-        function diasDesdeAcesso(dataString){
+        function diasDesdeAcesso(dataString) {
             const data = new Date(dataString);
             const hoje = new Date();
             const diaAtual = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
@@ -387,49 +403,49 @@
             if (f.funcao && usuario.cargo !== f.funcao) return false;
 
             if (f.status) {
-            const status = String(usuario.stats || "").toUpperCase();
-            if (f.status === "PENDENTE") {
-                if (status === "ATIVO" || status === "INATIVO") return false;
-            } else if (status !== f.status) {
-                return false;
+                const status = String(usuario.stats || "").toUpperCase();
+                if (f.status === "PENDENTE") {
+                    if (status === "ATIVO" || status === "INATIVO") return false;
+                } else if (status !== f.status) {
+                    return false;
+                }
             }
+
+            if (f.acesso) {
+                if (f.acesso === "Nunca") return !usuario.acesso;
+                if (!usuario.acesso) return false;
+
+                const dias = diasDesdeAcesso(usuario.acesso);
+                if (f.acesso === "Hoje" && dias !== 0) return false;
+                if (f.acesso === "SeteDias" && dias > 7) return false;
+                if (f.acesso === "TrintaDias" && dias > 30) return false;
+                if (f.acesso === "MaisTrinta" && dias <= 30) return false;
+            }
+
+            return true;
         }
 
-        if (f.acesso) {
-            if (f.acesso === "Nunca") return !usuario.acesso;
-            if (!usuario.acesso) return false;
-
-            const dias = diasDesdeAcesso(usuario.acesso);
-            if (f.acesso === "Hoje" && dias !== 0) return false;
-            if (f.acesso === "SeteDias" && dias > 7) return false;
-            if (f.acesso === "TrintaDias" && dias > 30) return false;
-            if (f.acesso === "MaisTrinta" && dias <= 30) return false;
-        }
-
-        return true;
-    }
-
-        function buscarUsuarios(filtros){
+        function buscarUsuarios(filtros) {
             filtrosAtivos = filtros || {};
             renderizarUsuarios();
         }
 
-        function renderizarUsuarios(){
+        function renderizarUsuarios() {
             const tabela = document.getElementById("tabela-usuarios-body");
             const lista = usuariosCache.filter((u) => passaNoFiltro(u, filtrosAtivos));
 
             tabela.innerHTML = "";
-            lista.forEach(function (usuario){
+            lista.forEach(function (usuario) {
                 var iniciais = usuario.nome ? usuario.nome.substring(0, 2).toUpperCase() : "--";
 
-                        let classeStatus = "badge-active";
-                        if (usuario.stats === "INATIVO") {
-                            classeStatus = "badge-inactive";
-                        } else if (usuario.stats !== "ATIVO") {
-                            classeStatus = "badge-pending";
-                        }
-                        var acessoFormatado = formatarUltimoAcesso(usuario.acesso);
-                        tabela.innerHTML += `
+                let classeStatus = "badge-active";
+                if (usuario.stats === "INATIVO") {
+                    classeStatus = "badge-inactive";
+                } else if (usuario.stats !== "ATIVO") {
+                    classeStatus = "badge-pending";
+                }
+                var acessoFormatado = formatarUltimoAcesso(usuario.acesso);
+                tabela.innerHTML += `
                     <tr>
                         <td>
                             <div class="user-info">
