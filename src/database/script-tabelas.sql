@@ -173,9 +173,9 @@ VALUES
 -- 7. Componentes (Vinculados ao servidor 'note-BRU' ID 1)
 INSERT INTO componente (nome, fabricante, modelo, capacidade, unidade_medida, status, id_servidor, id_tipo)
 VALUES 
-('Processador Principal', 'Intel', 'Core i7', 2.80, 'GHz', 'ATIVO', 1, 1),
-('Memória RAM', 'Kingston', 'DDR4', 16.00, 'GB', 'ATIVO', 1, 2),
-('Disco Principal', 'Kingston', 'NVMe SSD', 512.00, 'GB', 'ATIVO', 1, 3),
+('Processador', NULL, NULL, NULL, '%', 'ATIVO', 1, 1),
+('Memória RAM', NULL, NULL, NULL, '%', 'ATIVO', 1, 2),
+('Disco Principal', NULL, NULL, NULL, '%', 'ATIVO', 1, 3),
 ('Segundos Perdidos', NULL, NULL, NULL, 's', 'ATIVO', 1, 4);
 
 -- 8. Parâmetros de Limite
