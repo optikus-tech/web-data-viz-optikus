@@ -1,6 +1,6 @@
+DROP DATABASE IF EXISTS optikus;
 CREATE DATABASE IF NOT EXISTS optikus;
 USE optikus;
-Drop database optikus;
 
 CREATE TABLE IF NOT EXISTS empresa (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -154,47 +154,64 @@ VALUES
 ('Matheus Rodrigues', '90123456789', 'matheus@exemplo.com', '11987654329', 'Teste123', 'ATIVO', 1, 2, '2026-08-21 16:50:00', '2026-10-11 13:35:00'),
 ('Camila Pereira', '01234567890', 'camila@exemplo.com', '11987654330', 'Teste123', 'ATIVO', 1, 3, '2026-10-01 09:10:00', '2026-10-16 15:45:00');
 
-
+-- 4. Localidade
 INSERT INTO localidade (cep, logradouro, bairro, cidade, estado, id_empresa)
 VALUES ('01414001', 'Rua Haddock Lobo, 595', 'Cerqueira César', 'São Paulo', 'SP', 1);
 
+-- 5. Servidor (Já com o hostname atualizado para 'note-BRU')
 INSERT INTO servidor (hostname, ip, sistema_operacional, id_local)
-VALUES ('servidor-cameras-01', '192.168.0.10', 'Windows 11', 1);
+VALUES ('note-BRU', '192.168.0.10', 'Windows 11', 1);
 
-INSERT INTO tipo_componente (nome) VALUES ('REDE');
+-- 6. Tipos de Componente (Unificando hardware de monitoramento e rede)
+INSERT INTO tipo_componente (nome) 
+VALUES 
+('CPU'), 
+('Memoria'), 
+('Disco'), 
+('REDE');
 
-INSERT INTO componente (nome, unidade_medida, id_servidor, id_tipo)
-VALUES
-('Segundos Perdidos', 's', 1, 1);
+-- 7. Componentes (Vinculados ao servidor 'note-BRU' ID 1)
+INSERT INTO componente (nome, fabricante, modelo, capacidade, unidade_medida, status, id_servidor, id_tipo)
+VALUES 
+('Processador Principal', 'Intel', 'Core i7', 2.80, 'GHz', 'ATIVO', 1, 1),
+('Memória RAM', 'Kingston', 'DDR4', 16.00, 'GB', 'ATIVO', 1, 2),
+('Disco Principal', 'Kingston', 'NVMe SSD', 512.00, 'GB', 'ATIVO', 1, 3),
+('Segundos Perdidos', NULL, NULL, NULL, 's', 'ATIVO', 1, 4);
 
+-- 8. Parâmetros de Limite
 INSERT INTO parametro_limite (valor_minimo, valor_maximo, criticidade, id_componente)
 VALUES
-(0,     0.035, 'BAIXO',   1),
-(0.035, 0.5,   'MEDIO',   1),
-(0.5,   1,     'ALTO',    1),
-(1,     9999,  'CRITICO', 1);
+-- Parâmetros de exemplo para CPU (ID 1)
+(0, 79, 'MEDIO', 1),
+(80, 89, 'ALTO', 1),
+(90, 100, 'CRITICO', 1),
 
-UPDATE servidor SET hostname = 'note-BRU' WHERE id = 1;
+-- Parâmetros de exemplo para RAM (ID 2)
+(0, 59, 'MEDIO', 2),
+(60, 89, 'ALTO', 2),
+(90, 100, 'CRITICO', 2),
+
+-- Parâmetros de exemplo para DISCO (ID 3)
+(0, 74, 'MEDIO', 3),
+(75, 89, 'ALTO', 3),
+(90, 100, 'CRITICO', 3),
+
+-- Parâmetros de exemplo para Rede (ID 4)
+(0,     0.035, 'BAIXO',   4),
+(0.035, 0.5,   'MEDIO',   4),
+(0.5,   1,     'ALTO',    4),
+(1,     9999,  'CRITICO', 4);
+
+
+-- =====================================================
+-- CONSULTAS DE VALIDAÇÃO ÚTEIS
+-- =====================================================
 
 SELECT * FROM captura;
 SELECT * FROM componente;
 SELECT * FROM tipo_componente;
- 
-SELECT componente.nome, captura.valor, componente.unidade_medida,tipo_componente.nome AS nome_componente, alerta.nivel FROM componente
-JOIN captura ON id_componente = componente.id
-JOIN alerta ON id_captura - captura.id
-JOIN tipo_componente ON id_tipo = tipo_componente.id;
-
 SELECT id, hostname, id_local FROM servidor;
 SELECT id, nome, id_servidor FROM componente;
 SELECT * FROM alerta;
-
-SELECT c.id
-FROM componente c
-JOIN servidor s ON s.id = c.id_servidor
-WHERE s.hostname = 'note-BRU' AND c.nome = 'Segundos Perdidos';
-
 SELECT * FROM parametro_limite;
-
- 
 
