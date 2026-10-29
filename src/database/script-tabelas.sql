@@ -1,5 +1,6 @@
 CREATE DATABASE IF NOT EXISTS optikus;
 USE optikus;
+Drop database optikus;
 
 CREATE TABLE IF NOT EXISTS empresa (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -31,7 +32,7 @@ CREATE TABLE IF NOT EXISTS incidente (
     numero_incidente VARCHAR(45) NOT NULL,
     descricao VARCHAR(250),
     destinatario VARCHAR(45),
-    prioridade ENUM('BAIXA', 'MEDIA', 'ALTA', 'CRITICA'),
+    prioridade ENUM('BAIXA', 'MEDIA', 'ALTA'),
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -109,7 +110,7 @@ CREATE TABLE IF NOT EXISTS parametro_limite (
     id INT AUTO_INCREMENT PRIMARY KEY,
     valor_minimo DECIMAL(10,2) NOT NULL,
     valor_maximo DECIMAL(10,2) NOT NULL,
-    criticidade ENUM('BAIXA', 'MEDIA', 'ALTA'),
+    criticidade ENUM('BAIXO', 'MEDIO', 'ALTO', 'CRITICO'),
     id_componente INT NOT NULL,
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -152,3 +153,48 @@ VALUES
 ('Beatriz Ferreira', '89012345678', 'beatriz@exemplo.com', '11987654328', 'Teste123', 'ATIVO', 1, 1, '2026-07-02 07:45:00', '2026-10-16 12:20:00'),
 ('Matheus Rodrigues', '90123456789', 'matheus@exemplo.com', '11987654329', 'Teste123', 'ATIVO', 1, 2, '2026-08-21 16:50:00', '2026-10-11 13:35:00'),
 ('Camila Pereira', '01234567890', 'camila@exemplo.com', '11987654330', 'Teste123', 'ATIVO', 1, 3, '2026-10-01 09:10:00', '2026-10-16 15:45:00');
+
+
+INSERT INTO localidade (cep, logradouro, bairro, cidade, estado, id_empresa)
+VALUES ('01414001', 'Rua Haddock Lobo, 595', 'Cerqueira César', 'São Paulo', 'SP', 1);
+
+INSERT INTO servidor (hostname, ip, sistema_operacional, id_local)
+VALUES ('servidor-cameras-01', '192.168.0.10', 'Windows 11', 1);
+
+INSERT INTO tipo_componente (nome) VALUES ('REDE');
+
+INSERT INTO componente (nome, unidade_medida, id_servidor, id_tipo)
+VALUES
+('Segundos Perdidos', 's', 1, 1);
+
+INSERT INTO parametro_limite (valor_minimo, valor_maximo, criticidade, id_componente)
+VALUES
+(0,     0.035, 'BAIXO',   1),
+(0.035, 0.5,   'MEDIO',   1),
+(0.5,   1,     'ALTO',    1),
+(1,     9999,  'CRITICO', 1);
+
+UPDATE servidor SET hostname = 'note-BRU' WHERE id = 1;
+
+SELECT * FROM captura;
+SELECT * FROM componente;
+SELECT * FROM tipo_componente;
+ 
+SELECT componente.nome, captura.valor, componente.unidade_medida,tipo_componente.nome AS nome_componente, alerta.nivel FROM componente
+JOIN captura ON id_componente = componente.id
+JOIN alerta ON id_captura - captura.id
+JOIN tipo_componente ON id_tipo = tipo_componente.id;
+
+SELECT id, hostname, id_local FROM servidor;
+SELECT id, nome, id_servidor FROM componente;
+SELECT * FROM alerta;
+
+SELECT c.id
+FROM componente c
+JOIN servidor s ON s.id = c.id_servidor
+WHERE s.hostname = 'note-BRU' AND c.nome = 'Segundos Perdidos';
+
+SELECT * FROM parametro_limite;
+
+ 
+
