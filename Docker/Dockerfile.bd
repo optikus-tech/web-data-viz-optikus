@@ -1,0 +1,3 @@
+FROM mysql:latest
+
+COPY ./src/database/script-tabelas.sql /docker-entrypoint-initdb.d/
