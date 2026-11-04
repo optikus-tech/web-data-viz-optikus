@@ -1,12 +1,10 @@
 services:
   bd:
-    image: mysql:latest
+    image: namikazex/optikus-bd:latest
     container_name: bd
     environment:
       MYSQL_ROOT_PASSWORD: optikus_senha
       MYSQL_DATABASE: optikus
-    volumes:
-      - ../src/database/script-tabelas.sql:/docker-entrypoint-initdb.d/script-tabelas.sql:ro
     ports:
       - "3306:3306"
     healthcheck:
@@ -18,9 +16,7 @@ services:
     restart: unless-stopped
 
   site:
-    build:
-      context: ..
-      dockerfile: Docker/Dockerfile
+    image: namikazex/optikus-site:latest
     container_name: optikus-site
     env_file:
       - ../.env.dev
