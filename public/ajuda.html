@@ -7,7 +7,9 @@
   <title>Ajuda</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./css/faq.css">
   <link rel="stylesheet" href="./css/dashboard-admin.css">
+  <link rel="shortcut icon" href="./img/svg/favicon.svg" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="./js/admin-sidebar.js" defer></script>
 </head>
@@ -16,7 +18,148 @@
   <aside class="sidebar" data-admin-sidebar></aside>
 
 
+    <main class="dashboard-content users-page pagina-ajuda">
+        <header class="users-page-header">
+            <div>
+                <h2>Central de Ajuda</h2>
+                <h4>Tire dúvidas sobre o monitoramento do servidor e aprenda a usar cada tela.</h4>
+            </div>
+        </header>
 
-  
+        <div class="titulo-container">
+            <h2>Guias por Perfil</h2>
+        </div> 
+  <div class="container-ajuda">
+    <h2>RH</h2>
+
+    <div class="campo-ajuda">
+        <h3>Gerencia quem acessa o sistema.</h3>
+        <ul>
+          <li>Cria Usuários</li>
+          <li>Filtra e Busca Usuários</li>
+          <li>Manipula Dados dos Usuários</li>
+        </ul>
+    </div>
+
+  </div>
+
+  <div class="container-ajuda">
+    <h2>Gestor</h2>
+
+    <div class="campo-ajuda">
+        <h3>Vê a visão geral do servidor.</h3>
+        <ul>
+           <li>Interpreta os Indicadores.</li>
+          <li>Acompanha Chamados</li>
+          <li>Analisa Desempenho dos componentes</li>
+        </ul>
+    </div>
+
+  </div>
+
+
+    <div class="container-ajuda">
+    <h2>Analista</h2>
+
+    <div class="campo-ajuda">
+        <h3>Acompanha a saúde dos componentes do servidor.</h3>
+        <ul>
+          <li>Lê gráficos do dashboard</li>
+          <li>Identifica componentes em alerta</li>
+          <li>Acompanha Indicadores</li>
+        </ul>
+    </div>
+
+  </div>
+
+    <div class="titulo-container-status">
+        <h2>O que significa cada status?</h2>
+    </div> 
+
+    <div class="container-ajuda">
+      <h2 class="status status-normal">Normal</h2>
+
+      <div class="campo-ajuda">
+        <h3>O componente está dentro dos limites esperados.</h3>
+      </div>
+      <hr>
+      <h2 class="status status-atencao">Atenção</h2>
+
+      <div class="campo-ajuda">
+        <h3>O componente passou do limite de aviso e precisa ser observado.</h3>
+      </div>
+      <hr>
+      <h2 class="status status-critico">Crítico</h2>
+
+      <div class="campo-ajuda">
+        <h3>O componente passou do limite crítico e exige ação.</h3>
+      </div>
+    </div>
+
+     <section id="faq" class="faq" aria-label="Perguntas Frequentes">
+    <div class="faq-header container">
+      <h2>Perguntas frequentes<span class="detalhe-amarelo">.</span></h2>
+    </div>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>O que acontece quando um servidor apresenta consumo elevado?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>O sistema identifica quando os recursos monitorados ultrapassam os limites estabelecidos, permitindo que gestores e analistas visualizem os alertas e investiguem possíveis problemas de desempenho.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Por que é importante monitorar servidores 24 horas por dia?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>Como os servidores recebem e processam imagens de câmeras continuamente, o monitoramento constante permite identificar possíveis sobrecargas e prevenir falhas que possam comprometer a operação.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Por que acompanhar o armazenamento dos servidores?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>O armazenamento é essencial para o funcionamento dos servidores, pois permite manter arquivos e dados utilizados na operação. Seu monitoramento ajuda a identificar falta de espaço disponível e prevenir possíveis interrupções nos serviços.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">
+          <span>Como o monitoramento ajuda a prevenir falhas nos servidores?</span>
+          <span class="faq-icon">⌄</span>
+        </button>
+        <div class="faq-answer">
+          <p>O acompanhamento contínuo dos recursos permite identificar alterações no comportamento dos servidores antes que se tornem problemas maiores. Dessa forma, a equipe pode agir preventivamente e reduzir os riscos de interrupções no processamento das imagens.</p>
+        </div>
+      </div>
+      </div>
+    </div>
+    </section>
+  </main>
+  <script>
+    document.querySelectorAll(".faq-question").forEach(button => {
+    button.addEventListener("click", () => {
+      const item = button.parentElement;
+
+      document.querySelectorAll(".faq-item").forEach(otherItem => {
+        if (otherItem !== item) {
+          otherItem.classList.remove("active");
+        }
+      });
+
+      item.classList.toggle("active");
+    });
+  });
+</script>
 </body>
 </html>
