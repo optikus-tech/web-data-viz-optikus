@@ -37,6 +37,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     overviewLink.href = cargo === 'gestor' ? 'overview-gestor.html' : 'overview.html';
     const linkUsuarios = sidebar.querySelector('[data-sidebar-admin-only]');
     linkUsuarios.hidden = cargo !== 'admin';
+    const overview = sidebar.querySelector('[data-sidebar-gestor-only]');
+    overview.hidden = cargo !== 'gestor';
+    const senha = sidebar.querySelector('[senha-sidebar-admin-only]')
+    senha.hidden = cargo !== 'admin'
 
     const topBar = sidebar.querySelector('.top-bar');
     if (topBar) document.body.prepend(topBar);
