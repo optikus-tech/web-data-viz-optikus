@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsão de CPU | Optikus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="./css/dashboard-admin.css">
+    <link rel="stylesheet" href="./css/lucas-dash.css">
+    <link rel="shortcut icon" href="./img/svg/favicon.svg" type="image/x-icon">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    >
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/admin-sidebar.js" defer></script>
+  </head>
+
+  <body>
+    <aside class="sidebar" data-admin-sidebar></aside>
+
+    <main class="dashboard-content users-page previsao">
+      <header class="users-page-header">
+        <div class="previsao-titulo">
+          <h2>Previsão de Saturação da CPU</h2>
+          <p class="dash-breadcrumb">
+            Para onde o consumo do servidor está indo e se isso é normal para este horário
+          </p>
+          <h4 id="servidorTitulo">Selecione um servidor</h4>
+        </div>
+        <div class="seletor-componente seletor-servidor">
+          <label for="servidorEscolhido">Servidor</label>
+          <select id="servidorEscolhido"></select>
+        </div>
+      </header>
+
+      <section class="estado" id="estado">
+        <div class="estado-icone" id="estadoIcone"></div>
+        <div class="estado-corpo">
+          <h3 id="estadoTitulo"></h3>
+          <p id="estadoTexto"></p>
+          <div class="progresso" id="estadoProgresso" hidden>
+            <div class="progresso-trilho">
+              <div class="progresso-barra" id="progressoBarra"></div>
+            </div>
+            <small id="progressoTexto"></small>
+          </div>
+        </div>
+        <span class="estado-tag" id="estadoTag"></span>
+      </section>
+
+      <div class="q-grid">
+        <div class="q-group">
+          <div class="q-head"><span class="q-num">1</span>Como o servidor está agora?</div>
+          <div class="pv-card" id="cardCpu">
+            <div class="pv-label">CPU atual</div>
+            <div class="pv-value" id="cpuValor"></div>
+            <div class="gauge" id="gauge">
+              <div class="gauge-marker" id="gaugeMarker"></div>
+            </div>
+            <div class="pv-sub" id="cpuSub"></div>
+          </div>
+          <div class="pv-card" style="--c: #7b8495">
+            <div class="pv-label">Limites configurados</div>
+            <div class="limites">
+              <div>
+                <b id="limAtencao"></b>
+                <span><i style="background: var(--c-atencao)"></i>Limite de atenção</span>
+              </div>
+              <div>
+                <b id="limCritico"></b>
+                <span><i style="background: var(--c-critico)"></i>Limite crítico</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-group">
+          <div class="q-head"><span class="q-num">2</span>Para onde o consumo está indo?</div>
+          <div class="pv-grid-2 pv-fill" style="align-content: stretch">
+            <div class="pv-card" id="cardTend">
+              <div class="pv-label">Tendência atual</div>
+              <div class="pv-value menor" id="tendValor"></div>
+              <div class="pv-sub" id="tendSub"></div>
+            </div>
+            <div class="pv-card" id="cardConf">
+              <div class="pv-label">Confiabilidade da previsão</div>
+              <div class="pv-value menor" id="confValor"></div>
+              <div class="conf-barras" id="confBarras"><i></i><i></i><i></i></div>
+              <div class="pv-sub" id="confSub"></div>
+            </div>
+            <div class="pv-card pv-span-2" id="cardSat">
+              <div class="pv-label">Saturação estimada</div>
+              <div class="pv-value" id="satValor"></div>
+              <div class="pv-sub" id="satSub"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-group">
+          <div class="q-head"><span class="q-num">3</span>É normal para este horário?</div>
+          <div class="pv-card pv-fill" id="cardHist">
+            <div class="pv-label">Comportamento histórico</div>
+            <div class="pv-value menor" id="histValor"></div>
+            <div class="pv-sub" id="histSub"></div>
+            <div class="pv-sub" id="histDif" style="margin-top: 14px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cartao">
+        <div class="cabecalho">
+          <div>
+            <h2>Consumo da CPU, tendência e projeção</h2>
+            <p style="margin: 4px 0 0; font-size: 13px; color: #667085">
+              Dado real à esquerda, projeção à direita. A projeção é uma estimativa baseada no comportamento observado.
+            </p>
+          </div>
+        </div>
+        <div class="pv-legenda">
+          <span><i class="lg lg-real"></i>Dado real</span>
+          <span><i class="lg lg-trend"></i>Linha de tendência (regressão)</span>
+          <span><i class="lg lg-proj"></i>Projeção</span>
+          <span><i class="lg lg-atencao"></i>Limite de atenção</span>
+          <span><i class="lg lg-critico"></i>Limite crítico</span>
+          <span><i class="lg lg-band"></i>Faixa histórica esperada</span>
+          <span><i class="lg lg-cross"></i>Cruzamento estimado</span>
+        </div>
+        <div class="grafico-wrap">
+          <canvas id="graficoPrevisao"></canvas>
+          <div class="grafico-overlay" id="overlay">
+            <strong id="overlayTitulo"></strong>
+            <span id="overlayTexto"></span>
+          </div>
+        </div>
+        <div class="nota-grafico">
+          <span>Até 60 min de histórico · regressão nos 30 min mais recentes · até 60 min de projeção</span>
+          <span id="recalc"></span>
+        </div>
+      </div>
+
+      <div class="linha-2">
+        <div class="cartao">
+          <div class="cabecalho">
+            <div>
+              <h2>Comparação com o comportamento esperado</h2>
+              <p style="margin: 4px 0 0; font-size: 13px; color: #667085" id="histTituloSub"></p>
+            </div>
+          </div>
+          <div class="hist-resumo">
+            <div><small>Consumo atual</small><b id="hrAtual"></b></div>
+            <div><small>Média histórica neste horário</small><b id="hrMedia"></b></div>
+            <div><small>Diferença</small><b id="hrDif"></b></div>
+            <div><small>Situação</small><span class="chip" id="hrChip"></span></div>
+          </div>
+          <div class="range">
+            <div class="range-band" id="rangeBand"></div>
+            <div class="range-avg" id="rangeAvg"></div>
+            <div class="range-now" id="rangeNow"></div>
+          </div>
+          <div class="range-legenda">
+            <span>0%</span>
+            <span id="rangeTexto"></span>
+            <span>100%</span>
+          </div>
+          <div class="grafico-perfil"><canvas id="graficoPerfil"></canvas></div>
+          <div class="nota-grafico">
+            <span>Médias e faixa observadas por horário nos últimos 30 dias</span>
+          </div>
+        </div>
+
+        <div class="cartao anomalia-card" id="cardAnomalia">
+          <div class="pv-label" style="margin-bottom: 0">Detecção de anomalias</div>
+          <h4 id="anTitulo"></h4>
+          <p id="anTexto"></p>
+          <div class="anomalia-itens" id="anItens"></div>
+          <p style="margin: 0; font-size: 12px; color: #667085">
+            Este indicador aponta apenas diferença em relação ao padrão observado. Ele não confirma a existência de falha.
+          </p>
+        </div>
+      </div>
+
+      <p class="aviso-rodape">
+        As previsões são estimativas baseadas na tendência observada e no histórico do servidor. Elas existem para apoiar a prevenção e não representam certeza sobre falhas futuras.
+      </p>
+    </main>
+
+    <script src="./js/lucas-dash.js"></script>
+  </body>
+</html>
