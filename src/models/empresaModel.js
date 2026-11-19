@@ -1,7 +1,7 @@
 var database = require("../database/config");
 
 function listarFuncionarios(fk_empresa) {
-  var instrucaoSql = `SELECT u.id as id_usuario, u.nome, u.email, c.nome AS cargo, u.stats, u.atualizado_em as acesso
+  var instrucaoSql = `SELECT u.id as id_usuario, u.nome, u.email, c.nome AS cargo, u.status AS stats, u.atualizado_em as acesso
     FROM usuario AS u
     JOIN cargo AS c
       ON u.id_cargo = c.id
@@ -16,7 +16,7 @@ function cadastrar(nome, cpf, email, telefone, senha, cargo, empresa) {
     INSERT INTO usuario (nome, cpf, email, telefone, senha, id_empresa, id_cargo)
     SELECT ?, ?, ?, ?, ?, empresa.id, cargo.id
     FROM empresa
-    JOIN cargo ON cargo.nome = ?
+    JOIN cargo ON cargo.nome = ? AND cargo.EmpresaId = empresa.id
     WHERE empresa.razao_social = ?;`;
 
   console.log("Executando a instrução SQL: \n" + instrucaoSql);

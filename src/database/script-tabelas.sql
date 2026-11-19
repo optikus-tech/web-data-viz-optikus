@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS empresa (
     FOREIGN KEY (localidadeId) REFERENCES localidade(id)
 );
 
--- 3. Equipamento
+-- 3. Equipamento (base de pré-autorização para validar MAC Address e Nº de Série)
 CREATE TABLE IF NOT EXISTS equipamento (
     id INT AUTO_INCREMENT PRIMARY KEY,
     numero_serie VARCHAR(64) NOT NULL UNIQUE,
@@ -57,24 +57,22 @@ CREATE TABLE IF NOT EXISTS cargo (
     FOREIGN KEY (EmpresaId) REFERENCES empresa(id) ON DELETE CASCADE
 );
 
--- 6. Servidor
+-- 6. Servidor (sem colunas repetidas; herda MAC, Serial e Empresa via id_equipamento)
 CREATE TABLE IF NOT EXISTS servidor (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    numero_serie VARCHAR(64) NOT NULL UNIQUE,
+    id_equipamento INT NOT NULL UNIQUE,
     hostname VARCHAR(100) NOT NULL,
     ip VARCHAR(45) NOT NULL,
-    mac_address VARCHAR(17),
     sistema_operacional VARCHAR(80),
     versao_so VARCHAR(50),
     responsabilidade VARCHAR(80) NOT NULL DEFAULT 'Não informada',
     status ENUM('ONLINE', 'OFFLINE', 'MANUTENCAO') DEFAULT 'ONLINE',
     ultima_comunicacao DATETIME,
     id_local INT NOT NULL,
-    EmpresaId INT NOT NULL,
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_local) REFERENCES localidade(id) ON DELETE CASCADE,
-    FOREIGN KEY (EmpresaId) REFERENCES empresa(id) ON DELETE CASCADE
+    FOREIGN KEY (id_equipamento) REFERENCES equipamento(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_local) REFERENCES localidade(id) ON DELETE CASCADE
 );
 
 -- 7. Usuário
@@ -120,7 +118,7 @@ CREATE TABLE IF NOT EXISTS alerta (
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- 10. Parâmetro de Limite (diferenciando faixas por componente e vinculado a alerta)
+-- 10. Parâmetro de Limite
 CREATE TABLE IF NOT EXISTS parametro_limite (
     id INT AUTO_INCREMENT PRIMARY KEY,
     valor_minimo DECIMAL(10,2) NOT NULL,
@@ -134,7 +132,7 @@ CREATE TABLE IF NOT EXISTS parametro_limite (
     FOREIGN KEY (alertaId) REFERENCES alerta(id)
 );
 
--- 11. Captura (vinculada ao componente e ao parâmetro de limite atingido)
+-- 11. Captura
 CREATE TABLE IF NOT EXISTS captura (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     valor DECIMAL(12,2) NOT NULL,
@@ -155,8 +153,12 @@ VALUES ('01414001', 'Rua Haddock Lobo, 595', 'Cerqueira César', 'São Paulo', '
 INSERT INTO empresa (razao_social, cnpj, status, localidadeId)
 VALUES ('Nexus Tecnologia LTDA', '12345678000199', 'ATIVA', 1);
 
+-- Equipamentos autorizados na base (ID 1 já será ativado; IDs 2 e 3 ficam disponíveis)
 INSERT INTO equipamento (numero_serie, mac_address, id_empresa)
-VALUES ('LEGADO-SRV-1', '00:1A:2B:3C:4D:5E', 1);
+VALUES 
+('LEGADO-SRV-1', '00:1A:2B:3C:4D:5E', 1),
+('LEGADO-SRV-2', '00:1A:2B:3C:4D:5G', 1),
+('LEGADO-SRV-3', '00:1A:2B:3C:4D:5F', 1);
 
 INSERT INTO cargo (nome, descricao, nivel_acesso, EmpresaId)
 VALUES
@@ -178,8 +180,9 @@ VALUES
 ('Matheus Rodrigues', '90123456789', 'matheus@exemplo.com', '11987654329', 'Teste123', 'ATIVO', 1, 2, '2026-08-21 16:50:00', '2026-10-11 13:35:00'),
 ('Camila Pereira', '01234567890', 'camila@exemplo.com', '11987654330', 'Teste123', 'ATIVO', 1, 3, '2026-10-01 09:10:00', '2026-10-16 15:45:00');
 
-INSERT INTO servidor (numero_serie, hostname, ip, mac_address, sistema_operacional, responsabilidade, id_local, EmpresaId)
-VALUES ('LEGADO-SRV-1', 'DanielRocha', '192.168.0.10', '00:1A:2B:3C:4D:5E', 'Windows 11', 'Não informada', 1, 1);
+-- Servidor ativado vinculando ao equipamento ID 1 ('LEGADO-SRV-1' / '00:1A:2B:3C:4D:5E')
+INSERT INTO servidor (id_equipamento, hostname, ip, sistema_operacional, responsabilidade, id_local)
+VALUES (1, 'DanielRocha', '192.168.0.10', 'Windows 11', 'Não informada', 1);
 
 INSERT INTO tipo_componente (nome) 
 VALUES 
@@ -195,7 +198,6 @@ VALUES
 ('Disco Principal', NULL, NULL, NULL, '%', 'ATIVO', 1, 3),
 ('Segundos Perdidos', NULL, NULL, NULL, 's', 'ATIVO', 1, 4);
 
--- Alertas base (IDs 1 a 4 correspondendo aos níveis)
 INSERT INTO alerta (nivel, status)
 VALUES
 ('BAIXO', 'ABERTO'),
@@ -203,7 +205,6 @@ VALUES
 ('ALTO', 'ABERTO'),
 ('CRITICO', 'ABERTO');
 
--- Parâmetros de Limite diferenciados por componente e vinculados ao alertaId
 INSERT INTO parametro_limite (valor_minimo, valor_maximo, criticidade, id_componente, alertaId)
 VALUES
 -- CPU (ID 1)
@@ -231,12 +232,38 @@ VALUES
 -- CONSULTAS DE VALIDAÇÃO ÚTEIS
 -- =====================================================
 
+-- 1. Validar se o MAC Address existe na base e se já está vinculado a um servidor:
+SELECT 
+    e.id AS id_equipamento,
+    e.numero_serie,
+    e.mac_address,
+    e.id_empresa,
+    s.id AS id_servidor,
+    CASE 
+        WHEN s.id IS NOT NULL THEN 'JA_CADASTRADO'
+        ELSE 'AUTORIZADO_PARA_CADASTRO'
+    END AS situacao
+FROM equipamento e
+LEFT JOIN servidor s ON s.id_equipamento = e.id
+WHERE e.mac_address = '00:1A:2B:3C:4D:5G';
+
+-- 2. Consultar servidores ativos com seus dados de equipamento e empresa:
+SELECT 
+    s.id,
+    e.numero_serie,
+    e.mac_address,
+    s.hostname,
+    s.ip,
+    s.status,
+    emp.razao_social AS empresa
+FROM servidor s
+JOIN equipamento e ON s.id_equipamento = e.id
+JOIN empresa emp ON e.id_empresa = emp.id;
+
 SELECT * FROM captura;
 SELECT * FROM componente;
 SELECT * FROM tipo_componente;
-SELECT id, numero_serie, hostname, id_local, EmpresaId FROM servidor;
 SELECT * FROM equipamento;
-SELECT id, nome, id_servidor FROM componente;
 SELECT * FROM alerta;
 SELECT * FROM parametro_limite;
 
@@ -246,5 +273,3 @@ SELECT c.nome, ca.valor, c.unidade_medida, tc.nome, pl.criticidade, a.nivel, a.s
   JOIN parametro_limite pl ON ca.parametroId = pl.id
   JOIN alerta a ON pl.alertaId = a.id
   JOIN tipo_componente tc ON c.id_tipo = tc.id;
-  
-  
