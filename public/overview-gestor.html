@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="./css/dashboard-admin.css">
+  <link rel="stylesheet" href="./css/overview-componentes_fundoazul.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="shortcut icon" href="./img/svg/favicon.svg" type="image/x-icon">
@@ -17,361 +18,375 @@
 <body>
   <aside class="sidebar" data-admin-sidebar></aside>
 
-  <main class="dashboard-content users-page">
-      <header class="users-page-header">
-            <div>
-                <h2>Overview de Componentes </h2>
-                <p class="dash-breadcrumb">Uma visão clara de como o seu servidor está funcionando </p>
-            </div>
-        </header>
+  <main class="dashboard-content users-page overview-page">
 
-        <div ------------->
+    <header class="users-page-header">
+      <div>
+        <h2>Overview de Componentes</h2>
+        <p class="dash-breadcrumb">Uma visão clara de como o seu servidor está funcionando</p>
+      </div>
+    </header>
 
-    <div class="seletor-componente">
+    <!-- seletor + status da atualização -->
+    <section class="ov-toolbar">
+      <div class="ov-seletor">
+        <label for="componenteescolhido">Componente</label>
+        <select id="componenteescolhido">
+          <option value="CPU">CPU</option>
+          <option value="RAM">RAM</option>
+          <option value="Disco">DISCO</option>
+          <option value="Rede">REDE</option>
+        </select>
+      </div>
 
-            <label for="componenteescolhido">Componentes</label>
+      <div class="ov-live">
+        <span class="ov-live-dot"></span>
+        <span id="statusLeituras">Atualização a cada 3 segundos</span>
+      </div>
+    </section>
 
-            <select id="componenteescolhido">
-                <option value="CPU">CPU</option>
-                <option value="RAM">RAM</option>
-                <option value="Disco">Disco</option>
-            </select>
-
+    <!-- KPIs -->
+    <section class="ov-kpis">
+      <article class="ov-kpi normal" id="kpi1">
+        <div class="ov-anel"></div>
+        <div class="ov-kpi-corpo">
+          <span class="ov-kpi-titulo" id="tituloKPI1">--</span>
+          <div class="ov-kpi-valor" id="valor1">--%</div>
+          <div class="ov-kpi-sub">
+            <span class="ov-kpi-status" id="status1">Normal</span>
+            <span class="ov-kpi-delta" id="delta1"></span>
+          </div>
         </div>
+      </article>
 
-
-        <!-- kpi -->
-        <div class="kpis">
-
-            <!-- kpi1 -->
-            <div class="kpi normal" id="kpi1">
-                <div class="titulo" id="tituloKPI1">
-                 Percentual máximo de uso da CPU
-                </div>
-                <div class="valor" id="valor1">68%</div>
-                <div class="status" id="status1">Normal</div>
-             </div>
-            <!-- kp2 -->
-            <div class="kpi normal" id="kpi2">
-                <div class="titulo" id="tituloKPI2">
-                    Uso médio da CPU
-                </div>
-                <div class="valor" id="valor2">42%</div>
-                <div class="status" id="status2">Normal</div>
-            </div>
-            <!-- KPi3 -->
-            <div class="kpi normal" id="kpi3">
-                <div class="titulo" id="tituloKPI3">
-                    Uso atual da CPU
-                </div>
-                <div class="valor" id="valor3">58%</div>
-                <div class="status" id="status3">Normal</div>
-            </div>
+      <article class="ov-kpi normal" id="kpi2">
+        <div class="ov-anel"></div>
+        <div class="ov-kpi-corpo">
+          <span class="ov-kpi-titulo" id="tituloKPI2">--</span>
+          <div class="ov-kpi-valor" id="valor2">--%</div>
+          <div class="ov-kpi-sub">
+            <span class="ov-kpi-status" id="status2">Normal</span>
+            <span class="ov-kpi-delta" id="delta2"></span>
+          </div>
         </div>
-<br>
-<br>
+      </article>
 
-        <!-- grafico de uso do componente -->
-        <div class="cartao">
-            <div class="cabecalho">
-                <div>
-                    <h2 id="tituloGraficoUso">
-                        Variação de uso da CPU
-                    </h2>
-                    <p>Leituras recentes de uso do componente </p>
-                </div>
-            </div>
-            <div class="legenda"> <span><i class="linha-roxa"></i>Uso atual</span> <span> </span><i class="linha-cinza"></i>Uso anterior </span> </div>
-
-            <div class="grafico-linha"> <canvas id="graficoUso"></canvas></div>
-
+      <article class="ov-kpi normal" id="kpi3">
+        <div class="ov-anel"></div>
+        <div class="ov-kpi-corpo">
+          <span class="ov-kpi-titulo" id="tituloKPI3">--</span>
+          <div class="ov-kpi-valor" id="valor3">--%</div>
+          <div class="ov-kpi-sub">
+            <span class="ov-kpi-status" id="status3">Normal</span>
+            <span class="ov-kpi-delta" id="delta3"></span>
+          </div>
         </div>
+      </article>
+    </section>
 
+    <!-- gráficos -->
+    <section class="ov-graficos">
 
-        <!-- grafico de uso por servidor -->
-        <div class="cartao">
-            <div class="cabecalho">
-                <div>
-                    <h2 id="tituloGraficoCPU">Uso da CPU por servidor </h2>
-                    <p> Uso atual do componente nos quatro servidores</p>
-                </div>
-         </div>
-
-
-            <div class="legenda"> <span> <i class="linha-roxa"></i>  Uso atual  </span>
-             <span>   <i class="linha-cinza"></i>   Limite (100%) </span></div>
-        
-            <div class="grafico-barras">
-                <canvas id="graficoCPU"></canvas>
-            </div>
+      <article class="ov-cartao">
+        <div class="ov-cartao-cab">
+          <h2 id="tituloGraficoUso">Variação de uso da CPU</h2>
+          <p>Leituras recentes de uso do componente</p>
         </div>
-    </main>
+        <div class="ov-legenda">
+          <span><i style="--c:#4aa8f0"></i>Uso atual</span>
+          <span><i style="--c:#6f8aa6"></i>Uso anterior</span>
+        </div>
+        <div class="ov-grafico"><canvas id="graficoUso"></canvas></div>
+      </article>
 
+      <article class="ov-cartao">
+        <div class="ov-cartao-cab">
+          <h2 id="tituloGraficoServidor">Uso da CPU por servidor</h2>
+          <p>Uso atual do componente nos quatro servidores</p>
+        </div>
+        <div class="ov-legenda">
+          <span><i class="ponto" style="--c:#4aa8f0"></i>Normal</span>
+          <span><i class="ponto" style="--c:#fbbf24"></i>Alerta</span>
+          <span><i class="ponto" style="--c:#f87171"></i>Crítico</span>
+        </div>
+        <div class="ov-grafico"><canvas id="graficoServidores"></canvas></div>
+      </article>
 
-    <!-- funcionamento de graficos-->
-    <script>
-        const componentes = {
-            CPU: {
-                minimo: 55,
-                maximo: 90},
-
-            RAM: {
-                minimo: 20,
-                maximo: 80 },
-
-            Disco: {
-                minimo: 27,
-                maximo: 88} };
-
-        let componenteAtual = "CPU";
-
-        function obterFaixa() { return componentes[componenteAtual];}
-        function aleatorio(minimo, maximo)
-         {return Math.floor(
-            Math.random() * (maximo - minimo + 1) ) + minimo;}
-
-
-        function formatarHorario(data) {
-
-            return data.toLocaleTimeString("pt-BR", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit" });}
-    
-        function gerarValor() {
-            const faixa = obterFaixa();
-            return aleatorio(faixa.minimo, faixa.maximo); }
-
-function atualizarKPI(numero) {
-
-    const valor = gerarValor();
-
-    const cartao = document.getElementById("kpi" + numero);
-    const textoValor = document.getElementById("valor" + numero);
-    const textoStatus = document.getElementById("status" + numero);
-
-    // Verifica se os elementos existem.
-    if (!cartao || !textoValor || !textoStatus) {
-        console.error("Não foi possível encontrar a KPI:", numero);
-        return;
-    }
-
-   
-    textoValor.textContent = valor + "%";
-    cartao.classList.remove("normal", "alerta", "critico");
-    if (valor >= 90) {
-        cartao.classList.add("critico");
-        textoStatus.textContent = "Crítico";
-    } else if (valor >= 79) {
-        cartao.classList.add("alerta");
-        textoStatus.textContent = "Alerta";
-    } else {
-
-        cartao.classList.add("normal");
-        textoStatus.textContent = "Normal";
-
-    }
-}
-
-function atualizarTodas() {
-    atualizarKPI(1);
-    atualizarKPI(2);
-    atualizarKPI(3);
-}
-
-// Atualiza as KPIs imediatamente.
-atualizarTodas();
-
-// Atualiza novamente a cada 3 segundos.
-setInterval(atualizarTodas, 3000);
-
-
-        function atualizarTitulosKPI() {
-            document.getElementById("tituloKPI1").textContent = "Percentual máximo de uso da " + componenteAtual
-
-            document.getElementById("tituloKPI2" ).textContent ="Uso médio da " + componenteAtual;
-            document.getElementById(  "tituloKPI3" ).textContent = "Uso atual da " + componenteAtual; }
-
-        let leituras = [];
-        let leiturasAnteriores = [];
-        let horarios = [];
-
-        const agora = Date.now();
-
-        for (let i = 14; i >= 0; i--) {
-            const horario = new Date( agora - i * 3000 );
-            const valor = gerarValor();
-            horarios.push(formatarHorario(horario) );
-            leituras.push(valor);
-            leiturasAnteriores.push(
-                Math.max( 0,valor - aleatorio(3, 8)) ); }
-
-        const graficoUso = new Chart(
-            document.getElementById("graficoUso"),
-             {
-              type: "line",
-                data: { labels: horarios, datasets: [
-                      { label: "Uso atual",
-                      data: leituras,
-                      borderColor: "#16285f",
-                            backgroundColor: "rgba(22, 40, 95, 0.06)",
-                            fill: true,
-                            tension: 0.07,
-                            pointRadius: 3,
-                            pointHoverRadius: 5,
-                            pointBackgroundColor: "#16285f",
-                            borderWidth: 2 },
-
-                        {
-                            label: "Uso anterior",
-                            data: leiturasAnteriores,
-                            borderColor: "#c5c9d8",
-                            backgroundColor: "transparent",
-                            borderDash: [5, 5],
-                            borderWidth: 1.5,
-                            fill: false,
-                            tension: 0.2,
-                            pointRadius: 0,
-                            pointHoverRadius: 3 } ]},
-
-
-                options: {
-                   responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {duration: 400, easing: "linear"},
-                    interaction: { intersect: false, mode: "index"},
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { callbacks: { label: function (context) {
-                                     return (
-                                        context.dataset.label + ": " + context.parsed.y + "%"  );
-                                } } } },
-                    scales: {
-                        x: {
-                            title: { display: true, text: "Horário das leituras" },
-                            grid: { display: false },
-                            ticks: {  autoSkip: true, maxTicksLimit: 8, maxRotation: 0  } },
-
-
-                        y: { min: 0, max: 100, title: { display: true, text: "Uso (%)"  },
-                         ticks: { stepSize: 25,  callback: function (valor) {  return valor + "%";}    },
-                            grid: { color: "#edf0f5"}}}}} );
- 
-        const usoCPU = [
-            gerarValor(),
-            gerarValor(),
-            gerarValor(),
-            gerarValor() ];
-
-        const graficoCPU = new Chart(
-            document.getElementById("graficoCPU"),
-            {type: "bar",
-                data: {
-                    labels: [
-                        "Servidor 1",
-                        "Servidor 2",
-                        "Servidor 3",
-                        "Servidor 4" ],
-
-                    datasets: [
-                        {
-                            label: "Uso atual",
-                            data: usoCPU,
-                            backgroundColor: "#16285f",
-                            borderRadius: 4 } ] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 400},
-                    plugins: {
-                        legend: { display: false  },
-                        tooltip: { callbacks: {
-                                label: function (context) {
-                                    return ( "Uso atual: " + context.parsed.y + "%" );}}}},
-
-
-                    scales: {
-                        x: {  grid: { display: false }  },
-                        y: { min: 0, max: 100,
-                            ticks: {
-                                stepSize: 25,
-                                callback: function (valor) {
-                                    return valor + "%"; } },
-                            grid: {color: "#edf0f5"}}}}});
-
-
-        function atualizarGraficos() {
-
-            const horarioAtual = formatarHorario(
-                new Date() );
-            const novoValor = gerarValor();
-            horarios.push(horarioAtual);
-            leituras.push(novoValor);
-            const valorAnterior = Math.max( 0, novoValor - aleatorio(3, 8) );
-            leiturasAnteriores.push(valorAnterior);
-            if (leituras.length > 15) {
-                horarios.shift();
-                leituras.shift();
-                leiturasAnteriores.shift(); }
-
-            graficoUso.data.labels = horarios;
-            graficoUso.data.datasets[0].data = leituras;
-            graficoUso.data.datasets[1].data =
-                leiturasAnteriores;
-
-            graficoUso.update();
-            graficoCPU.data.datasets[0].data = [
-                gerarValor(),
-                gerarValor(),
-                gerarValor(),
-                gerarValor() ];
-            graficoCPU.update();
-            document.getElementById(
-                "statusLeituras"
-            ).textContent = "Últimas " + leituras.length +   " leituras · atualização a cada 3 segundos"; }
-      
-        document.getElementById(   "componenteescolhido" ).addEventListener("change", function () { componenteAtual = this.value
-            document.getElementById( "tituloGraficoUso"  ).textContent ="Variação de uso da " + componenteAtual;
-            document.getElementById( "tituloGraficoCPU"   ).textContent =  "Uso da " + componenteAtual + " por servidor";
-               
-            atualizarTitulosKPI();
-            leituras = [];
-            leiturasAnteriores = [];
-            horarios = [];
-            const instanteAtual = Date.now();
-            for (let i = 14; i >= 0; i--) {
-                const horario = new Date( instanteAtual - i * 3000  );
-                const valor = gerarValor();
-                horarios.push( formatarHorario(horario) );
-            
-                leituras.push(valor);
-                leiturasAnteriores.push(
-                    Math.max(  0, valor - aleatorio(3, 8)));}       
-      
-            graficoUso.data.labels = horarios;
-            graficoUso.data.datasets[0].data = leituras;
-            graficoUso.data.datasets[1].data =leiturasAnteriores;
-            graficoUso.update();
-            graficoCPU.data.datasets[0].data = [
-               gerarValor(),
-                gerarValor(),
-                gerarValor(),
-                gerarValor() ];
-   graficoCPU.update();
-            atualizarTodas();
-            document.getElementById( "statusLeituras"  ).textContent =     "15 leituras iniciais · atualização a cada 3 segundos"; });
-
-        atualizarTitulosKPI();
-        atualizarTodas();
-        setInterval(atualizarGraficos, 3000);
-    </script>
-
-
-   
+    </section>
   </main>
 
+  <script>
+    // ---------- configuração ----------
+    const componentes = {
+      CPU:   { minimo: 55, maximo: 90, de: "da CPU" },
+      RAM:   { minimo: 20, maximo: 80, de: "da RAM" },
+      Disco: { minimo: 27, maximo: 88, de: "do Disco" },
+      Rede:  { minimo: 10, maximo: 80, de: "da Rede" }
+    };
 
-  
+    const LIMITE_ALERTA = 79;
+    const LIMITE_CRITICO = 90;
+    const TOTAL_LEITURAS = 15;
+    const INTERVALO = 3000;
+
+    let componenteAtual = "CPU";
+    let leituras = [];
+    let leiturasAnteriores = [];
+    let horarios = [];
+
+    // ---------- utilitários ----------
+    function aleatorio(minimo, maximo) {
+      return Math.floor(Math.random() * (maximo - minimo + 1)) + minimo;
+    }
+
+    function gerarValor() {
+      const faixa = componentes[componenteAtual];
+      return aleatorio(faixa.minimo, faixa.maximo);
+    }
+
+    function formatarHorario(data) {
+      return data.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    }
+
+    function classificar(valor) {
+      if (valor >= LIMITE_CRITICO) return { classe: "critico", texto: "Crítico", cor: "#f87171" };
+      if (valor >= LIMITE_ALERTA)  return { classe: "alerta",  texto: "Alerta",  cor: "#fbbf24" };
+      return { classe: "normal", texto: "Normal", cor: "#4aa8f0" };
+    }
+
+    function gerarServidores() {
+      return [gerarValor(), gerarValor(), gerarValor(), gerarValor()];
+    }
+
+    function gerarHistorico() {
+      const agora = Date.now();
+      horarios = [];
+      leituras = [];
+      leiturasAnteriores = [];
+      for (let i = TOTAL_LEITURAS - 1; i >= 0; i--) {
+        const valor = gerarValor();
+        horarios.push(formatarHorario(new Date(agora - i * INTERVALO)));
+        leituras.push(valor);
+        leiturasAnteriores.push(Math.max(0, valor - aleatorio(3, 8)));
+      }
+    }
+
+    // ---------- KPIs (calculados a partir das leituras do gráfico) ----------
+    function estatisticas(lista) {
+      return {
+        maximo: Math.max(...lista),
+        media: Math.round(lista.reduce((soma, v) => soma + v, 0) / lista.length),
+        atual: lista[lista.length - 1]
+      };
+    }
+
+    function pintarKPI(numero, valor, variacao) {
+      const situacao = classificar(valor);
+      const cartao = document.getElementById("kpi" + numero);
+      cartao.className = "ov-kpi " + situacao.classe;
+      cartao.style.setProperty("--p", valor);
+      document.getElementById("valor" + numero).textContent = valor + "%";
+      document.getElementById("status" + numero).textContent = situacao.texto;
+
+      let texto = "● estável";
+      if (variacao > 0) texto = "▲ +" + variacao + " p.p.";
+      if (variacao < 0) texto = "▼ " + variacao + " p.p.";
+      document.getElementById("delta" + numero).textContent = texto + " vs. anterior";
+    }
+
+    function atualizarKPIs() {
+      const agora = estatisticas(leituras);
+      const antes = estatisticas(leituras.slice(0, -1));
+      pintarKPI(1, agora.maximo, agora.maximo - antes.maximo);
+      pintarKPI(2, agora.media, agora.media - antes.media);
+      pintarKPI(3, agora.atual, agora.atual - antes.atual);
+    }
+
+    function atualizarTitulos() {
+      const de = componentes[componenteAtual].de;
+      document.getElementById("tituloKPI1").textContent = "Percentual máximo de uso " + de;
+      document.getElementById("tituloKPI2").textContent = "Uso médio " + de;
+      document.getElementById("tituloKPI3").textContent = "Uso atual " + de;
+      document.getElementById("tituloGraficoUso").textContent = "Variação de uso " + de;
+      document.getElementById("tituloGraficoServidor").textContent = "Uso " + de + " por servidor";
+    }
+
+    function atualizarStatusLeituras() {
+      document.getElementById("statusLeituras").textContent =
+        "Últimas " + leituras.length + " leituras · atualização a cada 3 segundos";
+    }
+
+    // ---------- gráficos ----------
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = "#9db4cb";
+
+    gerarHistorico();
+
+    const graficoUso = new Chart(document.getElementById("graficoUso"), {
+      type: "line",
+      data: {
+        labels: horarios,
+        datasets: [
+          {
+            label: "Uso atual",
+            data: leituras,
+            borderColor: "#4aa8f0",
+            backgroundColor: "rgba(74, 168, 240, 0.14)",
+            fill: true,
+            tension: 0.25,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            pointBackgroundColor: "#4aa8f0",
+            borderWidth: 2
+          },
+          {
+            label: "Uso anterior",
+            data: leiturasAnteriores,
+            borderColor: "#6f8aa6",
+            backgroundColor: "transparent",
+            borderDash: [5, 5],
+            borderWidth: 1.5,
+            fill: false,
+            tension: 0.25,
+            pointRadius: 0,
+            pointHoverRadius: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 400, easing: "linear" },
+        interaction: { intersect: false, mode: "index" },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (contexto) => contexto.dataset.label + ": " + contexto.parsed.y + "%"
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: { display: true, text: "Horário das leituras" },
+            grid: { display: false },
+            ticks: { autoSkip: true, maxTicksLimit: 8, maxRotation: 0 }
+          },
+          y: {
+            min: 0,
+            max: 100,
+            title: { display: true, text: "Uso (%)" },
+            ticks: { stepSize: 25, callback: (valor) => valor + "%" },
+            grid: { color: "rgba(255, 255, 255, 0.07)" },
+            border: { display: false }
+          }
+        }
+      }
+    });
+
+    // escreve o valor (%) no fim de cada barra
+    const rotuloValor = {
+      id: "rotuloValor",
+      afterDatasetsDraw(grafico) {
+        const ctx = grafico.ctx;
+        ctx.save();
+        ctx.font = "600 12px Inter, sans-serif";
+        ctx.fillStyle = "#eaf2fa";
+        ctx.textBaseline = "middle";
+        grafico.getDatasetMeta(0).data.forEach((barra, i) => {
+          ctx.fillText(grafico.data.datasets[0].data[i] + "%", barra.x + 8, barra.y);
+        });
+        ctx.restore();
+      }
+    };
+
+    const graficoServidores = new Chart(document.getElementById("graficoServidores"), {
+      type: "bar",
+      data: {
+        labels: ["Servidor 1", "Servidor 2", "Servidor 3", "Servidor 4"],
+        datasets: [
+          {
+            label: "Uso atual",
+            data: gerarServidores(),
+            // cada barra recebe a cor do seu status
+            backgroundColor: (contexto) => classificar(contexto.raw).cor,
+            borderRadius: 6,
+            barThickness: 20
+          }
+        ]
+      },
+      options: {
+        indexAxis: "y",
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 400 },
+        layout: { padding: { right: 38 } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (contexto) => "Uso atual: " + contexto.parsed.x + "% (" + classificar(contexto.parsed.x).texto + ")"
+            }
+          }
+        },
+        scales: {
+          x: {
+            min: 0,
+            max: 100,
+            ticks: { stepSize: 25, callback: (valor) => valor + "%" },
+            grid: { color: "rgba(255, 255, 255, 0.07)" },
+            border: { display: false }
+          },
+          y: { grid: { display: false }, border: { display: false } }
+        }
+      },
+      plugins: [rotuloValor]
+    });
+
+    function sincronizarGraficos() {
+      graficoUso.data.labels = horarios;
+      graficoUso.data.datasets[0].data = leituras;
+      graficoUso.data.datasets[1].data = leiturasAnteriores;
+      graficoUso.update();
+
+      graficoServidores.data.datasets[0].data = gerarServidores();
+      graficoServidores.update();
+    }
+
+    // ---------- atualização periódica ----------
+    function atualizarGraficos() {
+      const novoValor = gerarValor();
+      horarios.push(formatarHorario(new Date()));
+      leituras.push(novoValor);
+      leiturasAnteriores.push(Math.max(0, novoValor - aleatorio(3, 8)));
+
+      if (leituras.length > TOTAL_LEITURAS) {
+        horarios.shift();
+        leituras.shift();
+        leiturasAnteriores.shift();
+      }
+
+      sincronizarGraficos();
+      atualizarKPIs();
+      atualizarStatusLeituras();
+    }
+
+    // ---------- troca de componente ----------
+    document.getElementById("componenteescolhido").addEventListener("change", function () {
+      componenteAtual = this.value;
+      gerarHistorico();
+      atualizarTitulos();
+      sincronizarGraficos();
+      atualizarKPIs();
+      atualizarStatusLeituras();
+    });
+
+    // ---------- início ----------
+    atualizarTitulos();
+    atualizarKPIs();
+    atualizarStatusLeituras();
+    setInterval(atualizarGraficos, INTERVALO);
+  </script>
 </body>
+
 </html>

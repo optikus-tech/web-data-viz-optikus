@@ -1,0 +1,430 @@
+/* ==========================================================
+   Overview de Componentes - Optikus (tema escuro)
+   Carregar DEPOIS do dashboard-admin.css.
+   Tudo escopado em .overview-page para não afetar outras telas.
+   ========================================================== */
+
+/* fundo da página inteira (remove a faixa clara do topo) */
+body:has(.overview-page) {
+    background: #071a2e;
+}
+
+.overview-page {
+    --ov-bg: #071a2e;
+    --ov-card: #0d2641;
+    --ov-azul: #123f68;
+    --ov-navy: #16285f;
+    --ov-acento: #4aa8f0;
+    --ov-borda: rgba(157, 180, 203, 0.16);
+    --ov-texto: #eaf2fa;
+    --ov-mudo: #9db4cb;
+    font-family: 'Inter', sans-serif;
+    background: var(--ov-bg);
+    color: var(--ov-texto);
+    color-scheme: dark;
+    scrollbar-color: #2b4a6b var(--ov-bg);
+}
+
+.overview-page.dashboard-content {
+    margin-top: 0;
+    height: 100vh;
+}
+
+/* todos os blocos seguem a mesma largura máxima e ficam centralizados */
+.overview-page > * {
+    width: 100%;
+    max-width: 1240px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---------- Cabeçalho ---------- */
+.overview-page .users-page-header {
+    margin-bottom: 24px;
+    border-color: rgba(157, 205, 255, 0.22);
+    background: linear-gradient(135deg, var(--ov-azul) 0%, var(--ov-navy) 100%);
+    box-shadow: none;
+}
+
+.overview-page .users-page-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.overview-page .dash-breadcrumb {
+    margin-top: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+}
+
+/* ---------- Barra de controle ---------- */
+.ov-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.ov-seletor {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ov-seletor label {
+    color: var(--ov-mudo);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.ov-seletor select {
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 170px;
+    padding: 10px 38px 10px 14px;
+    border: 1px solid var(--ov-borda);
+    border-radius: 10px;
+    background: var(--ov-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23cfe3f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;
+    color: var(--ov-texto);
+    font: 600 14px 'Inter', sans-serif;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ov-seletor select:hover {
+    border-color: rgba(157, 180, 203, 0.4);
+}
+
+.ov-seletor select:focus-visible {
+    outline: none;
+    border-color: var(--ov-acento);
+    box-shadow: 0 0 0 3px rgba(74, 168, 240, 0.22);
+}
+
+.ov-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 14px;
+    border: 1px solid var(--ov-borda);
+    border-radius: 999px;
+    background: var(--ov-card);
+    color: var(--ov-mudo);
+    font-size: 12px;
+}
+
+.ov-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ov-acento);
+    animation: ov-pulso 2s infinite;
+}
+
+@keyframes ov-pulso {
+    0%   { box-shadow: 0 0 0 0 rgba(74, 168, 240, 0.5); }
+    70%  { box-shadow: 0 0 0 8px rgba(74, 168, 240, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(74, 168, 240, 0); }
+}
+
+/* ---------- KPIs (azul Optikus, anel + valor + variação) ---------- */
+.ov-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.ov-kpi {
+    --cor: #8fd0ff;
+    --p: 0;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 22px;
+    border: 1px solid rgba(157, 205, 255, 0.25);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #14507f 0%, #123f68 55%, #16285f 100%);
+}
+
+.ov-kpi.alerta  { --cor: #fbbf24; }
+.ov-kpi.critico { --cor: #f87171; }
+
+/* anel de progresso: preenchido conforme o percentual de uso */
+.ov-anel {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: conic-gradient(var(--cor) calc(var(--p) * 1%), rgba(255, 255, 255, 0.16) 0);
+    -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 8px), #000 calc(100% - 7px));
+    mask: radial-gradient(closest-side, transparent calc(100% - 8px), #000 calc(100% - 7px));
+}
+
+.ov-kpi-corpo {
+    min-width: 0;
+}
+
+.ov-kpi-titulo {
+    display: block;
+    color: #cfe3f6;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+.ov-kpi-valor {
+    margin: 6px 0 8px;
+    color: #fff;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.ov-kpi-sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    font-size: 12px;
+}
+
+.ov-kpi-status {
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(7, 26, 46, 0.45);
+    color: var(--cor);
+    font-weight: 600;
+}
+
+.ov-kpi-delta {
+    color: #b9d4ee;
+}
+
+/* ---------- Gráficos ---------- */
+.ov-graficos {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 16px;
+    padding-bottom: 8px;
+}
+
+.ov-cartao {
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--ov-borda);
+    border-radius: 14px;
+    background: var(--ov-card);
+}
+
+.ov-cartao-cab {
+    margin-bottom: 14px;
+}
+
+.ov-cartao-cab h2 {
+    margin: 0;
+    color: var(--ov-texto);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.ov-cartao-cab p {
+    margin: 4px 0 0;
+    color: var(--ov-mudo);
+    font-size: 13px;
+}
+
+.ov-legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-bottom: 12px;
+    color: var(--ov-mudo);
+    font-size: 12px;
+}
+
+.ov-legenda span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.ov-legenda i {
+    display: inline-block;
+    width: 16px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--c);
+}
+
+.ov-legenda i.ponto {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.ov-grafico {
+    position: relative;
+    height: 300px;
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 1100px) {
+    .ov-graficos {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .overview-page.dashboard-content {
+        padding: 24px 16px;
+    }
+
+    .ov-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .ov-grafico {
+        height: 240px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ov-live-dot {
+        animation: none;
+    }
+}
+
+/* ==========================================================
+   MODO TELA ÚNICA
+   Em telas de computador, tudo (banner, KPIs e os 2 gráficos)
+   cabe na altura da janela, sem rolagem. Os gráficos ocupam
+   o espaço que sobra e se ajustam sozinhos ao tamanho da tela.
+   Em telas pequenas (celular) a página volta a rolar normalmente.
+   ========================================================== */
+@media (min-width: 900px) and (min-height: 500px) {
+
+    .overview-page.dashboard-content {
+        padding: 18px 28px;
+        gap: 14px;
+        overflow-y: auto; /* só aparece se a janela for muito baixa */
+    }
+
+    .overview-page > * {
+        flex: none;
+    }
+
+    /* banner compacto */
+    .overview-page .users-page-header {
+        margin-bottom: 0;
+        padding: 14px 22px;
+        border-radius: 12px;
+    }
+
+    .overview-page .users-page-header h2 {
+        font-size: 22px;
+    }
+
+    .overview-page .dash-breadcrumb {
+        margin-top: 2px;
+        font-size: 13px;
+    }
+
+    /* seletor e indicador na mesma linha */
+    .ov-toolbar {
+        flex-wrap: nowrap;
+        align-items: center;
+        margin-bottom: 0;
+    }
+
+    .ov-seletor {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .ov-seletor select {
+        min-width: 150px;
+        padding: 7px 34px 7px 12px;
+    }
+
+    .ov-live {
+        padding: 6px 12px;
+    }
+
+    /* KPIs menores */
+    .ov-kpis {
+        gap: 14px;
+        margin-bottom: 0;
+    }
+
+    .ov-kpi {
+        gap: 14px;
+        padding: 14px 18px;
+    }
+
+    .ov-anel {
+        width: 52px;
+        height: 52px;
+    }
+
+    .ov-kpi-titulo {
+        font-size: 12px;
+    }
+
+    .ov-kpi-valor {
+        margin: 4px 0 6px;
+        font-size: 28px;
+    }
+
+    /* gráficos ocupam todo o espaço restante da janela */
+    .ov-graficos {
+        flex: 1 1 0;
+        min-height: 0;
+        gap: 14px;
+        padding-bottom: 0;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        grid-template-rows: minmax(0, 1fr);
+    }
+
+    .ov-cartao {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        padding: 16px 18px;
+    }
+
+    .ov-cartao-cab {
+        margin-bottom: 8px;
+    }
+
+    .ov-cartao-cab h2 {
+        font-size: 15px;
+    }
+
+    .ov-cartao-cab p {
+        font-size: 12px;
+    }
+
+    .ov-legenda {
+        margin-bottom: 6px;
+    }
+
+    .ov-grafico {
+        flex: 1 1 0;
+        min-height: 120px;
+        height: auto;
+    }
+}
+
+/* janelas bem baixas: esconde textos secundários para ganhar espaço */
+@media (min-width: 900px) and (min-height: 500px) and (max-height: 600px) {
+    .overview-page .dash-breadcrumb,
+    .ov-cartao-cab p {
+        display: none;
+    }
+}
