@@ -12,7 +12,9 @@ _Implementação de Referência para o seu Projeto de Primeiro Semestre_
 
 
 1. Crie, no Banco de Dados, as tabelas necessárias para o funcionamento deste projeto.
-- Siga as instruções no arquivo **/src/database/script-tabelas.sql**
+- Em uma instalação nova, use **/src/database/script-tabelas.sql**. Atenção: esse script recria o banco `optikus`.
+- Para atualizar uma instalação existente sem apagar os dados, use **/src/database/migracao-servidores.sql**.
+- Os números de série autorizados devem ser provisionados na tabela `equipamento`, associados à empresa e ao MAC Address.
 
 
 3. Acesse o arquivo **app.js** e parametrize o ambiente.
