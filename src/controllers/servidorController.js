@@ -109,9 +109,31 @@ function cadastrar(req, res) {
     });
 }
 
+function deletar(req, res) {
+  var empresa = obterEmpresa(req);
+  var id = Number(req.body.id);
+  if (!empresa) return res.status(400).send("Empresa não informada.");
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    return res.status(400).send("Informe um servidor válido para excluir.");
+  }
+
+  servidorModel.deletar(id, empresa)
+    .then(function (resultado) {
+      if (resultado.affectedRows === 0) {
+        return res.status(404).send("Servidor não encontrado nesta empresa.");
+      }
+      return res.status(200).json({ mensagem: "Servidor excluído com sucesso." });
+    })
+    .catch(function (erro) {
+      console.error("Erro ao excluir servidor:", erro.sqlMessage || erro);
+      return res.status(500).send("Erro ao excluir servidor.");
+    });
+}
+
 module.exports = {
   listar,
   listarLocalidades,
   validarNumeroSerie,
-  cadastrar
+  cadastrar,
+  deletar
 };

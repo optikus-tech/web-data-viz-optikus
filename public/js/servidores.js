@@ -14,9 +14,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const localidades = document.getElementById("id-local");
   const modalFiltro = document.getElementById("modal-filtro-servidor");
   const modalDetalhes = document.getElementById("modal-detalhes-servidor");
+  const modalConfirmacaoExclusao = document.getElementById("modal-confirmar-exclusao-servidor");
+  const textoConfirmacaoExclusao = document.getElementById("texto-confirmar-exclusao-servidor");
+  const mensagemExclusao = document.getElementById("mensagem-exclusao-servidor");
+  const botaoConfirmarExclusao = document.getElementById("btn-confirmar-exclusao-servidor");
+  const botaoCancelarExclusao = document.getElementById("btn-cancelar-exclusao-servidor");
+  const botaoFecharConfirmacaoExclusao = document.getElementById("btn-fechar-confirmacao-exclusao-servidor");
   let servidoresCache = [];
   let numeroSerieValidado = "";
   let filtrosAtivos = {};
+  let servidorParaExcluir = null;
+  let exclusaoEmAndamento = false;
 
   function requisicao(url, dados) {
     return fetch(url, {
@@ -49,6 +57,60 @@ document.addEventListener("DOMContentLoaded", function () {
         adicionarMensagemTabela(erro.message);
         exibirErroLista(erro);
         throw erro;
+      });
+  }
+
+  function limparConfirmacaoExclusao() {
+    servidorParaExcluir = null;
+    exclusaoEmAndamento = false;
+    mensagemExclusao.hidden = true;
+    mensagemExclusao.textContent = "";
+    botaoConfirmarExclusao.disabled = false;
+    botaoCancelarExclusao.disabled = false;
+    botaoFecharConfirmacaoExclusao.disabled = false;
+  }
+
+  function abrirConfirmacaoExclusao(servidor) {
+    servidorParaExcluir = servidor;
+    textoConfirmacaoExclusao.textContent = "Tem certeza de que deseja excluir o servidor " + servidor.hostname + "?";
+    mensagemExclusao.hidden = true;
+    mensagemExclusao.textContent = "";
+    botaoConfirmarExclusao.disabled = false;
+    mostrarModal(modalConfirmacaoExclusao, document.getElementById("btn-cancelar-exclusao-servidor"));
+  }
+
+  function fecharConfirmacaoExclusao() {
+    if (exclusaoEmAndamento) return;
+    const botaoDeletar = modalDetalhes.querySelector(".btn-tertiary");
+    limparConfirmacaoExclusao();
+    fecharModal(modalConfirmacaoExclusao, botaoDeletar);
+  }
+
+  function deletarServidor() {
+    if (!servidorParaExcluir || exclusaoEmAndamento) return;
+
+    exclusaoEmAndamento = true;
+    botaoConfirmarExclusao.disabled = true;
+    botaoCancelarExclusao.disabled = true;
+    botaoFecharConfirmacaoExclusao.disabled = true;
+    mensagemExclusao.hidden = true;
+    requisicao("/servidores/deletar", { id: servidorParaExcluir.id, empresa: empresa })
+      .then(function () {
+        limparConfirmacaoExclusao();
+        fecharModal(modalConfirmacaoExclusao);
+        fecharDetalhes();
+        busca.focus();
+        return carregarServidores().catch(function (erro) {
+          console.error("Erro ao atualizar a lista após excluir servidor:", erro);
+        });
+      })
+      .catch(function (erro) {
+        exclusaoEmAndamento = false;
+        mensagemExclusao.textContent = erro.message;
+        mensagemExclusao.hidden = false;
+        botaoConfirmarExclusao.disabled = false;
+        botaoCancelarExclusao.disabled = false;
+        botaoFecharConfirmacaoExclusao.disabled = false;
       });
   }
 
@@ -125,9 +187,10 @@ document.addEventListener("DOMContentLoaded", function () {
       local.textContent = servidor.local;
 
       const status = document.createElement("td");
+      status.className = "status-servidor-cell";
       const statusContainer = document.createElement("span");
       const statusText = String(servidor.stats || "").toUpperCase();
-      statusContainer.className = "status-container status " + ({
+      statusContainer.className = "status-container status-servidor " + ({
         ONLINE: "badge-active",
         OFFLINE: "badge-inactive",
         MANUTENCAO: "badge-pending"
@@ -148,7 +211,6 @@ document.addEventListener("DOMContentLoaded", function () {
       botaoDetalhes.dataset.serverId = servidor.id;
       botaoDetalhes.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>';
       acoes.appendChild(botaoDetalhes);
-
       linha.append(servidorCell, responsabilidade, local, status, acoes);
       tabela.appendChild(linha);
     });
@@ -295,7 +357,6 @@ document.addEventListener("DOMContentLoaded", function () {
     fecharModal(modalDetalhes);
   }
   document.getElementById("btn-fechar-detalhes").addEventListener("click", fecharDetalhes);
-  document.getElementById("btn-fechar-detalhes-footer").addEventListener("click", fecharDetalhes);
   tabela.addEventListener("click", function (event) {
     const botao = event.target.closest("[data-server-id]");
     if (!botao) return;
@@ -326,8 +387,23 @@ document.addEventListener("DOMContentLoaded", function () {
       grupo.append(rotulo, valor);
       container.appendChild(grupo);
     });
+
+    const footer = modalDetalhes.querySelector(".modal-footer");
+    const botaoDeletar = document.createElement("button");
+    botaoDeletar.className = "btn-tertiary";
+    botaoDeletar.type = "button";
+    botaoDeletar.textContent = "Deletar";
+    botaoDeletar.addEventListener("click", function () {
+      abrirConfirmacaoExclusao(servidor);
+    });
+    footer.replaceChildren(botaoDeletar);
+
     mostrarModal(modalDetalhes, document.getElementById("btn-fechar-detalhes"));
   });
+
+  botaoFecharConfirmacaoExclusao.addEventListener("click", fecharConfirmacaoExclusao);
+  botaoCancelarExclusao.addEventListener("click", fecharConfirmacaoExclusao);
+  botaoConfirmarExclusao.addEventListener("click", deletarServidor);
 
   document.querySelectorAll(".modal-overlay").forEach(function (modal) {
     modal.addEventListener("click", function (event) {
@@ -339,6 +415,8 @@ document.addEventListener("DOMContentLoaded", function () {
         fecharFiltro();
       } else if (modal === modalDetalhes) {
         fecharDetalhes();
+      } else if (modal === modalConfirmacaoExclusao) {
+        fecharConfirmacaoExclusao();
       }
     });
   });
@@ -349,6 +427,8 @@ document.addEventListener("DOMContentLoaded", function () {
       resetarCadastro();
     } else if (modalFiltro.classList.contains("active")) {
       fecharFiltro();
+    } else if (modalConfirmacaoExclusao.classList.contains("active")) {
+      fecharConfirmacaoExclusao();
     } else if (modalDetalhes.classList.contains("active")) {
       fecharDetalhes();
     }
@@ -371,3 +451,4 @@ document.addEventListener("DOMContentLoaded", function () {
     exibirErroLista(erro);
   });
 });
+

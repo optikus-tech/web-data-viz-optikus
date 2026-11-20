@@ -273,3 +273,59 @@ SELECT c.nome, ca.valor, c.unidade_medida, tc.nome, pl.criticidade, a.nivel, a.s
   JOIN parametro_limite pl ON ca.parametroId = pl.id
   JOIN alerta a ON pl.alertaId = a.id
   JOIN tipo_componente tc ON c.id_tipo = tc.id;
+  
+  
+	CREATE OR REPLACE VIEW vwListarServidor AS
+SELECT
+  servidor.id,
+  equipamento.numero_serie,
+  servidor.hostname,
+  servidor.ip,
+  equipamento.mac_address,
+  servidor.responsabilidade,
+  servidor.sistema_operacional,
+  servidor.versao_so,
+  servidor.status AS stats,
+  empresa.razao_social AS empresa_razao_social,
+  CONCAT_WS(' - ',
+    CONCAT_WS(', ', NULLIF(localidade.logradouro, ''), NULLIF(localidade.bairro, '')),
+    CONCAT(localidade.cidade, '/', localidade.estado)
+  ) AS localizacao
+FROM servidor
+JOIN equipamento ON servidor.id_equipamento = equipamento.id
+JOIN localidade ON servidor.id_local = localidade.id
+JOIN empresa ON equipamento.id_empresa = empresa.id;
+    
+SELECT * FROM vwListarServidor;
+
+
+    
+    CREATE OR REPLACE VIEW vwListarLocalidades AS
+SELECT
+  localidade.id,
+  CONCAT_WS(' - ',
+    CONCAT_WS(', ', NULLIF(localidade.logradouro, ''), NULLIF(localidade.bairro, '')),
+    CONCAT(localidade.cidade, '/', localidade.estado)
+  ) AS nome,
+  empresa.razao_social AS empresa_razao_social
+FROM localidade
+JOIN empresa ON empresa.localidadeId = localidade.id;
+
+CREATE OR REPLACE VIEW vwValidarNumeroSerie AS
+SELECT
+  equipamento.id AS id_equipamento,
+  equipamento.numero_serie,
+  equipamento.mac_address,
+  empresa.razao_social AS empresa_razao_social
+FROM equipamento
+JOIN empresa ON equipamento.id_empresa = empresa.id
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM servidor
+  WHERE servidor.id_equipamento = equipamento.id
+);
+    
+    SELECT * FROM vwListarLocalidades;
+    
+    SELECT * FROM vwValidarNumeroSerie;
+

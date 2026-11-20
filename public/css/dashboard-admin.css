@@ -393,22 +393,23 @@ table {
 
 .users-page th:nth-child(1),
 .users-page td:nth-child(1) {
-    width: 34%;
+    width: 30%;
 }
 
 .users-page th:nth-child(2),
 .users-page td:nth-child(2) {
-    width: 17%;
+    width: 20%;
 }
 
 .users-page th:nth-child(3),
 .users-page td:nth-child(3) {
-    width: 16%;
+    width: 20%;
 }
 
 .users-page th:nth-child(4),
 .users-page td:nth-child(4) {
-    width: 23%;
+    width: 20%;
+    text-align: center;
 }
 
 .users-page th:nth-child(5),
@@ -496,17 +497,36 @@ tbody tr:last-child td {
     color: #667085;
 }
 
-.status {
+.status-container {
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     padding: 4px 10px;
     border-radius: 16px;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
 }
 
-.status .dot {
+.status-usuario {
+    width: 100%;
+    max-width: 136px;
+}
+
+.status-servidor {
+    width: auto;
+    max-width: none;
+}
+
+.status-servidor-cell {
+    text-align: center;
+}
+
+.status-container .dot {
+    flex: 0 0 6px;
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -947,6 +967,7 @@ tbody tr:last-child td {
     border-top: 1px solid #eaecf0;
 }
 
+.btn-tertiary,
 .btn-secondary,
 .btn-primary {
     min-height: 40px;
@@ -963,6 +984,12 @@ tbody tr:last-child td {
     border-color: #d0d5dd;
     background: #ffffff;
     color: #344054;
+}
+
+.btn-tertiary {
+    border-color: #d0d5dd;
+    background: #ff0000;
+    color: #ffffff;
 }
 
 .btn-primary {
