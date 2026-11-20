@@ -35,8 +35,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     sidebar.querySelector('[data-sidebar-role-label]').textContent = cargos[cargo] || 'Workspace';
     const overviewLink = sidebar.querySelector('.nav-item a');
     overviewLink.href = cargo === 'gestor' ? 'overview-gestor.html' : 'overview.html';
-    const linkUsuarios = sidebar.querySelector('[data-sidebar-admin-only]');
-    linkUsuarios.hidden = cargo !== 'admin';
+    sidebar.querySelectorAll('[data-sidebar-admin-only]').forEach((link) => {
+      link.hidden = cargo !== 'admin';
+    });
     const overview = sidebar.querySelector('[data-sidebar-gestor-only]');
     overview.hidden = cargo !== 'gestor';
     const senha = sidebar.querySelector('[senha-sidebar-admin-only]')
