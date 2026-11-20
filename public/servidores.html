@@ -193,7 +193,25 @@
             </header>
             <div class="modal-body server-details" id="detalhes-servidor"></div>
             <footer class="modal-footer">
-                <button class="btn-secondary" id="btn-fechar-detalhes-footer" type="button">Fechar</button>
+            </footer>
+        </section>
+    </div>
+
+    <div class="modal-overlay" id="modal-confirmar-exclusao-servidor" aria-hidden="true">
+        <section class="modal-content" role="dialog" aria-modal="true"
+            aria-labelledby="titulo-confirmar-exclusao-servidor">
+            <header class="modal-header">
+                <h3 id="titulo-confirmar-exclusao-servidor">Excluir servidor</h3>
+                <button class="btn-close" id="btn-fechar-confirmacao-exclusao-servidor" type="button"
+                    aria-label="Fechar">&times;</button>
+            </header>
+            <div class="modal-body">
+                <p id="texto-confirmar-exclusao-servidor">Tem certeza de que deseja excluir este servidor?</p>
+                <p class="form-feedback" id="mensagem-exclusao-servidor" role="alert" hidden></p>
+            </div>
+            <footer class="modal-footer">
+                <button class="btn-secondary" id="btn-cancelar-exclusao-servidor" type="button">Cancelar</button>
+                <button class="btn-tertiary" id="btn-confirmar-exclusao-servidor" type="button">Deletar</button>
             </footer>
         </section>
     </div>

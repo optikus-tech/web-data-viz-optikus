@@ -18,4 +18,8 @@ router.post("/cadastrar", function (req, res) {
     servidorController.cadastrar(req, res);
 });
 
+router.post("/deletar", function (req, res) {
+    servidorController.deletar(req, res);
+});
+
 module.exports = router;

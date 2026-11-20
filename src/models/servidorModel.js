@@ -81,9 +81,21 @@ function cadastrar(dados) {
   ]);
 }
 
+function deletar(id, empresa) {
+  var instrucaoSql = `
+    DELETE servidor
+    FROM servidor
+    JOIN equipamento ON servidor.id_equipamento = equipamento.id
+    JOIN empresa ON equipamento.id_empresa = empresa.id
+    WHERE servidor.id = ? AND empresa.razao_social = ?;`;
+
+  return database.executar(instrucaoSql, [id, empresa]);
+}
+
 module.exports = {
   listar,
   listarLocalidades,
   validarNumeroSerie,
-  cadastrar
+  cadastrar,
+  deletar
 };

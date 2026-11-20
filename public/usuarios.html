@@ -91,7 +91,7 @@
             </td>
             <td class="user-funcao text-dark">Função</td>
             <td>
-                <span class="status-container status badge-active">
+                <span class="status-container status-usuario badge-active">
                     <span class="dot"></span> <span class="status-text">Ativo</span>
                 </span>
             </td>
@@ -245,7 +245,7 @@
                         <input class="form-control" id="dados-usuario-cargo" name="cargo" type="text" required>
                     </div>
                     <div class="form-group">
-                        <label for="dados-usuario-status">Status</label>
+                        <label for="dados-usuario-status" class="user-stat">Status</label>
                         <select class="form-control" id="dados-usuario-status" name="status" required>
                             <option value="ATIVO">Ativo</option>
                             <option value="INATIVO">Inativo</option>
@@ -459,7 +459,7 @@
                         </td>
                         <td class="user-funcao text-dark">${usuario.cargo}</td>
                         <td>
-                            <span class="status-container status ${classeStatus}">
+                            <span class="status-container status-usuario ${classeStatus}">
                                 <span class="dot"></span> <span class="status-text">${usuario.stats}</span>
                             </span>
                         </td>
