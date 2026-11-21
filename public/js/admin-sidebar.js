@@ -42,9 +42,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     overview.hidden = cargo !== 'gestor';
     const senha = sidebar.querySelector('[senha-sidebar-admin-only]')
     senha.hidden = cargo !== 'admin'
-     sidebar.querySelectorAll('[data-chamado]').forEach((btn) => {
-      btn.hidden = cargo !== 'gestor';
-    });
 
     const topBar = sidebar.querySelector('.top-bar');
     if (topBar) document.body.prepend(topBar);
