@@ -1,0 +1,98 @@
+/* ==========================================================
+   Monitoramento (gestor e analista)
+   Carregar DEPOIS de dashboard-admin.css e overview-componentes_fundoazul.css
+   ========================================================== */
+
+/* ---------- cabeçalho ---------- */
+.ov-cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
+.ov-cab-info { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; color: #d9efff; font-size: 12px; }
+.ov-badge { padding: 3px 10px; border-radius: 999px; background: rgba(7, 26, 46, 0.45); color: #8fd0ff; font-size: 11px; font-weight: 600; }
+.ov-badge.alerta { color: #fbbf24; }
+.ov-badge.critico { color: #f87171; }
+.ov-badge.semdados, .ov-badge.semlimite { color: #cbd5e1; }
+.ov-badge.demo { background: #fef0c7; color: #b54708; }
+.ov-badge[hidden] { display: none; }
+
+/* ---------- abas (servidores / componentes) ---------- */
+.ov-barra-abas { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.ov-barra-abas .ov-componente-btn { padding: 7px 14px; font-size: 12px; }
+.ov-barra-abas .ov-live { background: #f2f4f7; border-color: #e4e7ec; color: #475467; }
+.ov-periodo { display: inline-flex; align-items: center; gap: 8px; color: #344054; font-size: 12px; font-weight: 600; }
+.ov-periodo select { padding: 6px 10px; border: 1px solid #d0d5dd; border-radius: 8px; background: #fff; color: #344054; font: 600 12px 'Inter', sans-serif; }
+
+.ov-dot { display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: #98a2b3; }
+.ov-dot.normal { background: #12b76a; }
+.ov-dot.alerta { background: #f59e0b; }
+.ov-dot.critico { background: #ef4444; }
+
+/* botões dentro dos cartões escuros */
+.ov-cartao .ov-componente-btn { padding: 4px 11px; border-color: var(--ov-borda); background: rgba(255, 255, 255, 0.06); color: #cfe3f6; font-size: 11px; }
+.ov-cartao .ov-componente-btn:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.ov-cartao .ov-componente-btn.ativo { border-color: #4aa8f0; background: #4aa8f0; color: #071a2e; box-shadow: none; }
+.ov-cab-cartao { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px; }
+
+/* ---------- KPIs (4 por linha) ---------- */
+.ov-kpis.ov-k4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ov-k4 .ov-kpi { cursor: pointer; transition: box-shadow 0.2s ease; }
+.ov-k4 .ov-kpi.sel { box-shadow: 0 0 0 2px #4aa8f0; }
+.ov-k4 .ov-kpi:focus-visible { outline: 2px solid #8fd0ff; outline-offset: 2px; }
+.ov-k4 .ov-kpi.semlimite, .ov-k4 .ov-kpi.semdados { --cor: #cbd5e1; }
+.ov-k4 .ov-kpi-valor small { margin-left: 4px; color: #cfe3f6; font-size: 13px; font-weight: 600; }
+.ov-k4 .ov-anel { width: 52px; height: 52px; }
+.ov-k4 .ov-kpi-valor { font-size: 26px; }
+.ov-k4 .ov-kpi-sub { flex-direction: column; align-items: flex-start; }
+
+/* ---------- alertas e listas ---------- */
+.ov-alertas { display: flex; flex: 1; flex-direction: column; gap: 8px; min-height: 0; margin: 0; padding: 0; overflow: auto; list-style: none; }
+.ov-alertas li { padding: 9px 11px; border-left: 3px solid #4aa8f0; border-radius: 10px; background: rgba(255, 255, 255, 0.05); color: #cfe3f6; font-size: 12px; line-height: 1.4; }
+.ov-alertas li[data-id] { cursor: pointer; }
+.ov-alertas li.alerta { border-color: #fbbf24; }
+.ov-alertas li.critico { border-color: #f87171; }
+.ov-alertas li.vazio { border-color: #475467; }
+.ov-alertas li span { color: #9db4cb; }
+.ov-alertas .topo { display: flex; justify-content: space-between; gap: 8px; color: #fff; font-weight: 600; }
+.ov-alertas .topo span { color: inherit; }
+.ov-alertas .ov-kpi-status { color: var(--c, #fbbf24); }
+.ov-alertas li.critico .ov-kpi-status { color: #f87171; }
+.ov-nota { margin: 8px 0 0; color: #9db4cb; font-size: 11px; line-height: 1.4; }
+
+/* ---------- analista ---------- */
+.ov-stats { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px; padding: 12px 16px; }
+.ov-stats div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ov-stats span { color: #9db4cb; font-size: 11px; }
+.ov-stats b { color: #fff; font-size: 16px; font-weight: 700; }
+
+.ov-tabela-cartao { max-height: 220px; overflow: auto; }
+.overview-page .ov-tabela { width: 100%; min-width: 0; table-layout: auto; border-collapse: collapse; color: #cfe3f6; font-size: 12px; }
+.overview-page .ov-tabela th, .overview-page .ov-tabela td { width: auto; padding: 7px 10px; border-bottom: 1px solid var(--ov-borda); background: transparent; text-align: left; text-transform: none; letter-spacing: 0; }
+.overview-page .ov-tabela th { position: sticky; top: 0; background: var(--ov-card); color: #9db4cb; font-weight: 600; }
+.overview-page .ov-tabela tbody tr:hover { background: rgba(255, 255, 255, 0.04); }
+.ov-pill { padding: 2px 9px; border-radius: 999px; background: rgba(74, 168, 240, 0.16); color: #8fd0ff; font-weight: 600; white-space: nowrap; }
+.ov-pill.alerta { background: rgba(251, 191, 36, 0.16); color: #fbbf24; }
+.ov-pill.critico { background: rgba(248, 113, 113, 0.16); color: #f87171; }
+
+/* ---------- tela única (desktop) ---------- */
+@media (min-width: 1101px) and (min-height: 500px) {
+  .ov-graficos.ov-g3 { grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1.1fr); }
+  .ov-tabela-cartao { flex: none; }
+}
+
+@media (min-width: 900px) and (min-height: 500px) {
+  .ov-k4 .ov-anel { width: 44px; height: 44px; }
+  .ov-k4 .ov-kpi-valor { margin: 2px 0 4px; font-size: 24px; }
+  .ov-alertas li { padding: 7px 10px; }
+}
+
+/* ---------- telas menores: volta a rolar ---------- */
+@media (max-width: 1100px) {
+  .ov-graficos.ov-g3 { flex: none; grid-template-columns: 1fr; grid-template-rows: none; }
+  .ov-g3 .ov-grafico { flex: none; height: 240px; }
+  .ov-alertas { max-height: 220px; }
+  .ov-kpis.ov-k4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ov-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .ov-kpis.ov-k4 { grid-template-columns: 1fr; }
+  .ov-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

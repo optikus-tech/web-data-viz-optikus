@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Análise Técnica</title>
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./dashboard-admin.css">
+  <link rel="stylesheet" href="./overview-componentes_fundoazul.css">
+  <link rel="stylesheet" href="./monitoramento.css">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="./img/svg/favicon.svg" type="image/x-icon">
+
+  <!-- Bibliotecas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Sidebar -->
+  <script src="./admin-sidebar.js" defer></script>
+</head>
+
+<body>
+
+  <aside class="sidebar" data-admin-sidebar></aside>
+
+  <main class="dashboard-content users-page overview-page">
+
+    <header class="users-page-header">
+      <div class="ov-cab">
+        <div>
+          <h2>PAINEL DE ANÁLISE</h2>
+          <p class="dash-breadcrumb" id="srvTitulo">--</p>
+        </div>
+
+        <div class="ov-cab-info">
+          <span class="ov-badge demo" id="badgeDemo">
+            Overview de Componentes
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <section class="ov-barra-abas">
+      <div class="ov-componente-opcoes" id="abasServidor"></div>
+      <div class="ov-componente-opcoes" id="abasComp"></div>
+      
+
+      <label class="ov-periodo">
+        Período
+        <select id="periodo">
+          <option value="30">30 min</option>
+          <option value="60" selected>1 hora</option>
+          <option value="180">3 horas</option>
+        </select>
+      </label>
+    </section>
+
+    
+
+    <section class="ov-cartao ov-stats" id="stats"></section>
+
+    <section class="ov-graficos ov-g3">
+
+      <article class="ov-cartao">
+        <div class="ov-cartao-cab">
+          <h2 id="tituloMain">--</h2>
+          <p>Período atual comparado ao período anterior, com limites de alerta</p>
+        </div>
+        <div class="ov-grafico">
+          <canvas id="graficoMain"></canvas>
+        </div>
+      </article>
+
+      <article class="ov-cartao">
+        <div class="ov-cartao-cab">
+          <h2>Tempo por faixa de utilização</h2>
+          <p>Distribuição das capturas</p>
+        </div>
+        <div class="ov-grafico">
+          <canvas id="graficoDist"></canvas>
+        </div>
+        <p class="ov-nota" id="notaDist"></p>
+      </article>
+
+      <article class="ov-cartao">
+        <div class="ov-cartao-cab">
+          <h2>Possíveis correlações</h2>
+          <p>Componentes que variam junto (indício, não prova de causa)</p>
+        </div>
+        <div class="ov-grafico ov-grafico-correlacao">
+          <canvas id="graficoCorr"></canvas>
+        </div>
+        <p class="ov-nota">
+          Correlação positiva: os componentes tendem a variar juntos.
+          Correlação negativa: variam em sentidos opostos.
+        </p>
+      </article>
+
+    </section>
+
+    <section class="ov-cartao ov-tabela-cartao">
+      <div class="ov-cartao-cab">
+        <h2>Ocorrências e variações de comportamento</h2>
+        <p>Alertas do servidor no período e variações bruscas do componente selecionado</p>
+      </div>
+     
+      <table class="ov-tabela">
+        <thead>
+          <tr>
+            <th>Horário</th>
+            <th>Tipo</th>
+            <th>Componente</th>
+            <th>Valor</th>
+            <th>Referência</th>
+            <th>Situação</th>
+          </tr>
+        </thead>
+        <tbody id="corpoEventos"></tbody>
+      </table>
+
+      <p class="ov-nota" id="notaLimites"></p>
+    </section>
+
+  </main>
+
+  <!-- Scripts da página -->
+  <script src="./monitoramento-dados.js"></script>
+  <script src="./analista.js"></script>
+
+</body>
+
+</html>

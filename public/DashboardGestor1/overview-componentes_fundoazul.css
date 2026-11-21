@@ -1,0 +1,437 @@
+
+/* ==========================================================
+   OVERVIEW DE COMPONENTES - TEMA CLARO
+   ALTO CONTRASTE - LAYOUT AJUSTADO
+   ========================================================== */
+
+body:has(.overview-page) {
+    background: #fff !important;
+    overflow: hidden !important;
+}
+
+.overview-page {
+    --ov-bg: #fff;
+    --ov-card: #fff;
+    --ov-azul: #173e69;
+    --ov-navy: #102b50;
+    --ov-acento: #173e69;
+    --ov-borda: #dce4ed;
+    --ov-texto: #102b50;
+    --ov-mudo: #475569;
+
+    font-family: 'Inter', sans-serif;
+    background: #fff !important;
+    color: #102b50 !important;
+    color-scheme: light;
+    scrollbar-width: none;
+}
+
+.overview-page.dashboard-content {
+    box-sizing: border-box;
+    margin-top: 0;
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    padding: 10px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden !important;
+}
+
+.overview-page,
+.overview-page * {
+    box-sizing: border-box;
+}
+
+.overview-page > * {
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 0;
+}
+
+/* TEXTOS GERAIS */
+
+.overview-page h1,
+.overview-page h2,
+.overview-page h3,
+.overview-page h4,
+.overview-page strong,
+.overview-page b {
+    color: #102b50 !important;
+}
+
+.overview-page p,
+.overview-page label,
+.overview-page span {
+    text-shadow: none;
+}
+
+.overview-page small {
+    color: #475569 !important;
+}
+
+/* CABEÇALHO */
+
+.overview-page .users-page-header {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+    padding: 9px 18px;
+    border: 1px solid var(--ov-borda);
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: none;
+}
+
+.overview-page .users-page-header h2 {
+    color: #102b50 !important;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.overview-page .dash-breadcrumb {
+    color: #475569 !important;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ABAS E CONTROLES */
+
+.overview-page .ov-barra-abas {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.overview-page .ov-componente-opcoes button,
+.overview-page .ov-componente-opcoes .ativo,
+.overview-page .ov-componente-opcoes [aria-pressed="true"] {
+    background: #173e69 !important;
+    color: #fff !important;
+    border-color: #173e69 !important;
+}
+
+.overview-page .ov-periodo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #102b50 !important;
+    font-weight: 700;
+}
+
+.overview-page .ov-periodo select {
+    padding: 7px 28px 7px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+    color: #102b50 !important;
+    font-weight: 700;
+}
+
+/* ESTATÍSTICAS */
+
+.overview-page .ov-stats {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.overview-page .ov-stats > div {
+    min-width: 0;
+    padding: 8px 11px;
+    border: 1px solid var(--ov-borda);
+    border-radius: 9px;
+    background: #f8fafc;
+}
+
+.overview-page .ov-stats span {
+    display: block;
+    color: #475569 !important;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.overview-page .ov-stats b {
+    display: block;
+    margin-top: 3px;
+    color: #102b50 !important;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+/* CARTÕES */
+
+.overview-page .ov-cartao {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    padding: 11px 13px;
+    border: 1px solid var(--ov-borda);
+    border-radius: 10px;
+    background: #fff;
+}
+
+.overview-page .ov-cartao-cab {
+    flex: 0 0 auto;
+    margin-bottom: 7px;
+}
+
+.overview-page .ov-cartao-cab h2 {
+    margin: 0;
+    color: #102b50 !important;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.overview-page .ov-cartao-cab p {
+    margin: 3px 0 0;
+    color: #475569 !important;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* GRÁFICOS */
+
+.overview-page .ov-graficos {
+    min-width: 0;
+    min-height: 0;
+}
+
+.overview-page .ov-grafico {
+    position: relative;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    height: auto;
+}
+
+.overview-page .ov-grafico canvas {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+}
+
+/* LEGENDAS */
+
+.overview-page .ov-legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-bottom: 7px;
+    color: #334155 !important;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.overview-page .ov-legenda span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #334155 !important;
+    font-weight: 700;
+}
+
+.overview-page .ov-legenda i {
+    flex: none;
+    width: 14px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--c);
+}
+
+/* CORRELAÇÕES */
+
+.overview-page .ov-alertas {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.overview-page .ov-alertas li {
+    padding: 9px 10px;
+    border: 1px solid #dce4ed;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #102b50 !important;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.overview-page .ov-alertas li b {
+    color: #173e69 !important;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.overview-page .ov-alertas li span {
+    color: #475569 !important;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* TABELA */
+
+.overview-page .ov-tabela-cartao {
+    flex: 0 0 auto;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.overview-page .ov-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.overview-page .ov-tabela th {
+    padding: 8px 9px;
+    background: #eaf0f7;
+    color: #102b50 !important;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: left;
+}
+
+.overview-page .ov-tabela td {
+    padding: 7px 9px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #263b53 !important;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.overview-page .ov-tabela tbody tr:nth-child(even) {
+    background: #f5f8fc;
+}
+
+.overview-page .ov-tabela tbody tr:hover {
+    background: #eaf1f9;
+}
+
+.overview-page .ov-tabela th:nth-child(1),
+.overview-page .ov-tabela td:nth-child(1) {
+    width: 9%;
+}
+
+.overview-page .ov-tabela th:nth-child(2),
+.overview-page .ov-tabela td:nth-child(2) {
+    width: 20%;
+}
+
+.overview-page .ov-tabela th:nth-child(3),
+.overview-page .ov-tabela td:nth-child(3) {
+    width: 13%;
+}
+
+.overview-page .ov-tabela th:nth-child(4),
+.overview-page .ov-tabela td:nth-child(4) {
+    width: 15%;
+}
+
+.overview-page .ov-tabela th:nth-child(5),
+.overview-page .ov-tabela td:nth-child(5) {
+    width: 23%;
+}
+
+.overview-page .ov-tabela th:nth-child(6),
+.overview-page .ov-tabela td:nth-child(6) {
+    width: 20%;
+}
+
+/* STATUS */
+
+.overview-page .ov-pill {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.overview-page .ov-pill.critico {
+    background: #fee2e2;
+    color: #991b1b !important;
+}
+
+.overview-page .ov-pill.alerta {
+    background: #fef3c7;
+    color: #92400e !important;
+}
+
+.overview-page .ov-pill.normal {
+    background: #dcfce7;
+    color: #166534 !important;
+}
+
+/* NOTAS */
+
+.overview-page .ov-nota {
+    flex: 0 0 auto;
+    margin: 6px 0 0;
+    color: #475569 !important;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+/* SVG */
+
+.overview-page .ov-cartao svg text {
+    fill: #334155 !important;
+    font-weight: 600 !important;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 899px) {
+    .overview-page.dashboard-content {
+        height: auto !important;
+        max-height: none !important;
+        min-height: 100dvh;
+        overflow: visible !important;
+    }
+
+    .overview-page .ov-graficos {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto;
+    }
+
+    .overview-page .ov-graficos > article {
+        min-height: 240px;
+    }
+
+    .overview-page .ov-grafico {
+        height: 190px;
+        min-height: 190px;
+        flex: 1 1 auto;
+    }
+
+    .overview-page .ov-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .overview-page .ov-tabela-cartao {
+        overflow: hidden;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .overview-page .ov-live-dot {
+        animation: none;
+    }
+}

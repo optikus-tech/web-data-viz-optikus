@@ -1,0 +1,333 @@
+
+/* ==========================================================
+   AJUSTE FINAL - DASHBOARD DO GESTOR
+   RESPONSIVO E SEM ROLAGEM
+   ========================================================== */
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.gestor-dashboard {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.gestor-page {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: clamp(6px, 1vh, 12px);
+
+    padding: clamp(8px, 1.5vw, 18px);
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+}
+
+/* Evita que os elementos ultrapassem a largura */
+
+.gestor-page > * {
+    width: 100%;
+    max-width: 1400px;
+    min-width: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* CABEÇALHO */
+
+.gestor-header {
+    flex-shrink: 0;
+    padding: 12px 18px;
+}
+
+.gestor-header h1 {
+    font-size: clamp(16px, 1.4vw, 22px);
+}
+
+/* FILTROS */
+
+.gestor-toolbar {
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+/* INDICADORES */
+
+.gestor-kpis {
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.gestor-kpi {
+    min-width: 0;
+    padding: 12px;
+}
+
+.gestor-kpi > strong {
+    font-size: clamp(19px, 2vw, 27px);
+    margin-top: 8px;
+}
+
+/* CONTEÚDO PRINCIPAL */
+
+.gestor-content {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+
+    gap: 12px;
+    overflow: hidden;
+}
+
+/* CARTÕES */
+
+.gestor-card {
+    min-width: 0;
+    min-height: 0;
+
+    padding: 12px 14px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.gestor-card-header {
+    flex-shrink: 0;
+    margin-bottom: 10px;
+}
+
+/* TABELA */
+
+.gestor-table-wrapper {
+    width: 100%;
+    min-height: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.gestor-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+}
+
+.gestor-table th,
+.gestor-table td {
+    padding: 8px 5px;
+    font-size: clamp(9px, .8vw, 11px);
+    overflow-wrap: anywhere;
+}
+
+.gestor-server-name strong {
+    font-size: 11px;
+}
+
+/* PRIORIDADES */
+
+.gestor-prioridade-lista {
+    min-height: 0;
+    overflow: hidden;
+    gap: 7px;
+}
+
+.gestor-prioridade {
+    padding: 8px 10px;
+    gap: 8px;
+}
+
+.gestor-prioridade-info strong {
+    font-size: 11px;
+}
+
+.gestor-prioridade-info p {
+    font-size: 9px;
+}
+
+/* SELETOR DE SERVIDOR */
+
+.seletor-servidor {
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+}
+
+.seletor-info {
+    min-width: 180px;
+}
+
+/* RODAPÉ */
+
+.gestor-footer {
+    flex-shrink: 0;
+    padding: 5px 2px;
+}
+
+/* ==========================================================
+   NOTEBOOKS E TELAS MENORES
+   ========================================================== */
+
+@media (max-height: 800px) {
+
+    .gestor-page {
+        gap: 7px;
+        padding: 10px 16px;
+    }
+
+    .gestor-header {
+        padding: 9px 15px;
+    }
+
+    .gestor-kpi {
+        padding: 9px 12px;
+    }
+
+    .gestor-card {
+        padding: 10px;
+    }
+
+    .gestor-card-header {
+        margin-bottom: 7px;
+    }
+
+    .gestor-table th,
+    .gestor-table td {
+        padding: 6px 4px;
+    }
+
+    .gestor-prioridade {
+        padding: 6px 8px;
+    }
+}
+
+/* ==========================================================
+   TABLETS
+   ========================================================== */
+
+@media (max-width: 900px) {
+
+    .gestor-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gestor-content {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    .gestor-table th,
+    .gestor-table td {
+        font-size: 9px;
+    }
+}
+
+/* ==========================================================
+   CELULARES
+   ========================================================== */
+
+@media (max-width: 600px) {
+
+    .gestor-page {
+        padding: 8px;
+        gap: 7px;
+    }
+
+    .gestor-header {
+        padding: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .gestor-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .gestor-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+    }
+
+    .gestor-kpi {
+        padding: 8px;
+    }
+
+    .gestor-kpi-top {
+        font-size: 9px;
+    }
+
+    .gestor-kpi > strong {
+        font-size: 19px;
+    }
+
+    .gestor-card {
+        padding: 8px;
+    }
+
+    .gestor-prioridade {
+        padding: 6px;
+    }
+
+    .gestor-footer {
+        font-size: 9px;
+    }
+
+    .seletor-servidor {
+        width: 100%;
+    }
+
+    .seletor-info {
+        width: 100%;
+    }
+
+    #selectServidor,
+    #btnAcessarAnalista {
+        width: 100%;
+    }
+}
+
+/* TELAS MUITO PEQUENAS */
+
+@media (max-width: 380px) {
+
+    .gestor-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .gestor-kpi > strong {
+        font-size: 17px;
+    }
+}
+
+/* GARANTE QUE GRÁFICOS NÃO ESTOUREM O LAYOUT */
+
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Visão Geral | Gestor</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./dashboard-admin.css">
+  <link rel="stylesheet" href="./overview-componentes_fundoazul.css">
+  <link rel="stylesheet" href="./monitoramento.css">
+
+  <link rel="shortcut icon" href="./img/svg/favicon.svg" type="image/x-icon">
+
+  <script src="./admin-sidebar.js" defer></script>
+</head>
+
+<body>
+
+  <aside class="sidebar" data-admin-sidebar></aside>
+
+  <main class="dashboard-content gestor-page">
+
+    <!-- CABEÇALHO -->
+    <header class="gestor-header">
+      <div>
+        <h1>Visão Geral da Infraestrutura</h1>
+        <p>Acompanhamento operacional dos servidores</p>
+      </div>
+
+      <!-- CRIAÇÃO DO SELECT SERVIDOR -->
+      <div class="seletor-info">
+        <label for="selectServidor"></label>
+
+        <select id="selectServidor">
+          <option value="">Selecione um servidor</option>
+        </select>
+      </div>
+
+      <button type="button" id="btnAcessarAnalista" disabled>
+        Acessar Analista
+      </button>
+      </div>
+
+      <div class="gestor-header-info">
+        <span class="gestor-live">
+          <i></i>
+          Monitoramento ativo
+        </span>
+
+        <span id="ultimaAtualizacao">Atualizando...</span>
+      </div>
+    </header>
+
+    <!-- FILTROS -->
+    <section class="gestor-toolbar">
+      <div>
+        <label for="periodoGestor">Período de análise</label>
+
+        <select id="periodoGestor">
+          <option value="30">Últimos 30 minutos</option>
+          <option value="60" selected>Última 1 hora</option>
+          <option value="180">Últimas 3 horas</option>
+        </select>
+      </div>
+
+
+
+      <span class="gestor-demo" id="badgeDemo">
+        Dados simulados
+      </span>
+
+    </section>
+
+    <!-- INDICADORES -->
+    <section class="gestor-kpis">
+
+      <article class="gestor-kpi">
+        <div class="gestor-kpi-top">
+          <span>Servidores cadastrados</span>
+          <span class="gestor-kpi-icon">▣</span>
+        </div>
+        <strong id="totalServidores">--</strong>
+        <small>Total de servidores monitorados</small>
+      </article>
+
+      <article class="gestor-kpi">
+        <div class="gestor-kpi-top">
+          <span>Servidores normais</span>
+          <span class="gestor-kpi-icon verde">✓</span>
+        </div>
+        <strong id="totalNormais">--</strong>
+        <small>Funcionamento dentro dos limites</small>
+      </article>
+
+      <article class="gestor-kpi">
+        <div class="gestor-kpi-top">
+          <span>Servidores em alerta</span>
+          <span class="gestor-kpi-icon amarelo">!</span>
+        </div>
+        <strong id="totalAlertas">--</strong>
+        <small>Necessitam de atenção</small>
+      </article>
+
+      <article class="gestor-kpi">
+        <div class="gestor-kpi-top">
+          <span>Servidores críticos</span>
+          <span class="gestor-kpi-icon vermelho">!</span>
+        </div>
+        <strong id="totalCriticos">--</strong>
+        <small>Necessitam de prioridade</small>
+      </article>
+
+    </section>
+
+    <!-- VISÃO DOS SERVIDORES -->
+    <section class="gestor-card">
+
+      <div class="gestor-card-header">
+        <div>
+          <h2>Saúde dos servidores</h2>
+          <p>Resumo da utilização dos recursos de infraestrutura</p>
+        </div>
+
+        <span id="contadorServidores">-- servidores</span>
+      </div>
+
+      <div class="gestor-table-wrapper">
+
+        <table class="gestor-table">
+
+          <thead>
+            <tr>
+              <th>Servidor</th>
+              <th>CPU</th>
+              <th>RAM</th>
+              <th>Disco</th>
+              <th>Rede</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+
+          <tbody id="tabelaServidores">
+            <tr>
+              <td colspan="6">Carregando servidores...</td>
+            </tr>
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- PRIORIDADES -->
+    <section class="gestor-card gestor-prioridades">
+
+      <div class="gestor-card-header">
+        <div>
+          <h2>Prioridades de atenção</h2>
+          <p>Recursos que ultrapassaram os limites definidos</p>
+        </div>
+
+        <span class="gestor-prioridade-contador" id="contadorPrioridades">
+          0 ocorrências
+        </span>
+      </div>
+
+      <div id="listaPrioridades" class="gestor-prioridade-lista">
+        <p class="gestor-vazio">Carregando informações...</p>
+      </div>
+
+    </section>
+
+    <footer class="gestor-footer">
+      <span>OPTIKUS · Painel de Gestão de Infraestrutura</span>
+      <span id="statusAtualizacao">Aguardando dados...</span>
+    </footer>
+
+  </main>
+
+  <!-- CAMADA COMPARTILHADA DE DADOS -->
+  <script src="./monitoramento-dados.js"></script>
+
+  <!-- LÓGICA DO GESTOR -->
+  <script src="./overview-gestor.js"></script>
+
+</body>
+
+</html>
