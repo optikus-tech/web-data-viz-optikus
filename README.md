@@ -14,6 +14,7 @@ _Implementação de Referência para o seu Projeto de Primeiro Semestre_
 1. Crie, no Banco de Dados, as tabelas necessárias para o funcionamento deste projeto.
 - Em uma instalação nova, use **/src/database/script-tabelas.sql**. Atenção: esse script recria o banco `optikus`.
 - Para atualizar uma instalação existente sem apagar os dados, use **/src/database/migracao-servidores.sql**.
+- Em um banco existente que já tenha a tabela `parametro_limite`, execute uma vez **/src/database/migracao-parametros-ativos.sql** para permitir atualizar limites sem apagar a configuração usada por capturas antigas.
 - Os números de série autorizados devem ser provisionados na tabela `equipamento`, associados à empresa e ao MAC Address.
 
 
@@ -39,6 +40,12 @@ _O comando acima irá iniciar seu projeto e efetuar os comandos de acordo com a 
 6. Para "ver" seu projeto funcionando, acesse em seu navegador o caminho **informado no terminal**.
 
 7. Caso queira parar a execução, tecle **CTRL+C** no terminal em que o projeto está rodando.
+
+## Limites de monitoramento por servidor
+
+Ao cadastrar um servidor, o sistema cria componentes de monitoramento para CPU, memória e disco e aplica o perfil inicial da responsabilidade escolhida. Em **Ações → Configurar limites**, o contratante pode definir o início do alerta e do estado crítico para cada métrica; a alteração vale somente para aquele servidor.
+
+Os parâmetros antigos ficam preservados e inativos quando os limites são alterados, pois as capturas existentes continuam vinculadas à regra aplicada no momento da coleta. Os coletores devem usar somente parâmetros ativos ao classificar uma nova leitura.
 
 ## Adicionar novo recurso ao projeto
 

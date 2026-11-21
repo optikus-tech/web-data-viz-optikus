@@ -14,6 +14,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const localidades = document.getElementById("id-local");
   const modalFiltro = document.getElementById("modal-filtro-servidor");
   const modalDetalhes = document.getElementById("modal-detalhes-servidor");
+  const modalLimites = document.getElementById("modal-limites-servidor");
+  const formLimites = document.getElementById("form-limites-servidor");
+  const camposLimites = document.getElementById("campos-limites-servidor");
+  const contextoLimites = document.getElementById("contexto-limites-servidor");
+  const mensagemLimites = document.getElementById("mensagem-limites-servidor");
+  const botaoSalvarLimites = document.getElementById("btn-salvar-limites-servidor");
   const modalConfirmacaoExclusao = document.getElementById("modal-confirmar-exclusao-servidor");
   const textoConfirmacaoExclusao = document.getElementById("texto-confirmar-exclusao-servidor");
   const mensagemExclusao = document.getElementById("mensagem-exclusao-servidor");
@@ -24,7 +30,13 @@ document.addEventListener("DOMContentLoaded", function () {
   let numeroSerieValidado = "";
   let filtrosAtivos = {};
   let servidorParaExcluir = null;
+  let servidorConfigurandoLimites = null;
   let exclusaoEmAndamento = false;
+  const metricasConfiguraveis = [
+    { tipo: "CPU", nome: "CPU" },
+    { tipo: "Memoria", nome: "Memória (RAM)" },
+    { tipo: "Disco", nome: "Disco" }
+  ];
 
   function requisicao(url, dados) {
     return fetch(url, {
@@ -37,6 +49,168 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error(erro || "Não foi possível concluir a operação.");
       }
       return resposta.status === 204 ? null : resposta.json();
+    });
+  }
+
+  function formatarPercentual(valor) {
+    return Number(valor).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function atualizarPreviaLimite(cartao, entradaAlerta, entradaCritico) {
+    const previa = cartao.querySelector(".limit-preview");
+    const alerta = Number(entradaAlerta.value);
+    const critico = Number(entradaCritico.value);
+    if (!entradaAlerta.value || !entradaCritico.value
+      || !Number.isFinite(alerta) || !Number.isFinite(critico)
+      || alerta <= 0 || alerta >= critico || critico > 100) {
+      previa.textContent = "Informe um alerta menor que o limite crítico.";
+      return;
+    }
+
+    previa.textContent = "Normal: 0–" + formatarPercentual(alerta - 0.01)
+      + "% · Alerta: " + formatarPercentual(alerta)
+      + "–" + formatarPercentual(critico - 0.01)
+      + "% · Crítico: " + formatarPercentual(critico) + "–100%";
+  }
+
+  function renderizarCamposLimites(metricas) {
+    const porTipo = {};
+    metricas.forEach(function (metrica) {
+      porTipo[metrica.tipo] = metrica;
+    });
+    camposLimites.replaceChildren();
+
+    metricasConfiguraveis.forEach(function (metrica) {
+      const atual = porTipo[metrica.tipo] || {};
+      const cartao = document.createElement("fieldset");
+      cartao.className = "limit-metric-card";
+      const legenda = document.createElement("legend");
+      legenda.textContent = metrica.nome;
+
+      const campos = document.createElement("div");
+      campos.className = "limit-threshold-fields";
+      const grupoAlerta = document.createElement("div");
+      grupoAlerta.className = "form-group";
+      const rotuloAlerta = document.createElement("label");
+      rotuloAlerta.textContent = "Início do alerta (%)";
+      rotuloAlerta.htmlFor = "limite-alerta-" + metrica.tipo;
+      const entradaAlerta = document.createElement("input");
+      entradaAlerta.className = "form-control";
+      entradaAlerta.id = rotuloAlerta.htmlFor;
+      entradaAlerta.name = "inicio_alerta_" + metrica.tipo;
+      entradaAlerta.type = "number";
+      entradaAlerta.min = "0.01";
+      entradaAlerta.max = "99.99";
+      entradaAlerta.step = "0.01";
+      entradaAlerta.required = true;
+      entradaAlerta.value = atual.inicio_alerta === null || atual.inicio_alerta === undefined
+        ? ""
+        : atual.inicio_alerta;
+      grupoAlerta.append(rotuloAlerta, entradaAlerta);
+
+      const grupoCritico = document.createElement("div");
+      grupoCritico.className = "form-group";
+      const rotuloCritico = document.createElement("label");
+      rotuloCritico.textContent = "Início do crítico (%)";
+      rotuloCritico.htmlFor = "limite-critico-" + metrica.tipo;
+      const entradaCritico = document.createElement("input");
+      entradaCritico.className = "form-control";
+      entradaCritico.id = rotuloCritico.htmlFor;
+      entradaCritico.name = "inicio_critico_" + metrica.tipo;
+      entradaCritico.type = "number";
+      entradaCritico.min = "0.02";
+      entradaCritico.max = "100";
+      entradaCritico.step = "0.01";
+      entradaCritico.required = true;
+      entradaCritico.value = atual.inicio_critico === null || atual.inicio_critico === undefined
+        ? ""
+        : atual.inicio_critico;
+      grupoCritico.append(rotuloCritico, entradaCritico);
+      campos.append(grupoAlerta, grupoCritico);
+
+      const previa = document.createElement("p");
+      previa.className = "limit-preview";
+      cartao.append(legenda, campos, previa);
+      camposLimites.appendChild(cartao);
+
+      entradaAlerta.addEventListener("input", function () {
+        atualizarPreviaLimite(cartao, entradaAlerta, entradaCritico);
+      });
+      entradaCritico.addEventListener("input", function () {
+        atualizarPreviaLimite(cartao, entradaAlerta, entradaCritico);
+      });
+      atualizarPreviaLimite(cartao, entradaAlerta, entradaCritico);
+    });
+  }
+
+  function abrirConfiguracaoLimites(servidor) {
+    servidorConfigurandoLimites = servidor;
+    contextoLimites.textContent = servidor.hostname + " · " + servidor.responsabilidade;
+    mensagemLimites.hidden = true;
+    mensagemLimites.textContent = "";
+    mensagemLimites.classList.remove("feedback-success");
+    botaoSalvarLimites.disabled = true;
+    mensagemLimites.textContent = "Carregando os limites deste servidor...";
+    mensagemLimites.hidden = false;
+    renderizarCamposLimites([]);
+    mostrarModal(modalLimites, document.getElementById("btn-fechar-limites-servidor"));
+
+    requisicao("/servidores/limites", {
+      empresa: empresa,
+      id_servidor: servidor.id
+    }).then(function (dados) {
+      mensagemLimites.hidden = true;
+      mensagemLimites.textContent = "";
+      renderizarCamposLimites(dados.metricas);
+      const tiposDisponiveis = dados.metricas.map(function (metrica) {
+        return metrica.tipo;
+      });
+      const temMetricas = metricasConfiguraveis.every(function (metrica) {
+        return tiposDisponiveis.includes(metrica.tipo);
+      });
+      botaoSalvarLimites.disabled = !temMetricas;
+      if (!temMetricas) {
+        mensagemLimites.textContent =
+          "Este servidor ainda não tem CPU, memória e disco configurados para monitoramento.";
+        mensagemLimites.hidden = false;
+      }
+    }).catch(function (erro) {
+      mensagemLimites.textContent = erro.message;
+      mensagemLimites.hidden = false;
+    });
+  }
+
+  function salvarConfiguracaoLimites(event) {
+    event.preventDefault();
+    if (!servidorConfigurandoLimites || !formLimites.reportValidity()) return;
+
+    const limites = metricasConfiguraveis.map(function (metrica) {
+      return {
+        tipo: metrica.tipo,
+        inicio_alerta: Number(formLimites.elements["inicio_alerta_" + metrica.tipo].value),
+        inicio_critico: Number(formLimites.elements["inicio_critico_" + metrica.tipo].value)
+      };
+    });
+
+    botaoSalvarLimites.disabled = true;
+    mensagemLimites.hidden = true;
+    mensagemLimites.classList.remove("feedback-success");
+    requisicao("/servidores/limites/salvar", {
+      empresa: empresa,
+      id_servidor: servidorConfigurandoLimites.id,
+      limites: limites
+    }).then(function (resultado) {
+      mensagemLimites.textContent = resultado.mensagem;
+      mensagemLimites.classList.add("feedback-success");
+      mensagemLimites.hidden = false;
+    }).catch(function (erro) {
+      mensagemLimites.textContent = erro.message;
+      mensagemLimites.hidden = false;
+    }).finally(function () {
+      botaoSalvarLimites.disabled = false;
     });
   }
 
@@ -356,7 +530,26 @@ document.addEventListener("DOMContentLoaded", function () {
   function fecharDetalhes() {
     fecharModal(modalDetalhes);
   }
+
+  function fecharModalLimites() {
+    const servidor = servidorConfigurandoLimites;
+    servidorConfigurandoLimites = null;
+    formLimites.reset();
+    camposLimites.replaceChildren();
+    mensagemLimites.hidden = true;
+    mensagemLimites.textContent = "";
+    mensagemLimites.classList.remove("feedback-success");
+    botaoSalvarLimites.disabled = true;
+    const acionador = servidor
+      ? tabela.querySelector('[data-server-id="' + servidor.id + '"]')
+      : null;
+    fecharModal(modalLimites, acionador);
+  }
+
   document.getElementById("btn-fechar-detalhes").addEventListener("click", fecharDetalhes);
+  document.getElementById("btn-fechar-limites-servidor").addEventListener("click", fecharModalLimites);
+  document.getElementById("btn-cancelar-limites-servidor").addEventListener("click", fecharModalLimites);
+  formLimites.addEventListener("submit", salvarConfiguracaoLimites);
   tabela.addEventListener("click", function (event) {
     const botao = event.target.closest("[data-server-id]");
     if (!botao) return;
@@ -389,6 +582,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     const footer = modalDetalhes.querySelector(".modal-footer");
+    const botaoConfigurarLimites = document.createElement("button");
+    botaoConfigurarLimites.className = "btn-secondary";
+    botaoConfigurarLimites.type = "button";
+    botaoConfigurarLimites.textContent = "Configurar limites";
+    botaoConfigurarLimites.addEventListener("click", function () {
+      fecharDetalhes();
+      abrirConfiguracaoLimites(servidor);
+    });
+
     const botaoDeletar = document.createElement("button");
     botaoDeletar.className = "btn-tertiary";
     botaoDeletar.type = "button";
@@ -396,7 +598,7 @@ document.addEventListener("DOMContentLoaded", function () {
     botaoDeletar.addEventListener("click", function () {
       abrirConfirmacaoExclusao(servidor);
     });
-    footer.replaceChildren(botaoDeletar);
+    footer.replaceChildren(botaoConfigurarLimites, botaoDeletar);
 
     mostrarModal(modalDetalhes, document.getElementById("btn-fechar-detalhes"));
   });
@@ -413,6 +615,8 @@ document.addEventListener("DOMContentLoaded", function () {
         resetarCadastro();
       } else if (modal === modalFiltro) {
         fecharFiltro();
+      } else if (modal === modalLimites) {
+        fecharModalLimites();
       } else if (modal === modalDetalhes) {
         fecharDetalhes();
       } else if (modal === modalConfirmacaoExclusao) {
@@ -427,6 +631,8 @@ document.addEventListener("DOMContentLoaded", function () {
       resetarCadastro();
     } else if (modalFiltro.classList.contains("active")) {
       fecharFiltro();
+    } else if (modalLimites.classList.contains("active")) {
+      fecharModalLimites();
     } else if (modalConfirmacaoExclusao.classList.contains("active")) {
       fecharConfirmacaoExclusao();
     } else if (modalDetalhes.classList.contains("active")) {

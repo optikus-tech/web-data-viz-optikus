@@ -125,6 +125,7 @@ CREATE TABLE IF NOT EXISTS parametro_limite (
     valor_maximo DECIMAL(10,2) NOT NULL,
     criticidade ENUM('BAIXO', 'MEDIO', 'ALTO', 'CRITICO'),
     id_componente INT NOT NULL,
+    ativo TINYINT(1) NOT NULL DEFAULT 1,
     criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
     atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     alertaId INT NOT NULL,
@@ -153,12 +154,13 @@ VALUES ('01414001', 'Rua Haddock Lobo, 595', 'Cerqueira César', 'São Paulo', '
 INSERT INTO empresa (razao_social, cnpj, status, localidadeId)
 VALUES ('Nexus Tecnologia LTDA', '12345678000199', 'ATIVA', 1);
 
--- Equipamentos autorizados na base (ID 1 já será ativado; IDs 2 e 3 ficam disponíveis)
+-- Equipamentos autorizados na base
 INSERT INTO equipamento (numero_serie, mac_address, id_empresa)
 VALUES 
 ('LEGADO-SRV-1', '00:1A:2B:3C:4D:5E', 1),
 ('LEGADO-SRV-2', '00:1A:2B:3C:4D:5G', 1),
-('LEGADO-SRV-3', '00:1A:2B:3C:4D:5F', 1);
+('LEGADO-SRV-3', '00:1A:2B:3C:4D:5F', 1),
+('LEGADO-SRV-4', '00:1A:2B:3C:4D:60', 1);
 
 INSERT INTO cargo (nome, descricao, nivel_acesso, EmpresaId)
 VALUES
@@ -180,9 +182,14 @@ VALUES
 ('Matheus Rodrigues', '90123456789', 'matheus@exemplo.com', '11987654329', 'Teste123', 'ATIVO', 1, 2, '2026-08-21 16:50:00', '2026-10-11 13:35:00'),
 ('Camila Pereira', '01234567890', 'camila@exemplo.com', '11987654330', 'Teste123', 'ATIVO', 1, 3, '2026-10-01 09:10:00', '2026-10-16 15:45:00');
 
--- Servidor ativado vinculando ao equipamento ID 1 ('LEGADO-SRV-1' / '00:1A:2B:3C:4D:5E')
-INSERT INTO servidor (id_equipamento, hostname, ip, sistema_operacional, responsabilidade, id_local)
-VALUES (1, 'DanielRocha', '192.168.0.10', 'Windows 11', 'Não informada', 1);
+-- Servidores iniciais para os quatro cenários de uso
+INSERT INTO servidor
+(id_equipamento, hostname, ip, sistema_operacional, responsabilidade, id_local)
+VALUES
+(1, 'srv-optikus-storage-01', '192.168.0.10', 'Windows 11', 'Armazenamento', 1),
+(2, 'srv-optikus-ia-01', '192.168.0.11', 'Ubuntu Server', 'Processamento de IA', 1),
+(3, 'srv-optikus-nvr-01', '192.168.0.12', 'Windows Server', 'NVR', 1),
+(4, 'srv-optikus-stream-01', '192.168.0.13', 'Ubuntu Server', 'Gateway de Streaming', 1);
 
 INSERT INTO tipo_componente (nome) 
 VALUES 
@@ -191,12 +198,27 @@ VALUES
 ('Disco'), 
 ('REDE');
 
-INSERT INTO componente (nome, fabricante, modelo, capacidade, unidade_medida, status, id_servidor, id_tipo)
-VALUES 
-('Processador', NULL, NULL, NULL, '%', 'ATIVO', 1, 1),
-('Memória RAM', NULL, NULL, NULL, '%', 'ATIVO', 1, 2),
-('Disco Principal', NULL, NULL, NULL, '%', 'ATIVO', 1, 3),
-('Segundos Perdidos', NULL, NULL, NULL, 's', 'ATIVO', 1, 4);
+-- Componentes monitorados nos quatro servidores
+INSERT INTO componente
+(nome, fabricante, modelo, capacidade, unidade_medida, status, id_servidor, id_tipo)
+SELECT 'Processador', NULL, NULL, NULL, '%', 'ATIVO', s.id, tc.id
+FROM servidor s
+JOIN tipo_componente tc ON tc.nome = 'CPU'
+WHERE s.responsabilidade IN ('Armazenamento', 'Processamento de IA', 'NVR', 'Gateway de Streaming');
+
+INSERT INTO componente
+(nome, fabricante, modelo, capacidade, unidade_medida, status, id_servidor, id_tipo)
+SELECT 'Memória RAM', NULL, NULL, NULL, '%', 'ATIVO', s.id, tc.id
+FROM servidor s
+JOIN tipo_componente tc ON tc.nome = 'Memoria'
+WHERE s.responsabilidade IN ('Armazenamento', 'Processamento de IA', 'NVR', 'Gateway de Streaming');
+
+INSERT INTO componente
+(nome, fabricante, modelo, capacidade, unidade_medida, status, id_servidor, id_tipo)
+SELECT 'Disco Principal', NULL, NULL, NULL, '%', 'ATIVO', s.id, tc.id
+FROM servidor s
+JOIN tipo_componente tc ON tc.nome = 'Disco'
+WHERE s.responsabilidade IN ('Armazenamento', 'Processamento de IA', 'NVR', 'Gateway de Streaming');
 
 INSERT INTO alerta (nivel, status)
 VALUES
@@ -205,28 +227,137 @@ VALUES
 ('ALTO', 'ABERTO'),
 ('CRITICO', 'ABERTO');
 
-INSERT INTO parametro_limite (valor_minimo, valor_maximo, criticidade, id_componente, alertaId)
-VALUES
--- CPU (ID 1)
-(0, 79, 'MEDIO', 1, 2),
-(80, 89, 'ALTO', 1, 3),
-(90, 100, 'CRITICO', 1, 4),
+-- Limites de 1: Armazenamento de Vídeo
+INSERT INTO parametro_limite
+(valor_minimo, valor_maximo, criticidade, id_componente, alertaId)
+SELECT faixas.minimo, faixas.maximo, faixas.criticidade,
+       c.id,
+       (SELECT a.id FROM alerta a WHERE a.nivel = faixas.criticidade LIMIT 1)
+FROM componente c
+JOIN tipo_componente tc ON tc.id = c.id_tipo
+JOIN servidor s ON s.id = c.id_servidor
+JOIN (
+    SELECT 'CPU' AS tipo, 0.00 AS minimo, 79.99 AS maximo, 'MEDIO' AS criticidade
+    UNION ALL SELECT 'CPU', 80.00, 89.99, 'ALTO'
+    UNION ALL SELECT 'CPU', 90.00, 100.00, 'CRITICO'
+    UNION ALL SELECT 'Memoria', 0.00, 79.99, 'MEDIO'
+    UNION ALL SELECT 'Memoria', 80.00, 89.99, 'ALTO'
+    UNION ALL SELECT 'Memoria', 90.00, 100.00, 'CRITICO'
+    UNION ALL SELECT 'Disco', 0.00, 84.99, 'MEDIO'
+    UNION ALL SELECT 'Disco', 85.00, 94.99, 'ALTO'
+    UNION ALL SELECT 'Disco', 95.00, 100.00, 'CRITICO'
+) faixas ON faixas.tipo = tc.nome
+WHERE s.responsabilidade = 'Armazenamento';
 
--- RAM (ID 2)
-(0, 59, 'MEDIO', 2, 2),
-(60, 89, 'ALTO', 2, 3),
-(90, 100, 'CRITICO', 2, 4),
+-- Limites de 2: Processamento de IA
+INSERT INTO parametro_limite
+(valor_minimo, valor_maximo, criticidade, id_componente, alertaId)
+SELECT faixas.minimo, faixas.maximo, faixas.criticidade,
+       c.id,
+       (SELECT a.id FROM alerta a WHERE a.nivel = faixas.criticidade LIMIT 1)
+FROM componente c
+JOIN tipo_componente tc ON tc.id = c.id_tipo
+JOIN servidor s ON s.id = c.id_servidor
+JOIN (
+    SELECT 'CPU' AS tipo, 0.00 AS minimo, 84.99 AS maximo, 'MEDIO' AS criticidade
+    UNION ALL SELECT 'CPU', 85.00, 94.99, 'ALTO'
+    UNION ALL SELECT 'CPU', 95.00, 100.00, 'CRITICO'
+    UNION ALL SELECT 'Memoria', 0.00, 89.99, 'MEDIO'
+    UNION ALL SELECT 'Memoria', 90.00, 96.99, 'ALTO'
+    UNION ALL SELECT 'Memoria', 97.00, 100.00, 'CRITICO'
+    UNION ALL SELECT 'Disco', 0.00, 79.99, 'MEDIO'
+    UNION ALL SELECT 'Disco', 80.00, 89.99, 'ALTO'
+    UNION ALL SELECT 'Disco', 90.00, 100.00, 'CRITICO'
+) faixas ON faixas.tipo = tc.nome
+WHERE s.responsabilidade = 'Processamento de IA';
 
--- DISCO (ID 3)
-(0, 74, 'MEDIO', 3, 2),
-(75, 89, 'ALTO', 3, 3),
-(90, 100, 'CRITICO', 3, 4),
+-- Limites de 3: Gravação NVR
+INSERT INTO parametro_limite
+(valor_minimo, valor_maximo, criticidade, id_componente, alertaId)
+SELECT faixas.minimo, faixas.maximo, faixas.criticidade,
+       c.id,
+       (SELECT a.id FROM alerta a WHERE a.nivel = faixas.criticidade LIMIT 1)
+FROM componente c
+JOIN tipo_componente tc ON tc.id = c.id_tipo
+JOIN servidor s ON s.id = c.id_servidor
+JOIN (
+    SELECT 'CPU' AS tipo, 0.00 AS minimo, 79.99 AS maximo, 'MEDIO' AS criticidade
+    UNION ALL SELECT 'CPU', 80.00, 89.99, 'ALTO'
+    UNION ALL SELECT 'CPU', 90.00, 100.00, 'CRITICO'
+    UNION ALL SELECT 'Memoria', 0.00, 84.99, 'MEDIO'
+    UNION ALL SELECT 'Memoria', 85.00, 94.99, 'ALTO'
+    UNION ALL SELECT 'Memoria', 95.00, 100.00, 'CRITICO'
+    UNION ALL SELECT 'Disco', 0.00, 84.99, 'MEDIO'
+    UNION ALL SELECT 'Disco', 85.00, 94.99, 'ALTO'
+    UNION ALL SELECT 'Disco', 95.00, 100.00, 'CRITICO'
+) faixas ON faixas.tipo = tc.nome
+WHERE s.responsabilidade = 'NVR';
 
--- Rede (ID 4)
-(0,     0.035, 'BAIXO',   4, 1),
-(0.035, 0.5,   'MEDIO',   4, 2),
-(0.5,   1,     'ALTO',    4, 3),
-(1,     9999,  'CRITICO', 4, 4);
+-- Limites de 4: Gateway de Streaming
+INSERT INTO parametro_limite
+(valor_minimo, valor_maximo, criticidade, id_componente, alertaId)
+SELECT faixas.minimo, faixas.maximo, faixas.criticidade,
+       c.id,
+       (SELECT a.id FROM alerta a WHERE a.nivel = faixas.criticidade LIMIT 1)
+FROM componente c
+JOIN tipo_componente tc ON tc.id = c.id_tipo
+JOIN servidor s ON s.id = c.id_servidor
+JOIN (
+    SELECT 'CPU' AS tipo, 0.00 AS minimo, 74.99 AS maximo, 'MEDIO' AS criticidade
+    UNION ALL SELECT 'CPU', 75.00, 89.99, 'ALTO'
+    UNION ALL SELECT 'CPU', 90.00, 100.00, 'CRITICO'
+    UNION ALL SELECT 'Memoria', 0.00, 79.99, 'MEDIO'
+    UNION ALL SELECT 'Memoria', 80.00, 89.99, 'ALTO'
+    UNION ALL SELECT 'Memoria', 90.00, 100.00, 'CRITICO'
+    UNION ALL SELECT 'Disco', 0.00, 79.99, 'MEDIO'
+    UNION ALL SELECT 'Disco', 80.00, 89.99, 'ALTO'
+    UNION ALL SELECT 'Disco', 90.00, 100.00, 'CRITICO'
+) faixas ON faixas.tipo = tc.nome
+WHERE s.responsabilidade = 'Gateway de Streaming';
+
+-- Leituras fictícias somente para testar a comparação de hoje com o dia anterior
+-- Em produção, essas capturas serão inseridas pelo coletor Python/Java.
+INSERT INTO captura (valor, id_componente, parametroId, criado_em)
+SELECT leituras.valor, c.id, pl.id, leituras.criado_em
+FROM (
+    SELECT valores.responsabilidade, valores.tipo,
+           CASE WHEN periodo.dia = 'ONTEM' THEN valores.valor_ontem ELSE valores.valor_hoje END AS valor,
+           periodo.criado_em
+    FROM (
+        SELECT 'Armazenamento' AS responsabilidade, 'CPU' AS tipo, 38.00 AS valor_ontem, 42.00 AS valor_hoje
+        UNION ALL SELECT 'Armazenamento', 'Memoria', 72.00, 76.00
+        UNION ALL SELECT 'Armazenamento', 'Disco', 84.00, 88.00
+        UNION ALL SELECT 'Processamento de IA', 'CPU', 76.00, 82.00
+        UNION ALL SELECT 'Processamento de IA', 'Memoria', 88.00, 94.00
+        UNION ALL SELECT 'Processamento de IA', 'Disco', 68.00, 72.00
+        UNION ALL SELECT 'NVR', 'CPU', 62.00, 68.00
+        UNION ALL SELECT 'NVR', 'Memoria', 82.00, 88.00
+        UNION ALL SELECT 'NVR', 'Disco', 88.00, 92.00
+        UNION ALL SELECT 'Gateway de Streaming', 'CPU', 76.00, 82.00
+        UNION ALL SELECT 'Gateway de Streaming', 'Memoria', 71.00, 77.00
+        UNION ALL SELECT 'Gateway de Streaming', 'Disco', 63.00, 69.00
+    ) valores
+    CROSS JOIN (
+        SELECT 'ONTEM' AS dia, DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY) AS criado_em
+        UNION ALL SELECT 'HOJE', CURRENT_TIMESTAMP
+    ) periodo
+) leituras
+JOIN servidor s ON s.responsabilidade = leituras.responsabilidade
+JOIN componente c ON c.id_servidor = s.id AND c.status = 'ATIVO'
+JOIN tipo_componente tc ON tc.id = c.id_tipo AND tc.nome = leituras.tipo
+JOIN parametro_limite pl
+  ON pl.id_componente = c.id
+  AND leituras.valor BETWEEN pl.valor_minimo AND pl.valor_maximo
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM captura existente
+    WHERE existente.id_componente = c.id
+      AND existente.criado_em >= DATE_FORMAT(leituras.criado_em, '%Y-%m-%d %H:00:00')
+      AND existente.criado_em < DATE_ADD(
+          DATE_FORMAT(leituras.criado_em, '%Y-%m-%d %H:00:00'),
+          INTERVAL 1 HOUR
+      )
+);
 
 -- =====================================================
 -- CONSULTAS DE VALIDAÇÃO ÚTEIS
