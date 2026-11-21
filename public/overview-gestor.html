@@ -139,7 +139,6 @@
       var componenteSelecionado = "";
       var atualizacaoAgendada;
       var identificadorRequisicao = 0;
-      var modoDemonstracao = false;
 
       var formatoValor = new Intl.NumberFormat("pt-BR", {
         maximumFractionDigits: 2
@@ -164,106 +163,6 @@
       function formatarValor(valor, unidade) {
         if (valor === null || valor === undefined || valor === "") return "Sem leitura";
         return formatoValor.format(Number(valor)) + (unidade ? " " + unidade : "");
-      }
-
-      function formatarDataBanco(data) {
-        return data.getFullYear() + "-"
-          + String(data.getMonth() + 1).padStart(2, "0") + "-"
-          + String(data.getDate()).padStart(2, "0") + " "
-          + String(data.getHours()).padStart(2, "0") + ":"
-          + String(data.getMinutes()).padStart(2, "0") + ":00";
-      }
-
-      function criarHistoricoDemonstrativo(tipo) {
-        var amostras = {
-          CPU: {
-            hoje: [42, 45, 43, 51, 49, 58, 55, 64, 61, 70, 67, 76, 73, 84, 92],
-            ontem: [39, 42, 40, 45, 46, 49, 51, 55, 58, 59, 64, 67, 70, 76, 81],
-            criticidade: "CRITICO",
-            limiteCritico: 90,
-            maximo: 100,
-            unidade: "%"
-          },
-          MEMORIA: {
-            hoje: [52, 54, 53, 57, 59, 58, 62, 64, 63, 67, 69, 68, 71, 74, 76],
-            ontem: [49, 50, 51, 53, 54, 55, 57, 58, 60, 61, 63, 64, 66, 68, 70],
-            criticidade: "ALTO",
-            limiteCritico: 90,
-            maximo: 89,
-            unidade: "%"
-          },
-          DISCO: {
-            hoje: [64, 65, 66, 68, 67, 69, 71, 72, 73, 74, 75, 76, 77, 78, 78],
-            ontem: [60, 61, 62, 63, 64, 65, 66, 67, 68, 68, 69, 70, 70, 71, 72],
-            criticidade: "ALTO",
-            limiteCritico: 90,
-            maximo: 89,
-            unidade: "%"
-          },
-          REDE: {
-            hoje: [0.18, 0.2, 0.19, 0.23, 0.25, 0.24, 0.28, 0.3, 0.29, 0.33, 0.35, 0.34, 0.38, 0.4, 0.42],
-            ontem: [0.15, 0.16, 0.17, 0.18, 0.2, 0.19, 0.22, 0.23, 0.24, 0.25, 0.27, 0.29, 0.31, 0.32, 0.34],
-            criticidade: "MEDIO",
-            limiteCritico: 1,
-            maximo: 0.5,
-            unidade: "s"
-          }
-        };
-        var amostra = amostras[normalizarTexto(tipo)];
-        if (!amostra) return [];
-
-        var agora = new Date();
-        var leituras = [];
-        for (var i = 0; i < amostra.hoje.length; i++) {
-          var dataHoje = new Date(agora);
-          dataHoje.setHours(agora.getHours() - (amostra.hoje.length - 1 - i), 0, 0, 0);
-          var dataOntem = new Date(dataHoje);
-          dataOntem.setDate(dataOntem.getDate() - 1);
-          leituras.push({
-            valor: amostra.hoje[i],
-            pico_hora: amostra.hoje[i],
-            criado_em: formatarDataBanco(dataHoje),
-            unidade_medida: amostra.unidade
-          }, {
-            valor: amostra.ontem[i],
-            pico_hora: amostra.ontem[i],
-            criado_em: formatarDataBanco(dataOntem),
-            unidade_medida: amostra.unidade
-          });
-        }
-        return leituras;
-      }
-
-      function aplicarDemonstracaoSeNecessario() {
-        var possuiCapturas = dadosDashboard.servidores.some(function (servidor) {
-          return servidor.metricas.some(function (metrica) {
-            return metrica.valor !== null && metrica.valor !== undefined;
-          });
-        });
-        modoDemonstracao = dadosDashboard.servidores.length > 0 && !possuiCapturas;
-
-        if (!modoDemonstracao) return;
-        var amostras = {
-          CPU: { valor: 92, valorMaximo: 100, limiteCritico: 90, criticidade: "CRITICO", statusAlerta: "ABERTO", unidade: "%" },
-          MEMORIA: { valor: 76, valorMaximo: 89, limiteCritico: 90, criticidade: "ALTO", statusAlerta: "ABERTO", unidade: "%" },
-          DISCO: { valor: 78, valorMaximo: 89, limiteCritico: 90, criticidade: "ALTO", statusAlerta: "RESOLVIDO", unidade: "%" },
-          REDE: { valor: 0.42, valorMaximo: 0.5, limiteCritico: 1, criticidade: "MEDIO", statusAlerta: "ABERTO", unidade: "s" }
-        };
-        dadosDashboard.servidores.forEach(function (servidor) {
-          servidor.metricas.forEach(function (metrica) {
-            var amostra = amostras[normalizarTexto(metrica.tipo)];
-            if (!amostra) return;
-            metrica.valor = amostra.valor;
-            metrica.valor_maximo = amostra.valorMaximo;
-            metrica.limite_critico = amostra.limiteCritico;
-            metrica.criticidade = amostra.criticidade;
-            metrica.nivel_alerta = amostra.criticidade;
-            metrica.status_alerta = amostra.statusAlerta;
-            if (!metrica.unidade_medida) metrica.unidade_medida = amostra.unidade;
-            metrica.criado_em = formatarDataBanco(new Date());
-          });
-        });
-        dadosDashboard.historico = criarHistoricoDemonstrativo(componenteSelecionado);
       }
 
       function dataLocal(valor) {
@@ -623,7 +522,7 @@
         });
 
         document.getElementById("history-note").textContent = hoje.length
-          ? hoje.length + " leitura(s) de hoje · " + (modoDemonstracao ? "dados demonstrativos" : "dados carregados do banco")
+          ? hoje.length + " leitura(s) de hoje · dados do banco"
           : "Nenhuma leitura encontrada para hoje.";
       }
 
@@ -739,16 +638,12 @@
           ? "Nenhum servidor selecionado."
           : semComponentes
             ? "Componentes não cadastrados no banco para este servidor."
-            : modoDemonstracao
-              ? "Banco sem capturas; valores demonstrativos para pré-visualização."
-              : "Dados consultados no banco de dados.";
+            : "Dados consultados no banco de dados.";
         document.querySelector(".manager-panel-heading p").textContent = !servidorSelecionado
           ? "Selecione um servidor para consultar as métricas."
           : semComponentes
             ? "Componentes não cadastrados no banco para este servidor."
-            : modoDemonstracao
-              ? "Valores fixos para pré-visualização · não são leituras reais"
-              : "Leituras armazenadas no banco de dados";
+            : "Leituras armazenadas no banco de dados";
       }
 
       function carregarDashboard() {
@@ -774,14 +669,12 @@
             return requisitarDashboard().then(function (dadosComHistorico) {
               if (requisicaoId !== identificadorRequisicao) return;
               dadosDashboard = dadosComHistorico;
-              aplicarDemonstracaoSeNecessario();
               limparErro();
               renderizarDashboard();
               if (atualizacaoAgendada) clearTimeout(atualizacaoAgendada);
               atualizacaoAgendada = setTimeout(carregarDashboard, 30000);
             });
           }
-          aplicarDemonstracaoSeNecessario();
           limparErro();
           renderizarDashboard();
           if (atualizacaoAgendada) clearTimeout(atualizacaoAgendada);
