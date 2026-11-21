@@ -1,5 +1,113 @@
 var database = require("../database/config");
 
+var metricasMonitoradas = [
+  { tipo: "CPU", nome: "Processador" },
+  { tipo: "Memoria", nome: "Memória RAM" },
+  { tipo: "Disco", nome: "Disco Principal" }
+];
+
+var limitesPadraoPorResponsabilidade = {
+  Armazenamento: {
+    CPU: [80, 90],
+    Memoria: [80, 90],
+    Disco: [85, 95]
+  },
+  "Processamento de IA": {
+    CPU: [85, 95],
+    Memoria: [90, 97],
+    Disco: [80, 90]
+  },
+  NVR: {
+    CPU: [80, 90],
+    Memoria: [85, 95],
+    Disco: [85, 95]
+  },
+  "Gateway de Streaming": {
+    CPU: [75, 90],
+    Memoria: [80, 90],
+    Disco: [80, 90]
+  }
+};
+
+function obterIdAlerta(transacao, criticidade) {
+  return transacao.executar(`
+    SELECT id
+    FROM alerta
+    WHERE nivel = ? AND status = 'ABERTO'
+    ORDER BY id
+    LIMIT 1
+    FOR UPDATE;
+  `, [criticidade]).then(function (alertas) {
+    if (alertas.length) return alertas[0].id;
+    return transacao.executar(
+      "INSERT INTO alerta (nivel, status) VALUES (?, 'ABERTO');",
+      [criticidade]
+    ).then(function (resultado) {
+      return resultado.insertId;
+    });
+  });
+}
+
+function inserirFaixasPadrao(transacao, idComponente, limites) {
+  var inicioAlerta = limites[0];
+  var inicioCritico = limites[1];
+  var faixas = [
+    { minimo: 0, maximo: inicioAlerta - 0.01, criticidade: "MEDIO" },
+    { minimo: inicioAlerta, maximo: inicioCritico - 0.01, criticidade: "ALTO" },
+    { minimo: inicioCritico, maximo: 100, criticidade: "CRITICO" }
+  ];
+
+  return faixas.reduce(function (promessa, faixa) {
+    return promessa.then(function () {
+      return obterIdAlerta(transacao, faixa.criticidade)
+        .then(function (idAlerta) {
+          return transacao.executar(`
+            INSERT INTO parametro_limite
+              (valor_minimo, valor_maximo, criticidade, id_componente, alertaId, ativo)
+            VALUES (?, ?, ?, ?, ?, 1);
+          `, [
+            faixa.minimo,
+            faixa.maximo,
+            faixa.criticidade,
+            idComponente,
+            idAlerta
+          ]);
+        });
+    });
+  }, Promise.resolve());
+}
+
+function criarMonitoramentoPadrao(transacao, idServidor, responsabilidade) {
+  var perfil = limitesPadraoPorResponsabilidade[responsabilidade];
+  if (!perfil) {
+    var erroResponsabilidade = new Error("Não há perfil padrão para esta responsabilidade.");
+    erroResponsabilidade.code = "PERFIL_NAO_ENCONTRADO";
+    return Promise.reject(erroResponsabilidade);
+  }
+
+  return metricasMonitoradas.reduce(function (promessa, metrica) {
+    return promessa.then(function () {
+      return transacao.executar(`
+        INSERT INTO tipo_componente (nome)
+        VALUES (?)
+        ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id);
+      `, [metrica.tipo]).then(function (tipos) {
+        return transacao.executar(`
+          INSERT INTO componente
+            (nome, unidade_medida, status, id_servidor, id_tipo)
+          VALUES (?, '%', 'ATIVO', ?, ?);
+        `, [metrica.nome, idServidor, tipos.insertId]).then(function (componente) {
+          return inserirFaixasPadrao(
+            transacao,
+            componente.insertId,
+            perfil[metrica.tipo]
+          );
+        });
+      });
+    });
+  }, Promise.resolve());
+}
+
 function listar(empresa) {
   var instrucaoSql = `
         SELECT *
@@ -36,6 +144,7 @@ function obterDadosDashboard(empresa, idServidor, tipoComponente) {
         FROM parametro_limite limite_critico
         WHERE limite_critico.id_componente = componente.id
           AND limite_critico.criticidade = 'CRITICO'
+          AND limite_critico.ativo = 1
       ) AS limite_critico,
       alerta.nivel AS nivel_alerta,
       alerta.status AS status_alerta
@@ -185,16 +294,171 @@ function cadastrar(dados) {
         WHERE servidor.id_equipamento = equipamento.id
       );`;
 
-  return database.executar(instrucaoSql, [
-    dados.hostname,
-    dados.ip,
-    dados.sistemaOperacional,
-    dados.versaoSo,
-    dados.responsabilidade,
-    dados.idLocal,
-    dados.numeroSerie,
-    dados.empresa
-  ]);
+  return database.executarTransacao(function (transacao) {
+    return transacao.executar(instrucaoSql, [
+      dados.hostname,
+      dados.ip,
+      dados.sistemaOperacional,
+      dados.versaoSo,
+      dados.responsabilidade,
+      dados.idLocal,
+      dados.numeroSerie,
+      dados.empresa
+    ]).then(function (resultado) {
+      if (resultado.affectedRows === 0) return resultado;
+      return criarMonitoramentoPadrao(
+        transacao,
+        resultado.insertId,
+        dados.responsabilidade
+      ).then(function () {
+        return resultado;
+      });
+    });
+  });
+}
+
+function listarLimites(empresa, idServidor) {
+  var instrucaoSql = `
+    SELECT
+      servidor.id AS id_servidor,
+      servidor.hostname,
+      tipo_componente.nome AS tipo,
+      MAX(CASE WHEN parametro_limite.criticidade = 'ALTO'
+        THEN parametro_limite.valor_minimo END) AS inicio_alerta,
+      MAX(CASE WHEN parametro_limite.criticidade = 'CRITICO'
+        THEN parametro_limite.valor_minimo END) AS inicio_critico
+    FROM servidor
+    JOIN equipamento ON servidor.id_equipamento = equipamento.id
+    JOIN empresa ON equipamento.id_empresa = empresa.id
+    LEFT JOIN componente
+      ON componente.id_servidor = servidor.id
+      AND componente.status = 'ATIVO'
+    LEFT JOIN tipo_componente ON componente.id_tipo = tipo_componente.id
+    LEFT JOIN parametro_limite
+      ON parametro_limite.id_componente = componente.id
+      AND parametro_limite.ativo = 1
+    WHERE empresa.razao_social = ? AND servidor.id = ?
+    GROUP BY servidor.id, servidor.hostname, componente.id, tipo_componente.nome
+    ORDER BY FIELD(tipo_componente.nome, 'CPU', 'Memoria', 'Disco');
+  `;
+
+  return database.executar(instrucaoSql, [empresa, idServidor])
+    .then(function (linhas) {
+      if (!linhas.length) return null;
+      return {
+        id_servidor: linhas[0].id_servidor,
+        hostname: linhas[0].hostname,
+        metricas: linhas.filter(function (linha) {
+          return linha.tipo !== null;
+        }).map(function (linha) {
+          return {
+            tipo: linha.tipo,
+            inicio_alerta: linha.inicio_alerta === null
+              ? null
+              : Number(linha.inicio_alerta),
+            inicio_critico: linha.inicio_critico === null
+              ? null
+              : Number(linha.inicio_critico)
+          };
+        })
+      };
+    });
+}
+
+function salvarLimites(empresa, idServidor, limites) {
+  return database.executarTransacao(function (transacao) {
+    return transacao.executar(`
+      SELECT servidor.id
+      FROM servidor
+      JOIN equipamento ON servidor.id_equipamento = equipamento.id
+      JOIN empresa ON equipamento.id_empresa = empresa.id
+      WHERE empresa.razao_social = ? AND servidor.id = ?
+      FOR UPDATE;
+    `, [empresa, idServidor]).then(function (servidores) {
+      if (!servidores.length) {
+        var erroServidor = new Error("Servidor não encontrado nesta empresa.");
+        erroServidor.code = "SERVIDOR_NAO_ENCONTRADO";
+        throw erroServidor;
+      }
+
+      return transacao.executar(`
+        SELECT componente.id, tipo_componente.nome AS tipo
+        FROM componente
+        JOIN tipo_componente ON componente.id_tipo = tipo_componente.id
+        WHERE componente.id_servidor = ?
+          AND componente.status = 'ATIVO'
+          AND tipo_componente.nome IN ('CPU', 'Memoria', 'Disco')
+        FOR UPDATE;
+      `, [idServidor]).then(function (componentes) {
+        var componentesPorTipo = {};
+        componentes.forEach(function (componente) {
+          if (componentesPorTipo[componente.tipo]) {
+            var erroDuplicado = new Error("Há componentes duplicados para " + componente.tipo + ".");
+            erroDuplicado.code = "COMPONENTE_DUPLICADO";
+            throw erroDuplicado;
+          }
+          componentesPorTipo[componente.tipo] = componente.id;
+        });
+
+        var faltantes = metricasMonitoradas.filter(function (metrica) {
+          return !componentesPorTipo[metrica.tipo];
+        });
+        if (faltantes.length) {
+          var erroComponente = new Error("Componentes de monitoramento ainda não foram configurados.");
+          erroComponente.code = "COMPONENTES_NAO_CONFIGURADOS";
+          throw erroComponente;
+        }
+
+        return limites.reduce(function (promessa, limite) {
+          return promessa.then(function () {
+            var idComponente = componentesPorTipo[limite.tipo];
+            var faixas = [
+              {
+                minimo: 0,
+                maximo: Number((limite.inicio_alerta - 0.01).toFixed(2)),
+                criticidade: "MEDIO"
+              },
+              {
+                minimo: limite.inicio_alerta,
+                maximo: Number((limite.inicio_critico - 0.01).toFixed(2)),
+                criticidade: "ALTO"
+              },
+              {
+                minimo: limite.inicio_critico,
+                maximo: 100,
+                criticidade: "CRITICO"
+              }
+            ];
+
+            return transacao.executar(`
+              UPDATE parametro_limite
+              SET ativo = 0
+              WHERE id_componente = ? AND ativo = 1;
+            `, [idComponente]).then(function () {
+              return faixas.reduce(function (promessaFaixa, faixa) {
+                return promessaFaixa.then(function () {
+                  return obterIdAlerta(transacao, faixa.criticidade)
+                    .then(function (idAlerta) {
+                      return transacao.executar(`
+                        INSERT INTO parametro_limite
+                          (valor_minimo, valor_maximo, criticidade, id_componente, alertaId, ativo)
+                        VALUES (?, ?, ?, ?, ?, 1);
+                      `, [
+                        faixa.minimo,
+                        faixa.maximo,
+                        faixa.criticidade,
+                        idComponente,
+                        idAlerta
+                      ]);
+                    });
+                });
+              }, Promise.resolve());
+            });
+          });
+        }, Promise.resolve());
+      });
+    });
+  });
 }
 
 function deletar(id, empresa) {
@@ -213,6 +477,8 @@ module.exports = {
   obterDadosDashboard,
   listarLocalidades,
   validarNumeroSerie,
+  listarLimites,
+  salvarLimites,
   cadastrar,
   deletar
 };
