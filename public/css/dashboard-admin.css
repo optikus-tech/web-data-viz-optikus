@@ -37,7 +37,56 @@ body {
     background: #ffffff;
     border-bottom: 1px solid #eaecf0;
 }
+.btn-chamado {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1.5px solid #16285f;
+  border-radius: 6px;
+  background: transparent;
+  color: #16285f;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
 
+.btn-chamado:hover {
+  background: #16285f;
+  color: #fff;
+}
+
+.top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icone-jira {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.btn-chamado-menu {
+  width: 90%;
+  justify-content: flex-start;
+  padding: 10px 12px;
+  font-size: 15px;
+  color: #fff;
+  border: none;
+}
+
+.btn-chamado-menu:hover {
+  background: #fff;
+  color: #16285f;
+}
+
+.btn-chamado-menu .icone-jira {
+  width: 20px;
+  height: 20px;
+}
 .breadcrumb {
     display: flex;
     align-items: center;
