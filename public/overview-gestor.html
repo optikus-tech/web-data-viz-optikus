@@ -497,6 +497,8 @@
             plugins: {
               legend: { display: false },
               tooltip: {
+                titleFont: { size: 13 },
+                bodyFont: { size: 12 },
                 callbacks: {
                   label: function (context) {
                     if (context.parsed.y === null) return context.dataset.label + ": sem leitura";
@@ -506,11 +508,15 @@
               }
             },
             scales: {
-              x: { grid: { display: false }, ticks: { autoSkip: true, maxTicksLimit: 7, maxRotation: 0 } },
+              x: {
+                grid: { display: false },
+                ticks: { autoSkip: true, maxTicksLimit: 7, maxRotation: 0, font: { size: 12 } }
+              },
               y: {
                 beginAtZero: true,
                 suggestedMax: metrica && metrica.unidade_medida === "%" ? 100 : undefined,
                 ticks: {
+                  font: { size: 12 },
                   callback: function (valor) {
                     return formatoValor.format(valor) + (metrica && metrica.unidade_medida ? " " + metrica.unidade_medida : "");
                   }
@@ -565,7 +571,8 @@
           var trilho = document.createElement("span");
           trilho.className = "manager-comparison-track";
           var barra = document.createElement("span");
-          barra.className = "manager-comparison-fill";
+          barra.className = "manager-comparison-fill " +
+            (valor === null ? "manager-no-data" : classeSeveridade);
           barra.style.width = valor === null || maximo === 0 ? "0%" : Math.min(100, valor / maximo * 100) + "%";
           trilho.append(barra);
           linha.append(topo, trilho);
