@@ -26,6 +26,36 @@ function listar(req, res) {
     });
 }
 
+function dashboard(req, res) {
+  var empresa = obterEmpresa(req);
+  var idServidor = req.body.id_servidor;
+  var tipoComponente = typeof req.body.tipo_componente === "string"
+    ? req.body.tipo_componente.trim()
+    : "";
+
+  if (!empresa) return res.status(400).send("Empresa não informada.");
+  if (idServidor !== undefined && idServidor !== null && idServidor !== ""
+    && (!Number.isSafeInteger(Number(idServidor)) || Number(idServidor) <= 0)) {
+    return res.status(400).send("Informe um servidor válido.");
+  }
+  if (tipoComponente.length > 50) {
+    return res.status(400).send("Informe um tipo de componente válido.");
+  }
+
+  servidorModel.obterDadosDashboard(
+    empresa,
+    idServidor ? Number(idServidor) : null,
+    tipoComponente
+  )
+    .then(function (dados) {
+      res.status(200).json(dados);
+    })
+    .catch(function (erro) {
+      console.error("Erro ao consultar dados do dashboard:", erro.sqlMessage || erro);
+      res.status(500).send("Erro ao consultar os dados do dashboard.");
+    });
+}
+
 function listarLocalidades(req, res) {
   var empresa = obterEmpresa(req);
   if (!empresa) return res.status(400).send("Empresa não informada.");
@@ -132,6 +162,7 @@ function deletar(req, res) {
 
 module.exports = {
   listar,
+  dashboard,
   listarLocalidades,
   validarNumeroSerie,
   cadastrar,

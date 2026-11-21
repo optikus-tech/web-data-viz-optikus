@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       gestor: 'Gestor',
       analista: 'Analista'
     };
+    const currentPage = window.location.pathname.split('/').pop() || 'dashboard-admin.html';
     const cargoInformado = (sessionStorage.getItem('cargo') || '')
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
@@ -26,13 +27,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       editor: 'gestor',
       visualizador: 'analista'
     };
-    const cargo = cargoAliases[cargoInformado] || cargoInformado;
+    const cargo = cargoAliases[cargoInformado] || cargoInformado
+      || (currentPage === 'overview-gestor.html' ? 'gestor' : '');
 
-    if (!cargos[cargo]) {
+    if (!cargos[cargo] && (cargoInformado || currentPage !== 'overview-gestor.html')) {
       console.error(`Cargo sem sidebar configurada: ${sessionStorage.getItem('cargo') || '(vazio)'}`);
     }
 
-    sidebar.querySelector('[data-sidebar-role-label]').textContent = cargos[cargo] || 'Workspace';
+    sidebar.querySelector('[data-sidebar-role-label]').textContent =
+      currentPage === 'overview-gestor.html' ? 'Visão do Gestor' : cargos[cargo] || 'Workspace';
     const overviewLink = sidebar.querySelector('.nav-item a');
     overviewLink.href = cargo === 'gestor' ? 'overview-gestor.html' : 'overview.html';
     sidebar.querySelectorAll('[data-sidebar-admin-only]').forEach((link) => {
@@ -46,7 +49,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const topBar = sidebar.querySelector('.top-bar');
     if (topBar) document.body.prepend(topBar);
 
-    const currentPage = window.location.pathname.split('/').pop() || 'dashboard-admin.html';
     const activePage = currentPage === 'dashboard-admin.html' ? overviewLink.getAttribute('href') : currentPage;
 
     sidebar.querySelectorAll('.nav-item a').forEach((link) => {
