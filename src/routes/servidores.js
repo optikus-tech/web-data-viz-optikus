@@ -6,6 +6,10 @@ router.post("/listar", function (req, res) {
     servidorController.listar(req, res);
 });
 
+router.post("/dashboard", function (req, res) {
+    servidorController.dashboard(req, res);
+});
+
 router.post("/localidades", function (req, res) {
     servidorController.listarLocalidades(req, res);
 });

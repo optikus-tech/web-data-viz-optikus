@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Overview</title>
+  <title>Visão do Gestor | Optikus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="./css/dashboard-admin.css">
@@ -14,364 +14,703 @@
   <script src="./js/admin-sidebar.js" defer></script>
 </head>
 
-<body>
+<body class="manager-dashboard">
   <aside class="sidebar" data-admin-sidebar></aside>
 
-  <main class="dashboard-content users-page">
-      <header class="users-page-header">
-            <div>
-                <h2>Overview de Componentes </h2>
-                <p class="dash-breadcrumb">Uma visão clara de como o seu servidor está funcionando </p>
-            </div>
-        </header>
+  <main class="dashboard-content users-page manager-content">
+    <div class="manager-error" id="dashboard-error" role="alert" hidden>
+      <span id="dashboard-error-message"></span>
+      <button id="dashboard-retry" type="button">Tentar novamente</button>
+    </div>
 
-        <div ------------->
-
-    <div class="seletor-componente">
-
-            <label for="componenteescolhido">Componentes</label>
-
-            <select id="componenteescolhido">
-                <option value="CPU">CPU</option>
-                <option value="RAM">RAM</option>
-                <option value="Disco">Disco</option>
-            </select>
-
+    <section class="manager-server-card" aria-labelledby="selected-server-name">
+      <div class="manager-server-identity">
+        <span class="manager-server-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="8" rx="2"></rect>
+            <rect x="3" y="13" width="18" height="8" rx="2"></rect>
+            <path d="M7 7h.01M7 17h.01M11 7h6M11 17h6"></path>
+          </svg>
+        </span>
+        <div class="manager-server-copy">
+          <div class="manager-server-title">
+            <h2 id="selected-server-name">Carregando servidores...</h2>
+            <span class="manager-severity" id="selected-server-severity">—</span>
+          </div>
+          <p id="selected-server-meta">Aguardando dados do banco de dados</p>
+          <p class="manager-focus" id="selected-server-focus">Selecione uma métrica para consultar.</p>
         </div>
+      </div>
+      <div class="manager-server-actions">
+        <label class="manager-select-label" for="server-select">SERVIDORES POR SEVERIDADE</label>
+        <select id="server-select" aria-label="Selecionar servidor" disabled>
+          <option value="">Carregando...</option>
+        </select>
+      </div>
+    </section>
 
+    <section class="manager-kpis" aria-label="Resumo operacional">
+      <article class="manager-kpi">
+        <p class="manager-kpi-title">Status operacional</p>
+        <p class="manager-kpi-value" id="operational-count">—</p>
+        <p class="manager-kpi-foot" id="operational-detail">Aguardando dados</p>
+      </article>
+      <article class="manager-kpi">
+        <p class="manager-kpi-title">Pico da métrica principal</p>
+        <p class="manager-kpi-value" id="metric-peak">—</p>
+        <p class="manager-kpi-foot" id="metric-status">Sem leitura</p>
+      </article>
+      <article class="manager-kpi">
+        <p class="manager-kpi-title">Comparação histórica</p>
+        <p class="manager-kpi-value" id="metric-comparison">—</p>
+        <p class="manager-kpi-foot">vs. mesmo horário do dia anterior</p>
+      </article>
+      <article class="manager-kpi">
+        <p class="manager-kpi-title">Fila de alertas</p>
+        <p class="manager-kpi-value" id="alert-count">—</p>
+        <p class="manager-kpi-foot" id="alert-summary">Aguardando dados</p>
+      </article>
+    </section>
 
-        <!-- kpi -->
-        <div class="kpis">
-
-            <!-- kpi1 -->
-            <div class="kpi normal" id="kpi1">
-                <div class="titulo" id="tituloKPI1">
-                 Percentual máximo de uso da CPU
-                </div>
-                <div class="valor" id="valor1">68%</div>
-                <div class="status" id="status1">Normal</div>
-             </div>
-            <!-- kp2 -->
-            <div class="kpi normal" id="kpi2">
-                <div class="titulo" id="tituloKPI2">
-                    Uso médio da CPU
-                </div>
-                <div class="valor" id="valor2">42%</div>
-                <div class="status" id="status2">Normal</div>
-            </div>
-            <!-- KPi3 -->
-            <div class="kpi normal" id="kpi3">
-                <div class="titulo" id="tituloKPI3">
-                    Uso atual da CPU
-                </div>
-                <div class="valor" id="valor3">58%</div>
-                <div class="status" id="status3">Normal</div>
-            </div>
+    <section class="manager-analysis" aria-label="Análises dos servidores">
+      <article class="cartao manager-panel">
+        <div class="manager-panel-heading">
+          <div>
+            <h2 id="history-title">Servidor vs. próprio histórico</h2>
+            <p>Leituras armazenadas no banco de dados</p>
+          </div>
+          <label class="manager-sr-only" for="component-select">Componente</label>
+          <select id="component-select" class="manager-component-select" disabled>
+            <option value="">Sem componentes</option>
+          </select>
         </div>
-<br>
-<br>
-
-        <!-- grafico de uso do componente -->
-        <div class="cartao">
-            <div class="cabecalho">
-                <div>
-                    <h2 id="tituloGraficoUso">
-                        Variação de uso da CPU
-                    </h2>
-                    <p>Leituras recentes de uso do componente </p>
-                </div>
-            </div>
-            <div class="legenda"> <span><i class="linha-roxa"></i>Uso atual</span> <span> </span><i class="linha-cinza"></i>Uso anterior </span> </div>
-
-            <div class="grafico-linha"> <canvas id="graficoUso"></canvas></div>
-
+        <div class="manager-legend" aria-label="Legenda do gráfico">
+          <span><i class="manager-legend-line manager-blue-line"></i>Hoje</span>
+          <span><i class="manager-legend-line manager-history-line"></i>Dia anterior</span>
+          <span><i class="manager-legend-line manager-limit-line"></i>Limite crítico</span>
         </div>
-
-
-        <!-- grafico de uso por servidor -->
-        <div class="cartao">
-            <div class="cabecalho">
-                <div>
-                    <h2 id="tituloGraficoCPU">Uso da CPU por servidor </h2>
-                    <p> Uso atual do componente nos quatro servidores</p>
-                </div>
-         </div>
-
-
-            <div class="legenda"> <span> <i class="linha-roxa"></i>  Uso atual  </span>
-             <span>   <i class="linha-cinza"></i>   Limite (100%) </span></div>
-        
-            <div class="grafico-barras">
-                <canvas id="graficoCPU"></canvas>
-            </div>
+        <div class="grafico-linha manager-chart">
+          <canvas id="history-chart" role="img" aria-label="Histórico de leituras do componente selecionado"></canvas>
         </div>
-    </main>
+        <p class="manager-chart-note" id="history-note">Nenhuma leitura encontrada.</p>
+      </article>
 
+      <article class="cartao manager-panel">
+        <div class="manager-panel-heading">
+          <div>
+            <h2>Comparativo cruzado entre servidores</h2>
+            <p id="comparison-description">Última leitura disponível por servidor</p>
+          </div>
+        </div>
+        <div class="manager-severity-legend" aria-label="Legenda de severidade">
+          <span><i class="manager-dot manager-critical"></i>Crítico</span>
+          <span><i class="manager-dot manager-warning"></i>Alerta</span>
+          <span><i class="manager-dot manager-healthy"></i>Normal</span>
+        </div>
+        <div class="manager-comparison-list" id="server-comparison"></div>
+        <p class="manager-comparison-note">Selecione um servidor para atualizar o contexto do painel.</p>
+      </article>
+    </section>
 
-    <!-- funcionamento de graficos-->
-    <script>
-        const componentes = {
-            CPU: {
-                minimo: 55,
-                maximo: 90},
+    <section class="cartao manager-alert-panel" id="server-alerts">
+      <div class="manager-alert-heading">
+        <h2>Alertas do servidor selecionado</h2>
+        <span id="selected-alert-count">—</span>
+      </div>
+      <div class="manager-alert-list" id="alert-list">
+        <p class="manager-empty">Aguardando dados do banco de dados.</p>
+      </div>
+    </section>
 
-            RAM: {
-                minimo: 20,
-                maximo: 80 },
-
-            Disco: {
-                minimo: 27,
-                maximo: 88} };
-
-        let componenteAtual = "CPU";
-
-        function obterFaixa() { return componentes[componenteAtual];}
-        function aleatorio(minimo, maximo)
-         {return Math.floor(
-            Math.random() * (maximo - minimo + 1) ) + minimo;}
-
-
-        function formatarHorario(data) {
-
-            return data.toLocaleTimeString("pt-BR", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit" });}
-    
-        function gerarValor() {
-            const faixa = obterFaixa();
-            return aleatorio(faixa.minimo, faixa.maximo); }
-
-function atualizarKPI(numero) {
-
-    const valor = gerarValor();
-
-    const cartao = document.getElementById("kpi" + numero);
-    const textoValor = document.getElementById("valor" + numero);
-    const textoStatus = document.getElementById("status" + numero);
-
-    // Verifica se os elementos existem.
-    if (!cartao || !textoValor || !textoStatus) {
-        console.error("Não foi possível encontrar a KPI:", numero);
-        return;
-    }
-
-   
-    textoValor.textContent = valor + "%";
-    cartao.classList.remove("normal", "alerta", "critico");
-    if (valor >= 90) {
-        cartao.classList.add("critico");
-        textoStatus.textContent = "Crítico";
-    } else if (valor >= 79) {
-        cartao.classList.add("alerta");
-        textoStatus.textContent = "Alerta";
-    } else {
-
-        cartao.classList.add("normal");
-        textoStatus.textContent = "Normal";
-
-    }
-}
-
-function atualizarTodas() {
-    atualizarKPI(1);
-    atualizarKPI(2);
-    atualizarKPI(3);
-}
-
-// Atualiza as KPIs imediatamente.
-atualizarTodas();
-
-// Atualiza novamente a cada 3 segundos.
-setInterval(atualizarTodas, 3000);
-
-
-        function atualizarTitulosKPI() {
-            document.getElementById("tituloKPI1").textContent = "Percentual máximo de uso da " + componenteAtual
-
-            document.getElementById("tituloKPI2" ).textContent ="Uso médio da " + componenteAtual;
-            document.getElementById(  "tituloKPI3" ).textContent = "Uso atual da " + componenteAtual; }
-
-        let leituras = [];
-        let leiturasAnteriores = [];
-        let horarios = [];
-
-        const agora = Date.now();
-
-        for (let i = 14; i >= 0; i--) {
-            const horario = new Date( agora - i * 3000 );
-            const valor = gerarValor();
-            horarios.push(formatarHorario(horario) );
-            leituras.push(valor);
-            leiturasAnteriores.push(
-                Math.max( 0,valor - aleatorio(3, 8)) ); }
-
-        const graficoUso = new Chart(
-            document.getElementById("graficoUso"),
-             {
-              type: "line",
-                data: { labels: horarios, datasets: [
-                      { label: "Uso atual",
-                      data: leituras,
-                      borderColor: "#16285f",
-                            backgroundColor: "rgba(22, 40, 95, 0.06)",
-                            fill: true,
-                            tension: 0.07,
-                            pointRadius: 3,
-                            pointHoverRadius: 5,
-                            pointBackgroundColor: "#16285f",
-                            borderWidth: 2 },
-
-                        {
-                            label: "Uso anterior",
-                            data: leiturasAnteriores,
-                            borderColor: "#c5c9d8",
-                            backgroundColor: "transparent",
-                            borderDash: [5, 5],
-                            borderWidth: 1.5,
-                            fill: false,
-                            tension: 0.2,
-                            pointRadius: 0,
-                            pointHoverRadius: 3 } ]},
-
-
-                options: {
-                   responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {duration: 400, easing: "linear"},
-                    interaction: { intersect: false, mode: "index"},
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { callbacks: { label: function (context) {
-                                     return (
-                                        context.dataset.label + ": " + context.parsed.y + "%"  );
-                                } } } },
-                    scales: {
-                        x: {
-                            title: { display: true, text: "Horário das leituras" },
-                            grid: { display: false },
-                            ticks: {  autoSkip: true, maxTicksLimit: 8, maxRotation: 0  } },
-
-
-                        y: { min: 0, max: 100, title: { display: true, text: "Uso (%)"  },
-                         ticks: { stepSize: 25,  callback: function (valor) {  return valor + "%";}    },
-                            grid: { color: "#edf0f5"}}}}} );
- 
-        const usoCPU = [
-            gerarValor(),
-            gerarValor(),
-            gerarValor(),
-            gerarValor() ];
-
-        const graficoCPU = new Chart(
-            document.getElementById("graficoCPU"),
-            {type: "bar",
-                data: {
-                    labels: [
-                        "Servidor 1",
-                        "Servidor 2",
-                        "Servidor 3",
-                        "Servidor 4" ],
-
-                    datasets: [
-                        {
-                            label: "Uso atual",
-                            data: usoCPU,
-                            backgroundColor: "#16285f",
-                            borderRadius: 4 } ] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: {
-                        duration: 400},
-                    plugins: {
-                        legend: { display: false  },
-                        tooltip: { callbacks: {
-                                label: function (context) {
-                                    return ( "Uso atual: " + context.parsed.y + "%" );}}}},
-
-
-                    scales: {
-                        x: {  grid: { display: false }  },
-                        y: { min: 0, max: 100,
-                            ticks: {
-                                stepSize: 25,
-                                callback: function (valor) {
-                                    return valor + "%"; } },
-                            grid: {color: "#edf0f5"}}}}});
-
-
-        function atualizarGraficos() {
-
-            const horarioAtual = formatarHorario(
-                new Date() );
-            const novoValor = gerarValor();
-            horarios.push(horarioAtual);
-            leituras.push(novoValor);
-            const valorAnterior = Math.max( 0, novoValor - aleatorio(3, 8) );
-            leiturasAnteriores.push(valorAnterior);
-            if (leituras.length > 15) {
-                horarios.shift();
-                leituras.shift();
-                leiturasAnteriores.shift(); }
-
-            graficoUso.data.labels = horarios;
-            graficoUso.data.datasets[0].data = leituras;
-            graficoUso.data.datasets[1].data =
-                leiturasAnteriores;
-
-            graficoUso.update();
-            graficoCPU.data.datasets[0].data = [
-                gerarValor(),
-                gerarValor(),
-                gerarValor(),
-                gerarValor() ];
-            graficoCPU.update();
-            document.getElementById(
-                "statusLeituras"
-            ).textContent = "Últimas " + leituras.length +   " leituras · atualização a cada 3 segundos"; }
-      
-        document.getElementById(   "componenteescolhido" ).addEventListener("change", function () { componenteAtual = this.value
-            document.getElementById( "tituloGraficoUso"  ).textContent ="Variação de uso da " + componenteAtual;
-            document.getElementById( "tituloGraficoCPU"   ).textContent =  "Uso da " + componenteAtual + " por servidor";
-               
-            atualizarTitulosKPI();
-            leituras = [];
-            leiturasAnteriores = [];
-            horarios = [];
-            const instanteAtual = Date.now();
-            for (let i = 14; i >= 0; i--) {
-                const horario = new Date( instanteAtual - i * 3000  );
-                const valor = gerarValor();
-                horarios.push( formatarHorario(horario) );
-            
-                leituras.push(valor);
-                leiturasAnteriores.push(
-                    Math.max(  0, valor - aleatorio(3, 8)));}       
-      
-            graficoUso.data.labels = horarios;
-            graficoUso.data.datasets[0].data = leituras;
-            graficoUso.data.datasets[1].data =leiturasAnteriores;
-            graficoUso.update();
-            graficoCPU.data.datasets[0].data = [
-               gerarValor(),
-                gerarValor(),
-                gerarValor(),
-                gerarValor() ];
-   graficoCPU.update();
-            atualizarTodas();
-            document.getElementById( "statusLeituras"  ).textContent =     "15 leituras iniciais · atualização a cada 3 segundos"; });
-
-        atualizarTitulosKPI();
-        atualizarTodas();
-        setInterval(atualizarGraficos, 3000);
-    </script>
-
-
-   
+    <p class="manager-data-status" id="data-status" aria-live="polite">Aguardando conexão com o banco de dados.</p>
   </main>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var empresa = sessionStorage.getItem("empresa");
+      var servidorSelect = document.getElementById("server-select");
+      var componenteSelect = document.getElementById("component-select");
+      var mensagemErro = document.getElementById("dashboard-error");
+      var listaComparativo = document.getElementById("server-comparison");
+      var listaAlertas = document.getElementById("alert-list");
+      var graficoHistorico = null;
+      var dadosDashboard = { servidores: [], historico: [] };
+      var servidorSelecionadoId = "";
+      var componenteSelecionado = "";
+      var atualizacaoAgendada;
+      var identificadorRequisicao = 0;
 
-  
+      var formatoValor = new Intl.NumberFormat("pt-BR", {
+        maximumFractionDigits: 2
+      });
+
+      function normalizarTexto(valor) {
+        return String(valor || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toUpperCase();
+      }
+
+      function rotuloComponente(tipo) {
+        return {
+          CPU: "CPU",
+          MEMORIA: "RAM",
+          DISCO: "Disco",
+          REDE: "Rede"
+        }[normalizarTexto(tipo)] || tipo;
+      }
+
+      function formatarValor(valor, unidade) {
+        if (valor === null || valor === undefined || valor === "") return "Sem leitura";
+        return formatoValor.format(Number(valor)) + (unidade ? " " + unidade : "");
+      }
+
+      function dataLocal(valor) {
+        if (!valor) return null;
+        var partes = String(valor).split(/[- :]/);
+        if (partes.length < 6) return null;
+        return new Date(
+          Number(partes[0]),
+          Number(partes[1]) - 1,
+          Number(partes[2]),
+          Number(partes[3]),
+          Number(partes[4]),
+          Number(partes[5])
+        );
+      }
+
+      function obterServidorSelecionado() {
+        return dadosDashboard.servidores.find(function (servidor) {
+          return String(servidor.id) === String(servidorSelecionadoId);
+        }) || null;
+      }
+
+      function obterMetrica(servidor) {
+        if (!servidor) return null;
+        return servidor.metricas.find(function (metrica) {
+          return normalizarTexto(metrica.tipo) === normalizarTexto(componenteSelecionado);
+        }) || null;
+      }
+
+      function severidadeDaMetrica(metrica) {
+        if (!metrica || metrica.valor === null || metrica.valor === undefined) {
+          return { texto: "Sem leitura", classe: "manager-no-data" };
+        }
+        var criticidade = normalizarTexto(metrica.criticidade || metrica.nivel_alerta);
+        if (criticidade === "CRITICO") return { texto: "Crítico", classe: "manager-critical-text" };
+        if (criticidade === "ALTO") return { texto: "Alerta", classe: "manager-warning-text" };
+        if (criticidade === "MEDIO" || criticidade === "BAIXO") {
+          return { texto: "Normal", classe: "manager-healthy-text" };
+        }
+        return { texto: "Disponível", classe: "manager-blue-text" };
+      }
+
+      function formatarSeveridadeServidor(servidor) {
+        var estado = normalizarTexto(servidor.status);
+        var severidades = servidor.metricas.map(function (metrica) {
+          return normalizarTexto(metrica.criticidade || metrica.nivel_alerta);
+        });
+        if (estado === "OFFLINE") return { texto: "Offline", classe: "manager-critical-text" };
+        if (estado === "MANUTENCAO") return { texto: "Manutenção", classe: "manager-warning-text" };
+        if (severidades.includes("CRITICO")) return { texto: "Crítico", classe: "manager-critical-text" };
+        if (severidades.includes("ALTO")) return { texto: "Alerta", classe: "manager-warning-text" };
+        return { texto: estado === "ONLINE" ? "Online" : (servidor.status || "Indisponível"), classe: "manager-healthy-text" };
+      }
+
+      function exibirErro(erro) {
+        document.getElementById("dashboard-error-message").textContent = erro.message;
+        mensagemErro.hidden = false;
+        document.getElementById("data-status").textContent = "Não foi possível atualizar os dados.";
+      }
+
+      function limparErro() {
+        mensagemErro.hidden = true;
+        document.getElementById("dashboard-error-message").textContent = "";
+      }
+
+      function requisitarDashboard() {
+        var payload = { empresa: empresa };
+        if (servidorSelecionadoId) payload.id_servidor = servidorSelecionadoId;
+        if (componenteSelecionado) payload.tipo_componente = componenteSelecionado;
+
+        return fetch("/servidores/dashboard", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+          body: JSON.stringify(payload)
+        }).then(function (resposta) {
+          if (!resposta.ok) {
+            return resposta.text().then(function (mensagem) {
+              throw new Error(mensagem || "Não foi possível consultar os dados do dashboard.");
+            });
+          }
+          return resposta.json();
+        });
+      }
+
+      function preencherServidores() {
+        servidorSelect.replaceChildren();
+        dadosDashboard.servidores.forEach(function (servidor) {
+          servidorSelect.add(new Option(servidor.hostname, servidor.id));
+        });
+        servidorSelect.disabled = dadosDashboard.servidores.length === 0;
+        if (!dadosDashboard.servidores.length) {
+          servidorSelect.add(new Option("Nenhum servidor cadastrado", ""));
+          servidorSelecionadoId = "";
+          return;
+        }
+        if (!dadosDashboard.servidores.some(function (servidor) {
+          return String(servidor.id) === String(servidorSelecionadoId);
+        })) {
+          servidorSelecionadoId = String(dadosDashboard.servidores[0].id);
+        }
+        servidorSelect.value = servidorSelecionadoId;
+      }
+
+      function preencherComponentes() {
+        var componentes = [];
+        var servidor = obterServidorSelecionado();
+        (servidor ? servidor.metricas : []).forEach(function (metrica) {
+          if (!componentes.some(function (componente) {
+            return normalizarTexto(componente.tipo) === normalizarTexto(metrica.tipo);
+          })) {
+            componentes.push({ tipo: metrica.tipo, nome: metrica.tipo });
+          }
+        });
+
+        componenteSelect.replaceChildren();
+        componentes.forEach(function (componente) {
+          componenteSelect.add(new Option(rotuloComponente(componente.tipo), componente.tipo));
+        });
+        componenteSelect.disabled = componentes.length === 0;
+        if (!componentes.length) {
+          componenteSelect.add(new Option("Componentes não cadastrados", ""));
+          componenteSelecionado = "";
+          return;
+        }
+
+        var componenteAtual = componentes.find(function (componente) {
+          return normalizarTexto(componente.tipo) === normalizarTexto(componenteSelecionado);
+        });
+        if (!componenteAtual) {
+          componenteAtual = componentes.find(function (componente) {
+            return normalizarTexto(componente.tipo) === "CPU";
+          }) || componentes[0];
+        }
+        componenteSelecionado = componenteAtual.tipo;
+        componenteSelect.value = componenteSelecionado;
+      }
+
+      function atualizarResumoOperacional() {
+        var servidores = dadosDashboard.servidores;
+        var online = servidores.filter(function (servidor) {
+          return normalizarTexto(servidor.status) === "ONLINE";
+        }).length;
+        var offline = servidores.filter(function (servidor) {
+          return normalizarTexto(servidor.status) === "OFFLINE";
+        }).length;
+        document.getElementById("operational-count").textContent = online + "/" + servidores.length;
+        document.getElementById("operational-detail").textContent =
+          online + " online" + (offline ? " · " + offline + " sem conexão" : "");
+
+        var alertas = [];
+        servidores.forEach(function (servidor) {
+          servidor.metricas.forEach(function (metrica) {
+            var criticidade = normalizarTexto(metrica.criticidade || metrica.nivel_alerta);
+            if (normalizarTexto(metrica.status_alerta) === "ABERTO"
+              && (criticidade === "ALTO" || criticidade === "CRITICO")
+              && metrica.valor !== null && metrica.valor !== undefined) {
+              alertas.push(metrica);
+            }
+          });
+        });
+        document.getElementById("alert-count").textContent = String(alertas.length);
+        document.getElementById("alert-summary").textContent = alertas.length
+          ? alertas.length + " alerta(s) em " + servidores.filter(function (servidor) {
+            return servidor.metricas.some(function (metrica) {
+              var criticidade = normalizarTexto(metrica.criticidade || metrica.nivel_alerta);
+              return normalizarTexto(metrica.status_alerta) === "ABERTO"
+                && (criticidade === "ALTO" || criticidade === "CRITICO")
+                && metrica.valor !== null && metrica.valor !== undefined;
+            });
+          }).length + " servidor(es)"
+          : "Nenhum alerta aberto";
+        return alertas;
+      }
+
+      function atualizarServidorSelecionado() {
+        var servidor = obterServidorSelecionado();
+        var metrica = obterMetrica(servidor);
+        var severidade = servidor ? formatarSeveridadeServidor(servidor) : null;
+        var statusMetrica = severidadeDaMetrica(metrica);
+        var titulo = document.getElementById("selected-server-name");
+        var meta = document.getElementById("selected-server-meta");
+        var foco = document.getElementById("selected-server-focus");
+        var severidadeEl = document.getElementById("selected-server-severity");
+
+        titulo.textContent = servidor ? servidor.hostname : "Nenhum servidor cadastrado";
+        meta.textContent = servidor
+          ? [servidor.ip, servidor.localizacao].filter(Boolean).join(" · ")
+          : "Cadastre um servidor para visualizar os indicadores.";
+        foco.textContent = servidor
+          ? "Foco: " + (servidor.responsabilidade || "Não informada")
+            + " · Métrica: " + (metrica ? rotuloComponente(metrica.tipo) : "Sem componente")
+          : "Aguardando cadastro de servidor.";
+        severidadeEl.textContent = severidade ? severidade.texto : "—";
+        severidadeEl.className = "manager-severity " + (severidade ? severidade.classe : "manager-no-data");
+
+        var leiturasHoje = obterLeiturasDoDia(dadosDashboard.historico, new Date());
+        var pico = leiturasHoje.length
+          ? Math.max.apply(null, leiturasHoje.map(function (leitura) { return leitura.pico; }))
+          : (metrica && metrica.valor !== null ? Number(metrica.valor) : null);
+        var picoEl = document.getElementById("metric-peak");
+        picoEl.textContent = pico === null || !metrica ? "—" : formatarValor(pico, metrica.unidade_medida);
+        picoEl.className = "manager-kpi-value " + statusMetrica.classe;
+        document.getElementById("metric-status").textContent = metrica
+          ? statusMetrica.texto + (metrica.limite_critico !== null ? " · Limite crítico " + formatarValor(metrica.limite_critico, metrica.unidade_medida) : "")
+          : "Sem leitura disponível";
+        document.getElementById("metric-comparison").textContent =
+          calcularComparacao(dadosDashboard.historico, metrica);
+        document.getElementById("history-title").textContent = metrica
+          ? "Servidor vs. próprio histórico · " + rotuloComponente(metrica.tipo)
+          : "Servidor vs. próprio histórico";
+        document.getElementById("comparison-description").textContent = metrica
+          ? "Última leitura de " + rotuloComponente(metrica.tipo) + " por servidor"
+          : "Selecione um componente com leituras";
+      }
+
+      function obterLeiturasDoDia(leitura, data) {
+        var dataAlvo = data || new Date();
+        return leitura.map(function (item) {
+          var dataLeitura = dataLocal(item.criado_em);
+          return dataLeitura && dataLeitura.getFullYear() === dataAlvo.getFullYear()
+            && dataLeitura.getMonth() === dataAlvo.getMonth()
+            && dataLeitura.getDate() === dataAlvo.getDate()
+            ? {
+              valor: Number(item.valor),
+              pico: item.pico_hora === undefined ? Number(item.valor) : Number(item.pico_hora),
+              data: dataLeitura
+            }
+            : null;
+        }).filter(Boolean).sort(function (a, b) { return a.data - b.data; });
+      }
+
+      function calcularComparacao(leitura, metrica) {
+        if (!metrica || !leitura.length) return "Sem histórico";
+        var hoje = obterLeiturasDoDia(leitura, new Date());
+        if (!hoje.length) return "Sem leitura hoje";
+        var agora = hoje[hoje.length - 1];
+        var ontem = obterLeiturasDoDia(leitura, new Date(Date.now() - 24 * 60 * 60 * 1000));
+        if (!ontem.length) return "Sem histórico anterior";
+
+        var leituraAnterior = ontem.reduce(function (maisProxima, item) {
+          return Math.abs(item.data.getTime() - (agora.data.getTime() - 24 * 60 * 60 * 1000))
+            < Math.abs(maisProxima.data.getTime() - (agora.data.getTime() - 24 * 60 * 60 * 1000))
+            ? item : maisProxima;
+        }, ontem[0]);
+        var diferenca = agora.valor - leituraAnterior.valor;
+        var sinal = diferenca > 0 ? "+" : "";
+        return sinal + formatoValor.format(diferenca) + (metrica.unidade_medida ? " " + metrica.unidade_medida : "");
+      }
+
+      function atualizarGrafico() {
+        var servidor = obterServidorSelecionado();
+        var metrica = obterMetrica(servidor);
+        var hoje = obterLeiturasDoDia(dadosDashboard.historico, new Date());
+        var ontem = obterLeiturasDoDia(dadosDashboard.historico, new Date(Date.now() - 24 * 60 * 60 * 1000));
+        var hojePorHorario = {};
+        var ontemPorHorario = {};
+        hoje.forEach(function (leitura) {
+          var chave = leitura.data.toTimeString().slice(0, 5);
+          hojePorHorario[chave] = leitura.valor;
+        });
+        ontem.forEach(function (leitura) {
+          var chave = leitura.data.toTimeString().slice(0, 5);
+          ontemPorHorario[chave] = leitura.valor;
+        });
+        var horarios = Object.keys(hojePorHorario).sort();
+        var valoresOntem = horarios.map(function (horario) {
+          return Object.prototype.hasOwnProperty.call(ontemPorHorario, horario) ? ontemPorHorario[horario] : null;
+        });
+        var limite = metrica && metrica.limite_critico !== null ? Number(metrica.limite_critico) : null;
+
+        if (graficoHistorico) {
+          graficoHistorico.destroy();
+          graficoHistorico = null;
+        }
+
+        if (!metrica) {
+          document.getElementById("history-note").textContent = servidor
+            ? "Componentes não cadastrados para este servidor."
+            : "Selecione um servidor para consultar as métricas.";
+          return;
+        }
+
+        if (typeof Chart === "undefined") {
+          document.getElementById("history-note").textContent = "Não foi possível carregar o gráfico.";
+          return;
+        }
+
+        graficoHistorico = new Chart(document.getElementById("history-chart"), {
+          type: "line",
+          data: {
+            labels: horarios,
+            datasets: [
+              {
+                label: "Hoje",
+                data: horarios.map(function (horario) { return hojePorHorario[horario]; }),
+                borderColor: "#16285f",
+                backgroundColor: "rgba(22, 40, 95, 0.08)",
+                fill: true,
+                tension: 0.18,
+                pointRadius: 3,
+                pointBackgroundColor: "#16285f",
+                borderWidth: 3
+              },
+              {
+                label: "Dia anterior",
+                data: valoresOntem,
+                borderColor: "#a7adbb",
+                backgroundColor: "transparent",
+                borderDash: [4, 4],
+                fill: false,
+                tension: 0.18,
+                pointRadius: 0,
+                borderWidth: 2
+              },
+              {
+                label: "Limite crítico",
+                data: limite === null ? [] : horarios.map(function () { return limite; }),
+                borderColor: "#e56b6b",
+                backgroundColor: "transparent",
+                borderDash: [3, 3],
+                fill: false,
+                pointRadius: 0,
+                borderWidth: 1.5
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { intersect: false, mode: "index" },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                titleFont: { size: 13 },
+                bodyFont: { size: 12 },
+                callbacks: {
+                  label: function (context) {
+                    if (context.parsed.y === null) return context.dataset.label + ": sem leitura";
+                    return context.dataset.label + ": " + formatarValor(context.parsed.y, metrica ? metrica.unidade_medida : "");
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { autoSkip: true, maxTicksLimit: 7, maxRotation: 0, font: { size: 12 } }
+              },
+              y: {
+                beginAtZero: true,
+                suggestedMax: metrica && metrica.unidade_medida === "%" ? 100 : undefined,
+                ticks: {
+                  font: { size: 12 },
+                  callback: function (valor) {
+                    return formatoValor.format(valor) + (metrica && metrica.unidade_medida ? " " + metrica.unidade_medida : "");
+                  }
+                },
+                grid: { color: "#edf0f5" }
+              }
+            }
+          }
+        });
+
+        document.getElementById("history-note").textContent = hoje.length
+          ? hoje.length + " leitura(s) de hoje · dados do banco"
+          : "Nenhuma leitura encontrada para hoje.";
+      }
+
+      function atualizarComparativo() {
+        var metricaSelecionada = obterMetrica(obterServidorSelecionado());
+        var valores = dadosDashboard.servidores.map(function (servidor) {
+          var metrica = servidor.metricas.find(function (item) {
+            return metricaSelecionada && item.tipo === metricaSelecionada.tipo;
+          });
+          return { servidor: servidor, metrica: metrica || null };
+        });
+        var maximo = valores.reduce(function (maior, item) {
+          if (!item.metrica || item.metrica.valor === null) return maior;
+          return Math.max(maior, Number(item.metrica.valor), Number(item.metrica.valor_maximo) || 0);
+        }, 0);
+        if (metricaSelecionada && metricaSelecionada.unidade_medida === "%") maximo = Math.max(maximo, 100);
+        listaComparativo.replaceChildren();
+
+        valores.forEach(function (item) {
+          var valor = item.metrica && item.metrica.valor !== null ? Number(item.metrica.valor) : null;
+          var criticidade = normalizarTexto(item.metrica && (item.metrica.criticidade || item.metrica.nivel_alerta));
+          var classeSeveridade = criticidade === "CRITICO" ? "manager-critical-text"
+            : criticidade === "ALTO" ? "manager-warning-text" : "manager-healthy-text";
+          var linha = document.createElement("button");
+          linha.type = "button";
+          linha.className = "manager-comparison-row" +
+            (String(item.servidor.id) === String(servidorSelecionadoId) ? " selected" : "");
+          linha.setAttribute("aria-pressed", String(String(item.servidor.id) === String(servidorSelecionadoId)));
+
+          var topo = document.createElement("span");
+          topo.className = "manager-comparison-top";
+          var nome = document.createElement("span");
+          nome.className = "manager-comparison-name";
+          nome.textContent = item.servidor.hostname;
+          var textoValor = document.createElement("span");
+          textoValor.className = "manager-comparison-value " + (valor === null ? "manager-no-data" : classeSeveridade);
+          textoValor.textContent = formatarValor(valor, item.metrica && item.metrica.unidade_medida);
+          topo.append(nome, textoValor);
+
+          var trilho = document.createElement("span");
+          trilho.className = "manager-comparison-track";
+          var barra = document.createElement("span");
+          barra.className = "manager-comparison-fill " +
+            (valor === null ? "manager-no-data" : classeSeveridade);
+          barra.style.width = valor === null || maximo === 0 ? "0%" : Math.min(100, valor / maximo * 100) + "%";
+          trilho.append(barra);
+          linha.append(topo, trilho);
+          linha.addEventListener("click", function () {
+            servidorSelecionadoId = String(item.servidor.id);
+            carregarDashboard();
+          });
+          listaComparativo.append(linha);
+        });
+      }
+
+      function atualizarAlertas() {
+        var servidor = obterServidorSelecionado();
+        var alertasServidor = servidor ? servidor.metricas.filter(function (metrica) {
+          var criticidade = normalizarTexto(metrica.criticidade || metrica.nivel_alerta);
+          return normalizarTexto(metrica.status_alerta) === "ABERTO"
+            && (criticidade === "ALTO" || criticidade === "CRITICO")
+            && metrica.valor !== null && metrica.valor !== undefined;
+        }) : [];
+        document.getElementById("selected-alert-count").textContent =
+          alertasServidor.length + (alertasServidor.length === 1 ? " alerta aberto" : " alertas abertos");
+        listaAlertas.replaceChildren();
+
+        if (!alertasServidor.length) {
+          var vazio = document.createElement("p");
+          vazio.className = "manager-empty";
+          vazio.textContent = "Nenhum alerta aberto para este servidor.";
+          listaAlertas.append(vazio);
+          return;
+        }
+
+        alertasServidor.forEach(function (metrica) {
+          var criticidade = normalizarTexto(metrica.criticidade || metrica.nivel_alerta);
+          var cartao = document.createElement("article");
+          cartao.className = "manager-alert";
+          var principal = document.createElement("div");
+          var titulo = document.createElement("div");
+          titulo.className = "manager-alert-title";
+          var selo = document.createElement("span");
+          selo.className = "manager-alert-severity " +
+            (criticidade === "CRITICO" ? "manager-critical-bg" : "manager-warning-bg");
+          selo.textContent = criticidade === "CRITICO" ? "Crítico" : "Alerta";
+          var texto = document.createElement("strong");
+          texto.textContent = rotuloComponente(metrica.tipo) + " acima do limite";
+          titulo.append(selo, texto);
+          var descricao = document.createElement("p");
+          descricao.textContent = formatarValor(metrica.valor, metrica.unidade_medida)
+            + " · " + (metrica.criado_em || "Data não informada")
+            + " · " + (servidor ? servidor.hostname : "");
+          principal.append(titulo, descricao);
+          var estado = document.createElement("span");
+          estado.className = "manager-alert-state";
+          estado.textContent = "ABERTO";
+          cartao.append(principal, estado);
+          listaAlertas.append(cartao);
+        });
+      }
+
+      function renderizarDashboard() {
+        preencherServidores();
+        preencherComponentes();
+        atualizarResumoOperacional();
+        atualizarServidorSelecionado();
+        atualizarGrafico();
+        atualizarComparativo();
+        atualizarAlertas();
+        var servidorSelecionado = obterServidorSelecionado();
+        var semComponentes = servidorSelecionado && !servidorSelecionado.metricas.length;
+        document.getElementById("data-status").textContent = !servidorSelecionado
+          ? "Nenhum servidor selecionado."
+          : semComponentes
+            ? "Componentes não cadastrados no banco para este servidor."
+            : "Dados consultados no banco de dados.";
+        document.querySelector(".manager-panel-heading p").textContent = !servidorSelecionado
+          ? "Selecione um servidor para consultar as métricas."
+          : semComponentes
+            ? "Componentes não cadastrados no banco para este servidor."
+            : "Leituras armazenadas no banco de dados";
+      }
+
+      function carregarDashboard() {
+        var requisicaoId = ++identificadorRequisicao;
+        if (atualizacaoAgendada) clearTimeout(atualizacaoAgendada);
+        if (!empresa) {
+          exibirErro(new Error("Empresa não identificada na sessão. Entre novamente para consultar seus dados."));
+          return;
+        }
+
+        return requisitarDashboard().then(function (dados) {
+          if (requisicaoId !== identificadorRequisicao) return;
+          dadosDashboard = dados;
+          if (!servidorSelecionadoId && dadosDashboard.servidores.length) {
+            servidorSelecionadoId = String(dadosDashboard.servidores[0].id);
+            var metricasIniciais = dadosDashboard.servidores[0].metricas;
+            var componenteCPU = metricasIniciais.find(function (metrica) {
+              return normalizarTexto(metrica.tipo) === "CPU";
+            });
+            componenteSelecionado = componenteCPU
+              ? componenteCPU.tipo
+              : metricasIniciais.length ? metricasIniciais[0].tipo : "";
+            return requisitarDashboard().then(function (dadosComHistorico) {
+              if (requisicaoId !== identificadorRequisicao) return;
+              dadosDashboard = dadosComHistorico;
+              limparErro();
+              renderizarDashboard();
+              if (atualizacaoAgendada) clearTimeout(atualizacaoAgendada);
+              atualizacaoAgendada = setTimeout(carregarDashboard, 30000);
+            });
+          }
+          limparErro();
+          renderizarDashboard();
+          if (atualizacaoAgendada) clearTimeout(atualizacaoAgendada);
+          atualizacaoAgendada = setTimeout(carregarDashboard, 30000);
+        }).catch(function (erro) {
+          if (requisicaoId !== identificadorRequisicao) return;
+          console.error("Erro ao carregar o dashboard do gestor:", erro);
+          exibirErro(new Error("Não foi possível carregar os dados do banco. Verifique a conexão e tente novamente."));
+        });
+      }
+
+      servidorSelect.addEventListener("change", function () {
+        servidorSelecionadoId = servidorSelect.value;
+        carregarDashboard();
+      });
+
+      componenteSelect.addEventListener("change", function () {
+        componenteSelecionado = componenteSelect.value;
+        carregarDashboard();
+      });
+
+      document.getElementById("dashboard-retry").addEventListener("click", carregarDashboard);
+
+      if (typeof Chart === "undefined") {
+        exibirErro(new Error("Não foi possível carregar o componente de gráficos."));
+      }
+      carregarDashboard();
+    });
+  </script>
 </body>
+
 </html>

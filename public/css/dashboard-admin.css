@@ -1577,3 +1577,865 @@ tbody tr:last-child td {
         font-size: 12px;
     }
 }
+
+.manager-dashboard {
+    padding: 0;
+}
+
+.dashboard-content.users-page.manager-content {
+    padding: 28px clamp(18px, 3vw, 42px) 20px;
+    gap: 0;
+}
+
+.manager-content > * {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+.manager-error {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 11px 14px;
+    border: 1px solid #f1c5c5;
+    border-radius: 8px;
+    background: #fff4f4;
+    color: #a83232;
+    font-size: 12px;
+}
+
+.manager-error[hidden] {
+    display: none;
+}
+
+.manager-error button {
+    padding: 6px 10px;
+    border: 1px solid #e8b3b3;
+    border-radius: 6px;
+    background: #fff;
+    color: #a83232;
+    font: inherit;
+    cursor: pointer;
+}
+
+.manager-server-card,
+.manager-kpi,
+.manager-panel,
+.manager-alert-panel {
+    border: 1px solid #e2e6ed;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.manager-server-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 12px;
+    padding: 16px 18px;
+    border-color: #123f68;
+    background: #123f68;
+}
+
+.manager-server-identity {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 12px;
+}
+
+.manager-server-icon {
+    display: grid;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+}
+
+.manager-server-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.manager-server-copy {
+    min-width: 0;
+}
+
+.manager-server-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.manager-server-title h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.manager-severity,
+.manager-alert-severity {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 7px;
+    border-radius: 5px;
+    background: #eef0f4;
+    color: #70798a;
+    font-size: 9px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.manager-severity.manager-critical-text {
+    background: #fff0ef;
+}
+
+.manager-severity.manager-warning-text {
+    background: #fff6e8;
+}
+
+.manager-severity.manager-healthy-text {
+    background: #eaf8ef;
+}
+
+.manager-critical-text {
+    color: #dc3636 !important;
+}
+
+.manager-warning-text {
+    color: #b87800 !important;
+}
+
+.manager-healthy-text {
+    color: #19864b !important;
+}
+
+.manager-blue-text {
+    color: #16285f !important;
+}
+
+.manager-no-data {
+    color: #7b8495 !important;
+}
+
+.manager-server-copy > p {
+    margin: 5px 0 0;
+    color: #d7e4f1;
+    font-size: 10px;
+}
+
+.manager-server-copy .manager-focus {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+}
+
+.manager-server-actions {
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: minmax(150px, 190px);
+    align-items: end;
+    gap: 8px;
+}
+
+.manager-select-label {
+    grid-column: 1 / -1;
+    color: #d7e4f1;
+    font-size: 9px;
+    font-weight: 500;
+}
+
+.manager-server-actions select,
+.manager-component-select {
+    min-height: 36px;
+    padding: 0 28px 0 10px;
+    border: 1px solid #d4e2ed;
+    border-radius: 8px;
+    background-color: #eaf2f8;
+    color: #123f68;
+    font: inherit;
+    font-size: 11px;
+}
+
+.manager-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.manager-kpi {
+    min-width: 0;
+    padding: 12px 13px 10px;
+}
+
+.manager-kpi-title {
+    margin: 0 0 7px;
+    color: #7b8495;
+    font-size: 11px;
+}
+
+.manager-kpi-value {
+    margin: 0;
+    color: #202735;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+
+.manager-kpi-foot {
+    min-height: 12px;
+    margin: 7px 0 0;
+    color: #7b8495;
+    font-size: 10px;
+}
+
+.manager-analysis {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.manager-panel.cartao {
+    min-width: 0;
+    min-height: 330px;
+    margin: 0;
+    padding: 16px;
+    border: 1px solid #e2e6ed;
+    box-shadow: none;
+}
+
+.manager-panel-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.manager-panel-heading h2,
+.manager-alert-heading h2 {
+    margin: 0;
+    color: #202735;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.manager-panel-heading p {
+    margin: 5px 0 0;
+    color: #7b8495;
+    font-size: 10px;
+}
+
+.manager-component-select {
+    min-height: 30px;
+    font-size: 10px;
+}
+
+.manager-legend,
+.manager-severity-legend {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin: 13px 0 5px;
+    color: #6f788a;
+    font-size: 10px;
+}
+
+.manager-legend span,
+.manager-severity-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.manager-legend-line {
+    display: inline-block;
+    width: 13px;
+    height: 2px;
+    border-radius: 2px;
+}
+
+.manager-blue-line {
+    background: #16285f;
+}
+
+.manager-history-line {
+    background: #a7adbb;
+}
+
+.manager-limit-line {
+    height: 0;
+    border-top: 1px dashed #e56b6b;
+}
+
+.manager-panel .grafico-linha.manager-chart {
+    min-width: 100%;
+    height: 230px;
+}
+
+.manager-chart-note,
+.manager-comparison-note {
+    margin: 7px 0 0;
+    padding-top: 8px;
+    border-top: 1px solid #edf0f5;
+    color: #788196;
+    font-size: 10px;
+}
+
+.manager-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.manager-critical {
+    background: #e54545;
+}
+
+.manager-warning {
+    background: #d89000;
+}
+
+.manager-healthy {
+    background: #20a45a;
+}
+
+.manager-comparison-list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+.manager-comparison-row {
+    width: 100%;
+    padding: 11px 5px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.manager-comparison-row:hover {
+    background: #f8f9fc;
+}
+
+.manager-comparison-row.selected {
+    border-color: #d8deee;
+    background: #f4f6fb;
+}
+
+.manager-comparison-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.manager-comparison-name {
+    overflow: hidden;
+    color: #343b4d;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.manager-comparison-value {
+    flex: 0 0 auto;
+    font-weight: 600;
+}
+
+.manager-comparison-track {
+    display: block;
+    height: 10px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #eceef3;
+}
+
+.manager-comparison-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #16285f;
+    transition: width .2s ease;
+}
+
+.manager-comparison-fill.manager-critical-text {
+    background: #dc3636;
+}
+
+.manager-comparison-fill.manager-warning-text {
+    background: #b87800;
+}
+
+.manager-comparison-fill.manager-healthy-text {
+    background: #19864b;
+}
+
+.manager-comparison-fill.manager-no-data {
+    background: #a7adbb;
+}
+
+.manager-alert-panel.cartao {
+    margin: 0 0 8px;
+    padding: 16px;
+    border: 1px solid #e2e6ed;
+    box-shadow: none;
+}
+
+.manager-alert-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.manager-alert-heading h2 {
+    font-size: 14px;
+}
+
+.manager-alert-heading > span {
+    color: #7b8495;
+    font-size: 11px;
+}
+
+.manager-alert-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.manager-alert {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+    min-height: 78px;
+    padding: 12px;
+    border: 1px solid #e7eaf0;
+    border-radius: 7px;
+    background: #fafbfc;
+}
+
+.manager-alert-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #333a4a;
+    font-size: 11px;
+}
+
+.manager-alert-title strong {
+    font-weight: 600;
+}
+
+.manager-alert-severity {
+    font-size: 10px;
+}
+
+.manager-critical-bg {
+    background: #fff0ef;
+    color: #dc3636;
+}
+
+.manager-warning-bg {
+    background: #fff6e8;
+    color: #b87800;
+}
+
+.manager-alert > div > p {
+    margin: 7px 0 0;
+    color: #7b8495;
+    font-size: 10px;
+}
+
+.manager-alert-state {
+    padding-top: 2px;
+    color: #737c8f;
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+.manager-empty {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 13px;
+    border-radius: 6px;
+    background: #f8f9fb;
+    color: #7b8495;
+    font-size: 10px;
+    text-align: center;
+}
+
+.manager-data-status {
+    margin: 0;
+    color: #7b8495;
+    font-size: 9px;
+    text-align: right;
+}
+
+.manager-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 900px) {
+    .manager-analysis {
+        grid-template-columns: 1fr;
+    }
+
+    .manager-panel.cartao {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 700px) {
+    .manager-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .manager-server-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .manager-server-actions {
+        width: 100%;
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .manager-dashboard .sidebar {
+        display: none;
+    }
+
+    .manager-dashboard .top-bar {
+        left: 0;
+        padding: 0 14px;
+    }
+
+    .dashboard-content.users-page.manager-content {
+        padding: 20px 14px 14px;
+    }
+
+    .manager-server-icon {
+        display: none;
+    }
+
+    .manager-alert-list {
+        grid-template-columns: 1fr;
+    }
+
+    .manager-panel .grafico-linha.manager-chart {
+        height: 190px;
+    }
+}
+
+@media (max-width: 380px) {
+    .manager-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .manager-server-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .manager-select-label {
+        grid-column: auto;
+    }
+}
+
+@media (min-width: 701px) and (max-width: 1100px) and (min-height: 700px) {
+    .manager-dashboard .sidebar {
+        display: none;
+    }
+
+    .manager-dashboard .top-bar {
+        left: 0;
+    }
+
+    .dashboard-content.users-page.manager-content {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto auto 300px 100px auto;
+        gap: 10px;
+        height: calc(100vh - var(--topbar-height));
+        overflow: hidden;
+        padding: 0 25px 5px;
+    }
+
+    .manager-error {
+        grid-row: 1;
+    }
+
+    .manager-error[hidden] + .manager-server-card {
+        margin-top: -5px;
+    }
+
+    .manager-server-card {
+        grid-row: 2;
+        margin: 0;
+        padding: 12px 16px;
+    }
+
+    .manager-kpis {
+        grid-row: 3;
+        margin: 0;
+    }
+
+    .manager-analysis {
+        grid-row: 4;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        min-height: 0;
+        margin: 0;
+    }
+
+    .manager-panel.cartao {
+        box-sizing: border-box;
+        display: flex;
+        height: 100%;
+        min-height: 0;
+        flex-direction: column;
+        padding: 12px;
+    }
+
+    .manager-panel .grafico-linha.manager-chart {
+        flex: 0 0 200px;
+        height: 200px;
+        min-height: 200px;
+    }
+
+    .manager-alert-panel.cartao {
+        grid-row: 5;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 8px 12px;
+    }
+
+    .manager-alert-heading {
+        margin-bottom: 6px;
+    }
+
+    .manager-alert {
+        min-height: 34px;
+        padding: 8px 10px;
+    }
+
+    .manager-data-status {
+        grid-row: 6;
+    }
+}
+
+@media (min-width: 901px) and (min-height: 700px) {
+    .dashboard-content.users-page.manager-content {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto auto 420px 100px auto;
+        gap: 10px;
+        height: calc(100vh - var(--topbar-height));
+        overflow: hidden;
+        padding: 0 25px 5px;
+    }
+
+    .manager-error {
+        grid-row: 1;
+    }
+
+    .manager-error[hidden] + .manager-server-card {
+        margin-top: -5px;
+    }
+
+    .manager-server-card {
+        grid-row: 2;
+        flex: 0 0 auto;
+        margin-bottom: 0;
+        padding: 2px 16px;
+    }
+
+    .manager-kpis {
+        grid-row: 3;
+        flex: 0 0 auto;
+        gap: 9px;
+        margin-bottom: 0;
+    }
+
+    .manager-kpi {
+        padding: 2px 12px 1px;
+    }
+
+    .manager-kpi-value {
+        font-size: 23px;
+    }
+
+    .manager-analysis {
+        grid-row: 4;
+        flex: 1 1 0;
+        min-height: 0;
+        margin-bottom: 0;
+    }
+
+    .manager-panel.cartao {
+        box-sizing: border-box;
+        display: flex;
+        height: 100%;
+        min-height: 0;
+        flex-direction: column;
+        padding: 14px;
+    }
+
+    .manager-panel .grafico-linha.manager-chart {
+        width: 600px;
+        min-width: 600px;
+        max-width: 100%;
+        max-height: 320px;
+        height: 320px;
+        min-height: 320px;
+        flex: 0 0 320px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .manager-legend {
+        margin: 10px 0 3px;
+    }
+
+    .manager-chart-note {
+        margin-top: 4px;
+        padding-top: 6px;
+    }
+
+    .manager-alert-panel.cartao {
+        grid-row: 5;
+        box-sizing: border-box;
+        justify-self: center;
+        flex: 0 0 auto;
+        margin-bottom: 0;
+        min-height: 100px;
+        padding: 4px 12px;
+    }
+
+    .manager-alert-heading {
+        margin-bottom: 4px;
+    }
+
+    .manager-alert {
+        min-height: 28px;
+        padding: 6px 8px;
+    }
+
+    .manager-empty {
+        padding: 8px;
+    }
+
+    .manager-data-status {
+        grid-row: 6;
+        flex: 0 0 auto;
+    }
+}
+
+@media (min-width: 701px) and (max-height: 739px) and (min-height: 700px) {
+    .dashboard-content.users-page.manager-content {
+        grid-template-rows: auto auto auto 300px 100px auto;
+    }
+
+    .manager-panel .grafico-linha.manager-chart {
+        height: 165px;
+        min-height: 165px;
+        flex-basis: 165px;
+    }
+}
+
+@media (min-width: 701px) and (max-height: 759px) and (min-height: 740px) {
+    .dashboard-content.users-page.manager-content {
+        grid-template-rows: auto auto auto 300px 100px auto;
+    }
+
+    .manager-panel .grafico-linha.manager-chart {
+        height: 200px;
+        min-height: 200px;
+        flex-basis: 200px;
+    }
+}
+
+@media (min-width: 701px) and (max-width: 740px) and (min-height: 760px) {
+    .manager-panel .grafico-linha.manager-chart {
+        height: 180px;
+        min-height: 180px;
+        flex-basis: 180px;
+    }
+}
+
+@media (min-width: 1360px) and (min-height: 700px) {
+    .manager-analysis {
+        grid-template-columns: 630px minmax(400px, 1fr);
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1359px) {
+    .manager-panel .grafico-linha.manager-chart {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        margin-right: 0;
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1359px) and (min-height: 700px) {
+    .dashboard-content.users-page.manager-content {
+        gap: 10px;
+        padding: 10px 24px;
+    }
+
+    .manager-server-card {
+        padding: 6px 16px;
+    }
+
+    .manager-kpi {
+        padding: 6px 12px 5px;
+    }
+
+    .manager-alert-panel.cartao {
+        padding: 4px 12px;
+    }
+
+    .manager-alert-heading {
+        margin-bottom: 2px;
+    }
+
+    .manager-alert {
+        min-height: 24px;
+        padding: 4px 8px;
+    }
+
+    .manager-empty {
+        padding: 6px;
+    }
+}
