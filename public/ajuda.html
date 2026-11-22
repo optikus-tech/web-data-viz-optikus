@@ -73,6 +73,18 @@
     </div>
 
     <div class="container-ajuda tabela-discretizacao">
+      <h2>Faixas de discretização</h2>
+      <div class="discretizacao-controles">
+        <label class="seletor-componente" for="servidor-discretizacao">
+          Servidor
+          <select id="servidor-discretizacao" aria-label="Selecionar servidor" disabled>
+            <option value="">Carregando servidores...</option>
+          </select>
+        </label>
+      </div>
+      <p id="mensagem-discretizacao" class="mensagem-discretizacao" role="status" aria-live="polite">
+        Carregando servidores...
+      </p>
       <table>
         <thead>
           <tr>
@@ -86,69 +98,23 @@
         <tbody>
           <tr>
             <td><strong>CPU</strong></td>
-            <td>
-              <span class="limite">&lt; 70%</span>
-              <p>Uso dentro da capacidade esperada.</p>
-            </td>
-            <td>
-              <span class="limite">70% a 89%</span>
-              <p>Carga elevada, requer monitoramento preventivo.</p>
-            </td>
-            <td>
-              <span class="limite">&ge; 90%</span>
-              <p>Saturação iminente ou possível gargalo.</p>
-            </td>
+            <td colspan="3">Selecione um servidor para consultar as faixas.</td>
           </tr>
-
           <tr>
-            <td><strong>RAM</strong></td>
-            <td>
-              <span class="limite">&lt; 75%</span>
-              <p>Memória disponível suficiente.</p>
-            </td>
-            <td>
-              <span class="limite">75% a 89%</span>
-              <p>Consumo elevado, com risco de paginação.</p>
-            </td>
-            <td>
-              <span class="limite">&ge; 90%</span>
-              <p>Memória próxima do esgotamento, podendo causar lentidão.</p>
-            </td>
+            <td><strong>Memória</strong></td>
+            <td colspan="3">As faixas serão exibidas após selecionar um servidor.</td>
           </tr>
-
           <tr>
             <td><strong>Disco</strong></td>
-            <td>
-              <span class="limite">&lt; 80%</span>
-              <p>Espaço disponível adequado.</p>
-            </td>
-            <td>
-              <span class="limite">80% a 89%</span>
-              <p>Capacidade de armazenamento reduzida.</p>
-            </td>
-            <td>
-              <span class="limite">&ge; 90%</span>
-              <p>Risco de falta de espaço e interrupção de serviços.</p>
-            </td>
-          </tr>
-
-          <tr>
-            <td><strong>Rede</strong></td>
-            <td>
-              <span class="limite">&lt; 0.35 s/min</span>
-              <p>Perda ou atraso desprezível.</p>
-            </td>
-            <td>
-              <span class="limite">0.35 a 1 s/min</span>
-              <p>Atrasos perceptíveis na transmissão.</p>
-            </td>
-            <td>
-              <span class="limite">&gt; 1 s/min</span>
-              <p>Perda crítica ou possível gargalo de conectividade.</p>
-            </td>
+            <td colspan="3">As faixas serão exibidas após selecionar um servidor.</td>
           </tr>
         </tbody>
       </table>
+      <div class="discretizacao-notas">
+        <p>Os limites de normalidade, alerta e crítico são configurados por servidor e por métrica (CPU, memória e disco). O perfil sugerido no cadastro é apenas inicial; o administrador pode personalizar essas faixas.</p>
+        <p>O coletor grava as métricas observadas e associa cada captura à faixa ativa correspondente. Capturas antigas mantêm a referência ao limite que estava valendo quando foram registradas.</p>
+        <p>Nos gráficos, as capturas são agrupadas para exibição de acordo com o intervalo selecionado.</p>
+      </div>
     </div>
 
 
@@ -208,6 +174,7 @@
       </div>
     </section>
   </main>
+  <script src="./js/ajuda.js" defer></script>
   <script>
     document.querySelectorAll(".faq-question").forEach(button => {
       button.addEventListener("click", () => {

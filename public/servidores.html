@@ -197,6 +197,34 @@
         </section>
     </div>
 
+    <div class="modal-overlay" id="modal-limites-servidor" aria-hidden="true">
+        <section class="modal-content limit-modal-content" role="dialog" aria-modal="true"
+            aria-labelledby="titulo-limites-servidor">
+            <header class="modal-header">
+                <div>
+                    <h3 id="titulo-limites-servidor">Configurar limites</h3>
+                    <p class="limit-server-context" id="contexto-limites-servidor"></p>
+                </div>
+                <button class="btn-close" id="btn-fechar-limites-servidor" type="button"
+                    aria-label="Fechar">&times;</button>
+            </header>
+            <form id="form-limites-servidor">
+                <div class="modal-body">
+                    <p class="limit-help">
+                        O perfil do cenário fornece os valores iniciais. Ajustes aqui valem somente para este servidor.
+                        Defina quando cada métrica entra em alerta e quando passa a crítica.
+                    </p>
+                    <div class="limit-metrics" id="campos-limites-servidor"></div>
+                    <p class="form-feedback" id="mensagem-limites-servidor" role="status" aria-live="polite" hidden></p>
+                </div>
+                <footer class="modal-footer">
+                    <button class="btn-secondary" id="btn-cancelar-limites-servidor" type="button">Cancelar</button>
+                    <button class="btn-primary" id="btn-salvar-limites-servidor" type="submit">Salvar limites</button>
+                </footer>
+            </form>
+        </section>
+    </div>
+
     <div class="modal-overlay" id="modal-confirmar-exclusao-servidor" aria-hidden="true">
         <section class="modal-content" role="dialog" aria-modal="true"
             aria-labelledby="titulo-confirmar-exclusao-servidor">
