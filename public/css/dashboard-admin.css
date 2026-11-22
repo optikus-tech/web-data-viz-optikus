@@ -1180,6 +1180,51 @@ tbody tr:last-child td {
     flex-shrink: 0;
 }
 
+.discretizacao-controles {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 0 20px;
+}
+
+.discretizacao-controles .seletor-componente {
+    margin-bottom: 16px;
+}
+
+.discretizacao-controles .seletor-componente label {
+    color: #475467;
+}
+
+.discretizacao-controles select {
+    min-width: min(320px, 100%);
+}
+
+.mensagem-discretizacao {
+    margin: 0 20px 12px;
+    color: #667085;
+    font-size: 13px;
+}
+
+.mensagem-discretizacao:empty {
+    display: none;
+}
+
+.discretizacao-notas {
+    padding: 16px 20px 20px;
+    border-top: 1px solid #eaecf0;
+}
+
+.discretizacao-notas p {
+    margin: 0 0 10px;
+    color: #667085;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.discretizacao-notas p:last-child {
+    margin-bottom: 0;
+}
+
 .tabela-discretizacao table {
     width: 100%;
     min-width: 720px;
