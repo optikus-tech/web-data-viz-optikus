@@ -79,14 +79,27 @@
             <h2 id="history-title">Servidor vs. próprio histórico</h2>
             <p>Leituras armazenadas no banco de dados</p>
           </div>
-          <label class="manager-sr-only" for="component-select">Componente</label>
-          <select id="component-select" class="manager-component-select" disabled>
-            <option value="">Sem componentes</option>
-          </select>
+          <div class="manager-history-controls">
+            <label class="manager-history-control">
+              <span>Componente</span>
+              <select id="component-select" class="manager-component-select" disabled>
+                <option value="">Sem componentes</option>
+              </select>
+            </label>
+            <label class="manager-history-control">
+              <span>Intervalo</span>
+              <select id="history-interval-select" class="manager-component-select" aria-label="Intervalo do gráfico">
+                <option value="5">5 minutos</option>
+                <option value="10">10 minutos</option>
+                <option value="30">30 minutos</option>
+                <option value="60" selected>1 hora</option>
+              </select>
+            </label>
+          </div>
         </div>
         <div class="manager-legend" aria-label="Legenda do gráfico">
-          <span><i class="manager-legend-line manager-blue-line"></i>Hoje</span>
-          <span><i class="manager-legend-line manager-history-line"></i>Dia anterior</span>
+          <span><i class="manager-legend-line manager-blue-line"></i>Período recente</span>
+          <span><i class="manager-legend-line manager-history-line"></i>Mesmo período no dia anterior</span>
           <span><i class="manager-legend-line manager-limit-line"></i>Limite crítico</span>
         </div>
         <div class="grafico-linha manager-chart">
@@ -130,6 +143,7 @@
       var empresa = sessionStorage.getItem("empresa");
       var servidorSelect = document.getElementById("server-select");
       var componenteSelect = document.getElementById("component-select");
+      var intervaloHistoricoSelect = document.getElementById("history-interval-select");
       var mensagemErro = document.getElementById("dashboard-error");
       var listaComparativo = document.getElementById("server-comparison");
       var listaAlertas = document.getElementById("alert-list");
@@ -137,6 +151,7 @@
       var dadosDashboard = { servidores: [], historico: [] };
       var servidorSelecionadoId = "";
       var componenteSelecionado = "";
+      var intervaloHistoricoMinutos = Number(intervaloHistoricoSelect.value);
       var atualizacaoAgendada;
       var identificadorRequisicao = 0;
 
@@ -232,6 +247,7 @@
         var payload = { empresa: empresa };
         if (servidorSelecionadoId) payload.id_servidor = servidorSelecionadoId;
         if (componenteSelecionado) payload.tipo_componente = componenteSelecionado;
+        payload.intervalo_minutos = intervaloHistoricoMinutos;
 
         return fetch("/servidores/dashboard", {
           method: "POST",
@@ -400,38 +416,75 @@
         var hoje = obterLeiturasDoDia(leitura, new Date());
         if (!hoje.length) return "Sem leitura hoje";
         var agora = hoje[hoje.length - 1];
-        var ontem = obterLeiturasDoDia(leitura, new Date(Date.now() - 24 * 60 * 60 * 1000));
+        var dataOntem = new Date();
+        dataOntem.setDate(dataOntem.getDate() - 1);
+        var ontem = obterLeiturasDoDia(leitura, dataOntem);
         if (!ontem.length) return "Sem histórico anterior";
 
-        var leituraAnterior = ontem.reduce(function (maisProxima, item) {
-          return Math.abs(item.data.getTime() - (agora.data.getTime() - 24 * 60 * 60 * 1000))
-            < Math.abs(maisProxima.data.getTime() - (agora.data.getTime() - 24 * 60 * 60 * 1000))
-            ? item : maisProxima;
-        }, ontem[0]);
+        var leituraAnterior = ontem.find(function (item) {
+          return item.data.getHours() === agora.data.getHours()
+            && item.data.getMinutes() === agora.data.getMinutes();
+        });
+        if (!leituraAnterior) return "Sem histórico anterior";
         var diferenca = agora.valor - leituraAnterior.valor;
         var sinal = diferenca > 0 ? "+" : "";
         return sinal + formatoValor.format(diferenca) + (metrica.unidade_medida ? " " + metrica.unidade_medida : "");
       }
 
+      function formatarHorario(data) {
+        return String(data.getHours()).padStart(2, "0")
+          + ":" + String(data.getMinutes()).padStart(2, "0");
+      }
+
       function atualizarGrafico() {
         var servidor = obterServidorSelecionado();
         var metrica = obterMetrica(servidor);
-        var hoje = obterLeiturasDoDia(dadosDashboard.historico, new Date());
-        var ontem = obterLeiturasDoDia(dadosDashboard.historico, new Date(Date.now() - 24 * 60 * 60 * 1000));
-        var hojePorHorario = {};
-        var ontemPorHorario = {};
-        hoje.forEach(function (leitura) {
-          var chave = leitura.data.toTimeString().slice(0, 5);
-          hojePorHorario[chave] = leitura.valor;
+        var historicoPorHorario = {};
+        var dataMaisRecente = null;
+        dadosDashboard.historico.forEach(function (leitura) {
+          var data = dataLocal(leitura.criado_em);
+          if (!data) return;
+          historicoPorHorario[String(data.getTime())] = leitura;
+          if (!dataMaisRecente || data > dataMaisRecente) dataMaisRecente = data;
         });
-        ontem.forEach(function (leitura) {
-          var chave = leitura.data.toTimeString().slice(0, 5);
-          ontemPorHorario[chave] = leitura.valor;
+
+        var quantidadePeriodos = 24;
+        var periodos = [];
+        var pontosHoje = [];
+        var pontosOntem = [];
+        if (dataMaisRecente) {
+          for (var indice = 0; indice < quantidadePeriodos; indice++) {
+            var dataPeriodo = new Date(dataMaisRecente);
+            dataPeriodo.setMinutes(
+              dataPeriodo.getMinutes() - (quantidadePeriodos - 1 - indice) * intervaloHistoricoMinutos
+            );
+            periodos.push(dataPeriodo);
+
+            var leituraAtual = historicoPorHorario[String(dataPeriodo.getTime())];
+            if (leituraAtual) {
+              pontosHoje.push({ x: indice, y: Number(leituraAtual.valor) });
+            }
+
+            var dataPeriodoAnterior = new Date(dataPeriodo);
+            dataPeriodoAnterior.setDate(dataPeriodoAnterior.getDate() - 1);
+            var leituraAnterior = historicoPorHorario[String(dataPeriodoAnterior.getTime())];
+            if (leituraAnterior) {
+              pontosOntem.push({ x: indice, y: Number(leituraAnterior.valor) });
+            }
+          }
+        }
+
+        var pontosDisponiveis = pontosHoje.concat(pontosOntem);
+        var periodosComDados = {};
+        pontosDisponiveis.forEach(function (ponto) {
+          periodosComDados[ponto.x] = true;
         });
-        var horarios = Object.keys(hojePorHorario).sort();
-        var valoresOntem = horarios.map(function (horario) {
-          return Object.prototype.hasOwnProperty.call(ontemPorHorario, horario) ? ontemPorHorario[horario] : null;
-        });
+        var primeiroPeriodo = pontosDisponiveis.length
+          ? Math.min.apply(null, pontosDisponiveis.map(function (ponto) { return ponto.x; }))
+          : null;
+        var ultimoPeriodo = pontosDisponiveis.length
+          ? Math.max.apply(null, pontosDisponiveis.map(function (ponto) { return ponto.x; }))
+          : null;
         var limite = metrica && metrica.limite_critico !== null ? Number(metrica.limite_critico) : null;
 
         if (graficoHistorico) {
@@ -454,38 +507,42 @@
         graficoHistorico = new Chart(document.getElementById("history-chart"), {
           type: "line",
           data: {
-            labels: horarios,
             datasets: [
               {
-                label: "Hoje",
-                data: horarios.map(function (horario) { return hojePorHorario[horario]; }),
+                label: "Período recente",
+                data: pontosHoje,
                 borderColor: "#16285f",
                 backgroundColor: "rgba(22, 40, 95, 0.08)",
                 fill: true,
-                tension: 0.18,
+                tension: 0,
+                parsing: false,
                 pointRadius: 3,
                 pointBackgroundColor: "#16285f",
                 borderWidth: 3
               },
               {
-                label: "Dia anterior",
-                data: valoresOntem,
+                label: "Mesmo período no dia anterior",
+                data: pontosOntem,
                 borderColor: "#a7adbb",
                 backgroundColor: "transparent",
                 borderDash: [4, 4],
                 fill: false,
-                tension: 0.18,
+                tension: 0,
+                parsing: false,
                 pointRadius: 0,
                 borderWidth: 2
               },
               {
                 label: "Limite crítico",
-                data: limite === null ? [] : horarios.map(function () { return limite; }),
+                data: limite === null || primeiroPeriodo === null
+                  ? []
+                  : [{ x: primeiroPeriodo, y: limite }, { x: ultimoPeriodo, y: limite }],
                 borderColor: "#e56b6b",
                 backgroundColor: "transparent",
                 borderDash: [3, 3],
                 fill: false,
                 pointRadius: 0,
+                parsing: false,
                 borderWidth: 1.5
               }
             ]
@@ -493,13 +550,17 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            interaction: { intersect: false, mode: "index" },
+            interaction: { intersect: false, mode: "nearest" },
             plugins: {
               legend: { display: false },
               tooltip: {
                 titleFont: { size: 13 },
                 bodyFont: { size: 12 },
                 callbacks: {
+                  title: function (items) {
+                    var periodo = items.length ? periodos[Math.round(items[0].parsed.x)] : null;
+                    return periodo ? formatarHorario(periodo) : "";
+                  },
                   label: function (context) {
                     if (context.parsed.y === null) return context.dataset.label + ": sem leitura";
                     return context.dataset.label + ": " + formatarValor(context.parsed.y, metrica ? metrica.unidade_medida : "");
@@ -509,8 +570,23 @@
             },
             scales: {
               x: {
+                type: "linear",
+                min: primeiroPeriodo === ultimoPeriodo ? undefined : primeiroPeriodo,
+                max: primeiroPeriodo === ultimoPeriodo ? undefined : ultimoPeriodo,
                 grid: { display: false },
-                ticks: { autoSkip: true, maxTicksLimit: 7, maxRotation: 0, font: { size: 12 } }
+                ticks: {
+                  autoSkip: true,
+                  maxTicksLimit: 7,
+                  maxRotation: 0,
+                  font: { size: 12 },
+                  stepSize: 1,
+                  callback: function (valor) {
+                    var indicePeriodo = Math.round(Number(valor));
+                    if (!Object.prototype.hasOwnProperty.call(periodosComDados, indicePeriodo)) return "";
+                    var periodo = periodos[indicePeriodo];
+                    return periodo ? formatarHorario(periodo) : "";
+                  }
+                }
               },
               y: {
                 beginAtZero: true,
@@ -527,9 +603,10 @@
           }
         });
 
-        document.getElementById("history-note").textContent = hoje.length
-          ? hoje.length + " leitura(s) de hoje · dados do banco"
-          : "Nenhuma leitura encontrada para hoje.";
+        document.getElementById("history-note").textContent = pontosHoje.length
+          ? pontosHoje.length + " de " + quantidadePeriodos + " períodos com dados · média por período de "
+            + intervaloHistoricoMinutos + " min"
+          : "Nenhuma leitura encontrada no intervalo selecionado.";
       }
 
       function atualizarComparativo() {
@@ -700,6 +777,11 @@
 
       componenteSelect.addEventListener("change", function () {
         componenteSelecionado = componenteSelect.value;
+        carregarDashboard();
+      });
+
+      intervaloHistoricoSelect.addEventListener("change", function () {
+        intervaloHistoricoMinutos = Number(intervaloHistoricoSelect.value);
         carregarDashboard();
       });
 

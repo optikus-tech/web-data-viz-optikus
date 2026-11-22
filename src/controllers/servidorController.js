@@ -8,6 +8,7 @@ var responsabilidadesPermitidas = [
   "Gateway de Streaming"
 ];
 var tiposLimitePermitidos = ["CPU", "Memoria", "Disco"];
+var intervalosHistoricoPermitidos = [5, 10, 30, 60];
 
 function validarInicioLimite(valor) {
   return typeof valor === "number"
@@ -76,8 +77,15 @@ function dashboard(req, res) {
   var tipoComponente = typeof req.body.tipo_componente === "string"
     ? req.body.tipo_componente.trim()
     : "";
+  var intervaloMinutos = req.body.intervalo_minutos === undefined
+    ? 60
+    : req.body.intervalo_minutos;
 
   if (!empresa) return res.status(400).send("Empresa não informada.");
+  if (!Number.isInteger(intervaloMinutos)
+    || !intervalosHistoricoPermitidos.includes(intervaloMinutos)) {
+    return res.status(400).send("Informe um intervalo de histórico válido.");
+  }
   if (idServidor !== undefined && idServidor !== null && idServidor !== ""
     && (!Number.isSafeInteger(Number(idServidor)) || Number(idServidor) <= 0)) {
     return res.status(400).send("Informe um servidor válido.");
@@ -89,7 +97,8 @@ function dashboard(req, res) {
   servidorModel.obterDadosDashboard(
     empresa,
     idServidor ? Number(idServidor) : null,
-    tipoComponente
+    tipoComponente,
+    intervaloMinutos
   )
     .then(function (dados) {
       res.status(200).json(dados);

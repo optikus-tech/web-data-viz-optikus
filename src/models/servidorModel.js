@@ -120,7 +120,7 @@ function listar(empresa) {
   return database.executar(instrucaoSql, [empresa]);
 }
 
-function obterDadosDashboard(empresa, idServidor, tipoComponente) {
+function obterDadosDashboard(empresa, idServidor, tipoComponente, intervaloMinutos) {
   var instrucaoServidores = `
     SELECT
       servidor.id AS id_servidor,
@@ -218,7 +218,13 @@ function obterDadosDashboard(empresa, idServidor, tipoComponente) {
         SELECT
           AVG(captura.valor) AS valor,
           MAX(captura.valor) AS pico_hora,
-          DATE_FORMAT(MIN(captura.criado_em), '%Y-%m-%d %H:00:00') AS criado_em,
+          DATE_FORMAT(
+            TIMESTAMP(DATE(MIN(captura.criado_em)))
+              + INTERVAL (
+                FLOOR(TIME_TO_SEC(TIME(MIN(captura.criado_em))) / (? * 60)) * ?
+              ) MINUTE,
+            '%Y-%m-%d %H:%i:%s'
+          ) AS criado_em,
           componente.unidade_medida
         FROM captura
         JOIN componente ON captura.id_componente = componente.id
@@ -230,12 +236,21 @@ function obterDadosDashboard(empresa, idServidor, tipoComponente) {
           AND servidor.id = ?
           AND tipo_componente.nome = ?
           AND captura.criado_em >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 48 HOUR)
-        GROUP BY componente.id, DATE(captura.criado_em), HOUR(captura.criado_em)
-        ORDER BY DATE(captura.criado_em) DESC, HOUR(captura.criado_em) DESC
-        LIMIT 48;
+        GROUP BY
+          componente.id,
+          DATE(captura.criado_em),
+          FLOOR(TIME_TO_SEC(TIME(captura.criado_em)) / (? * 60))
+        ORDER BY DATE(captura.criado_em) DESC, criado_em DESC;
       `;
 
-      return database.executar(instrucaoHistorico, [empresa, idServidor, tipoComponente])
+      return database.executar(instrucaoHistorico, [
+        intervaloMinutos,
+        intervaloMinutos,
+        empresa,
+        idServidor,
+        tipoComponente,
+        intervaloMinutos
+      ])
         .then(function (historico) {
           return {
             servidores: servidores,
