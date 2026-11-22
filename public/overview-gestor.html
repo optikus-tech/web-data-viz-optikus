@@ -420,15 +420,29 @@
         dataOntem.setDate(dataOntem.getDate() - 1);
         var ontem = obterLeiturasDoDia(leitura, dataOntem);
         if (!ontem.length) return "Sem histórico anterior";
-
-        var leituraAnterior = ontem.find(function (item) {
-          return item.data.getHours() === agora.data.getHours()
-            && item.data.getMinutes() === agora.data.getMinutes();
-        });
+        var leituraAnterior = encontrarLeituraNoIntervalo(ontem, agora.data);
         if (!leituraAnterior) return "Sem histórico anterior";
         var diferenca = agora.valor - leituraAnterior.valor;
         var sinal = diferenca > 0 ? "+" : "";
         return sinal + formatoValor.format(diferenca) + (metrica.unidade_medida ? " " + metrica.unidade_medida : "");
+      }
+
+      function encontrarLeituraNoIntervalo(leituras, dataReferencia) {
+        var referencia = dataReferencia.getHours() * 60 + dataReferencia.getMinutes();
+        var melhor = null;
+        var menorDistancia = Infinity;
+
+        leituras.forEach(function (item) {
+          var minutos = item.data.getHours() * 60 + item.data.getMinutes();
+          var distancia = Math.abs(minutos - referencia);
+          distancia = Math.min(distancia, 24 * 60 - distancia);
+          if (distancia < menorDistancia) {
+            menorDistancia = distancia;
+            melhor = item;
+          }
+        });
+
+        return melhor;
       }
 
       function formatarHorario(data) {
@@ -467,9 +481,28 @@
 
             var dataPeriodoAnterior = new Date(dataPeriodo);
             dataPeriodoAnterior.setDate(dataPeriodoAnterior.getDate() - 1);
-            var leituraAnterior = historicoPorHorario[String(dataPeriodoAnterior.getTime())];
+            var dataAnteriorLeitura = new Date(dataPeriodoAnterior);
+            dataAnteriorLeitura.setHours(dataPeriodoAnterior.getHours(), dataPeriodoAnterior.getMinutes(), 0, 0);
+            var leiturasOntem = dadosDashboard.historico
+              .map(function (leitura) {
+                var dataLeitura = dataLocal(leitura.criado_em);
+                if (!dataLeitura
+                  || dataLeitura.getFullYear() !== dataAnteriorLeitura.getFullYear()
+                  || dataLeitura.getMonth() !== dataAnteriorLeitura.getMonth()
+                  || dataLeitura.getDate() !== dataAnteriorLeitura.getDate()) return null;
+                return {
+                  valor: Number(leitura.valor),
+                  pico: leitura.pico_hora === undefined ? Number(leitura.valor) : Number(leitura.pico_hora),
+                  data: dataLeitura
+                };
+              })
+              .filter(Boolean);
+            var leituraAnterior = encontrarLeituraNoIntervalo(
+              leiturasOntem,
+              dataAnteriorLeitura
+            );
             if (leituraAnterior) {
-              pontosOntem.push({ x: indice, y: Number(leituraAnterior.valor) });
+              pontosOntem.push({ x: indice, y: leituraAnterior.valor });
             }
           }
         }
@@ -514,23 +547,23 @@
                 borderColor: "#16285f",
                 backgroundColor: "rgba(22, 40, 95, 0.08)",
                 fill: true,
-                tension: 0,
+                tension: 0.35,
                 parsing: false,
-                pointRadius: 3,
+                pointRadius: 2,
+                pointHoverRadius: 4,
                 pointBackgroundColor: "#16285f",
                 borderWidth: 3
               },
               {
                 label: "Mesmo período no dia anterior",
                 data: pontosOntem,
-                borderColor: "#a7adbb",
+                borderColor: "rgba(22, 40, 95, 0.35)",
                 backgroundColor: "transparent",
-                borderDash: [4, 4],
                 fill: false,
-                tension: 0,
+                tension: 0.35,
                 parsing: false,
                 pointRadius: 0,
-                borderWidth: 2
+                borderWidth: 2.5
               },
               {
                 label: "Limite crítico",
