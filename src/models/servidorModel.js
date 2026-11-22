@@ -110,9 +110,38 @@ function criarMonitoramentoPadrao(transacao, idServidor, responsabilidade) {
 
 function listar(empresa) {
   var instrucaoSql = `
-        SELECT *
-        FROM vwListarServidor
-        WHERE empresa_razao_social = ?
+        SELECT
+          servidor.id,
+          equipamento.numero_serie,
+          servidor.hostname,
+          servidor.ip,
+          equipamento.mac_address,
+          servidor.responsabilidade,
+          servidor.sistema_operacional,
+          servidor.versao_so,
+          CASE
+            WHEN servidor.status = 'MANUTENCAO' THEN 'MANUTENCAO'
+            WHEN EXISTS (
+              SELECT 1
+              FROM componente componente_recente
+              JOIN captura captura_recente
+                ON captura_recente.id_componente = componente_recente.id
+              WHERE componente_recente.id_servidor = servidor.id
+                AND captura_recente.criado_em >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 60 MINUTE)
+              ) THEN 'ONLINE'
+            WHEN servidor.criado_em <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 60 MINUTE) THEN 'OFFLINE'
+            ELSE servidor.status
+          END AS stats,
+          empresa.razao_social AS empresa_razao_social,
+          CONCAT_WS(' - ',
+            CONCAT_WS(', ', NULLIF(localidade.logradouro, ''), NULLIF(localidade.bairro, '')),
+            CONCAT(localidade.cidade, '/', localidade.estado)
+          ) AS localizacao
+        FROM servidor
+        JOIN equipamento ON servidor.id_equipamento = equipamento.id
+        JOIN localidade ON servidor.id_local = localidade.id
+        JOIN empresa ON equipamento.id_empresa = empresa.id
+        WHERE empresa.razao_social = ?
         ORDER BY hostname;
         `;
 
@@ -127,7 +156,19 @@ function obterDadosDashboard(empresa, idServidor, tipoComponente, intervaloMinut
       servidor.hostname,
       servidor.ip,
       servidor.responsabilidade,
-      servidor.status AS status_servidor,
+      CASE
+        WHEN servidor.status = 'MANUTENCAO' THEN 'MANUTENCAO'
+        WHEN EXISTS (
+          SELECT 1
+          FROM componente componente_recente
+          JOIN captura captura_recente
+            ON captura_recente.id_componente = componente_recente.id
+          WHERE componente_recente.id_servidor = servidor.id
+            AND captura_recente.criado_em >= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 60 MINUTE)
+        ) THEN 'ONLINE'
+        WHEN servidor.criado_em <= DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 60 MINUTE) THEN 'OFFLINE'
+        ELSE servidor.status
+      END AS status_servidor,
       servidor.ultima_comunicacao,
       CONCAT_WS(' - ', localidade.bairro, CONCAT(localidade.cidade, '/', localidade.estado)) AS localizacao,
       componente.id AS id_componente,

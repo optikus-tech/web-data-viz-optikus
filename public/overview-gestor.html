@@ -467,8 +467,19 @@
         var pontosHoje = [];
         var pontosOntem = [];
         if (dataMaisRecente) {
+          var fimGrafico = new Date(dataMaisRecente);
+          if (intervaloHistoricoMinutos < 60) {
+            fimGrafico.setMinutes(
+              Math.floor(fimGrafico.getMinutes() / intervaloHistoricoMinutos)
+                * intervaloHistoricoMinutos,
+              0,
+              0
+            );
+          } else {
+            fimGrafico.setMinutes(0, 0, 0);
+          }
           for (var indice = 0; indice < quantidadePeriodos; indice++) {
-            var dataPeriodo = new Date(dataMaisRecente);
+            var dataPeriodo = new Date(fimGrafico);
             dataPeriodo.setMinutes(
               dataPeriodo.getMinutes() - (quantidadePeriodos - 1 - indice) * intervaloHistoricoMinutos
             );

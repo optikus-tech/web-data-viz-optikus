@@ -392,6 +392,32 @@ body {
   padding: 5px 0;
 }
 
+.campo-senha-login {
+  position: relative;
+  width: 100%;
+}
+
+.campo-senha-login input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 48px;
+}
+
+.olho-login {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  color: #333;
+  cursor: pointer;
+}
+
 .botao_login {
     transition: background 0.15s ease, transform 0.1s ease;
     cursor: pointer;
