@@ -199,7 +199,6 @@
                             <option value="">Todos</option>
                             <option value="ATIVO">Ativo</option>
                             <option value="INATIVO">Inativo</option>
-                            <option value="PENDENTE">Pendente</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -249,7 +248,6 @@
                         <select class="form-control" id="dados-usuario-status" name="status" required>
                             <option value="ATIVO">Ativo</option>
                             <option value="INATIVO">Inativo</option>
-                            <option value="PENDENTE">Pendente</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -405,11 +403,7 @@
 
             if (f.status) {
                 const status = String(usuario.stats || "").toUpperCase();
-                if (f.status === "PENDENTE") {
-                    if (status === "ATIVO" || status === "INATIVO") return false;
-                } else if (status !== f.status) {
-                    return false;
-                }
+                if (status !== f.status) return false;
             }
 
             if (f.acesso) {
@@ -439,15 +433,10 @@
             lista.forEach(function (usuario) {
                 var iniciais = usuario.nome ? usuario.nome.substring(0, 2).toUpperCase() : "--";
 
-                let classeStatus = "badge-active";
-                if (usuario.stats === "INATIVO") {
-                    classeStatus = "badge-inactive";
-                } else if (usuario.stats !== "ATIVO") {
-                    classeStatus = "badge-pending";
-                }
+                const classeStatus = usuario.stats === "INATIVO" ? "badge-inactive" : "badge-active";
                 var acessoFormatado = formatarUltimoAcesso(usuario.acesso);
                 tabela.innerHTML += `
-                    <tr>
+                    <tr data-user-id="${usuario.id_usuario}">
                         <td>
                             <div class="user-info">
                                 <div class="avatar">${iniciais}</div>
@@ -550,36 +539,42 @@
                 event.preventDefault();
                 if (modoModalUsuario !== 'edit' || !linhaUsuarioSelecionada || !formDadosUsuario.reportValidity()) return;
 
-                const nomeAtualizado = campoNomeUsuario.value.trim();
-                const emailAtualizado = campoEmailUsuario.value.trim();
-                const cargoAtualizado = campoCargoUsuario.value.trim();
-                const statusAtualizado = campoStatusUsuario.value;
-                const acessoAtualizado = campoAcessoUsuario.value.trim();
-                const classeStatus = {
-                    ATIVO: 'badge-active',
-                    INATIVO: 'badge-inactive',
-                    PENDENTE: 'badge-pending'
-                }[statusAtualizado];
+                const botaoSalvar = botaoSalvarDadosUsuario;
+                const textoOriginal = botaoSalvar.textContent;
+                const linhaUsuarioAtualizada = linhaUsuarioSelecionada;
+                botaoSalvar.disabled = true;
+                botaoSalvar.textContent = "Salvando...";
 
-                linhaUsuarioSelecionada.querySelector('.user-name').textContent = nomeAtualizado;
-                linhaUsuarioSelecionada.querySelector('.user-email').textContent = emailAtualizado;
-                linhaUsuarioSelecionada.querySelector('.user-funcao').textContent = cargoAtualizado;
-                linhaUsuarioSelecionada.querySelector('.user-acesso').textContent = acessoAtualizado;
-                linhaUsuarioSelecionada.querySelector('.avatar').textContent =
-                    nomeAtualizado.substring(0, 2).toUpperCase() || '--';
-
-                const statusContainer = linhaUsuarioSelecionada.querySelector('.status-container');
-                statusContainer.classList.remove('badge-active', 'badge-inactive', 'badge-pending');
-                statusContainer.classList.add(classeStatus);
-                linhaUsuarioSelecionada.querySelector('.status-text').textContent = statusAtualizado;
-                linhaUsuarioSelecionada.querySelector('.action-btn').setAttribute(
-                    'aria-label', `Abrir ações de ${nomeAtualizado}`
-                );
-                linhaUsuarioSelecionada.querySelector('.action-menu').setAttribute(
-                    'aria-label', `Ações de ${nomeAtualizado}`
-                );
-
-                fecharModalDadosUsuario();
+                fetch("/empresas/atualizar", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        idServer: linhaUsuarioSelecionada.dataset.userId,
+                        nomeServer: campoNomeUsuario.value.trim(),
+                        emailServer: campoEmailUsuario.value.trim(),
+                        cargoServer: campoCargoUsuario.value.trim(),
+                        statusServer: campoStatusUsuario.value,
+                        empresaServer: sessionStorage.getItem("empresa")
+                    })
+                })
+                    .then(async (resposta) => {
+                        if (!resposta.ok) {
+                            throw new Error(await resposta.text() || "Não foi possível atualizar o usuário.");
+                        }
+                        if (linhaUsuarioSelecionada === linhaUsuarioAtualizada) {
+                            fecharModalDadosUsuario();
+                        }
+                        listarFuncionarios().catch((erro) => {
+                            console.error("Usuário atualizado, mas não foi possível atualizar a lista:", erro);
+                        });
+                    })
+                    .catch((erro) => {
+                        window.alert(erro.message);
+                    })
+                    .finally(() => {
+                        botaoSalvar.disabled = false;
+                        botaoSalvar.textContent = textoOriginal;
+                    });
             });
 
             function fecharMenus(excecao) {

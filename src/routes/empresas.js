@@ -11,6 +11,10 @@ router.post("/cadastrar", function (req, res) {
     empresaController.cadastrar(req, res);
 })
 
+router.put("/atualizar", function (req, res) {
+    empresaController.atualizar(req, res);
+})
+
 router.post("/deletar", function (req, res) {
     empresaController.deletar(req, res)
 })
