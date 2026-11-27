@@ -1,0 +1,34 @@
+#kpi2, #kpi3, #kpi5{
+    background-color: #153F65;
+}
+
+#tituloKPI2, #valor2, #tituloKPI3, #tituloKPI5, #valor3, #valor5, #unidadeMedida{
+    color: #fff;
+}
+
+.titulo{
+    font-size: 12px;
+}
+
+.valor{
+    font-size: 28px;
+}
+
+#texto{
+    font-size: 12px;
+    color: #7b8495;
+}
+
+.linha{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.linha-valor{
+    display: flex;
+    align-items: baseline;
+}
+
+  
