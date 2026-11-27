@@ -57,6 +57,42 @@ function cadastrar(req, res) {
     });
 }
 
+function atualizar(req, res) {
+  var id_usuario = Number(req.body.idServer);
+  var nome = typeof req.body.nomeServer === "string" ? req.body.nomeServer.trim() : "";
+  var email = typeof req.body.emailServer === "string" ? req.body.emailServer.trim() : "";
+  var cargo = typeof req.body.cargoServer === "string" ? req.body.cargoServer.trim() : "";
+  var status = typeof req.body.statusServer === "string" ? req.body.statusServer : "";
+  var empresa = typeof req.body.empresaServer === "string" ? req.body.empresaServer.trim() : "";
+
+  if (!Number.isInteger(id_usuario) || id_usuario <= 0
+    || !nome || nome.length > 120
+    || !email || email.length > 120 || !/^\S+@\S+\.\S+$/.test(email)
+    || !cargo || cargo.length > 80
+    || !["ATIVO", "INATIVO"].includes(status)
+    || !empresa) {
+    return res.status(400).send("Informe dados válidos para atualizar o usuário.");
+  }
+
+  empresaModel.atualizar(id_usuario, nome, email, cargo, status, empresa)
+    .then(function (resultado) {
+      if (resultado.usuarioEncontrado === false) {
+        return res.status(404).send("Usuário não encontrado nesta empresa.");
+      }
+      if (resultado.cargoEncontrado === false) {
+        return res.status(400).send("A função selecionada não existe nesta empresa.");
+      }
+      return res.status(200).json({ mensagem: "Usuário atualizado com sucesso." });
+    })
+    .catch(function (erro) {
+      console.error("Erro ao atualizar usuário:", erro.sqlMessage || erro);
+      if (erro.code === "ER_DUP_ENTRY") {
+        return res.status(409).send("Já existe um usuário com esse email.");
+      }
+      return res.status(500).send("Erro ao atualizar usuário.");
+    });
+}
+
 function deletar(req, res) {
   var id_usuario = req.body.idServer;
   if (id_usuario <= 0 || isNaN(id_usuario) || id_usuario == undefined) {
@@ -81,6 +117,7 @@ function deletar(req, res) {
 
 module.exports = {
   cadastrar,
+  atualizar,
   listarFuncionarios,
   deletar,
 };
