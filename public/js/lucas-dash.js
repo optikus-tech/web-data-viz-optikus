@@ -1,4 +1,4 @@
-let L_ATENCAO = 80, L_CRITICO = 85;
+let L_ATENCAO = 80, L_CRITICO = 90;
 const JANELA = 30, HISTORICO_GRAFICO = 60, PREVISAO_GRAFICO = 60;
 const X_MIN = -HISTORICO_GRAFICO, X_MAX = PREVISAO_GRAFICO;
     const COR = {
@@ -216,7 +216,6 @@ const X_MIN = -HISTORICO_GRAFICO, X_MAX = PREVISAO_GRAFICO;
         if (d.m != null && d.m <= xMaxGrafico) cross = [{ x: d.m, y: L_CRITICO }];
       }
       const limite = v => [{ x: inicioHistorico, y: v }, { x: xMaxGrafico, y: v }];
-      const ultimo = real.length - 1;
 
       if (graficoPrev) graficoPrev.destroy();
       graficoPrev = new Chart($('graficoPrevisao'), {
@@ -228,8 +227,7 @@ const X_MIN = -HISTORICO_GRAFICO, X_MAX = PREVISAO_GRAFICO;
               pointRadius: 7, pointHoverRadius: 8, pointBackgroundColor: '#ef4444', pointBorderColor: '#fff', pointBorderWidth: 2 },
             { label: 'Uso real', data: real, order: 1, tip: true, borderColor: '#16285f', backgroundColor: 'rgba(22,40,95,0.06)',
               fill: 'origin', borderWidth: 2.2, tension: 0.2,
-              pointRadius: ctx => ctx.dataIndex === ultimo ? 4 : 2, pointBackgroundColor: '#16285f',
-              pointBorderColor: '#fff', pointBorderWidth: 1, pointHoverRadius: 5, pointHitRadius: 8 },
+              pointRadius: 0, pointHoverRadius: 4, pointHitRadius: 8 },
             { label: 'Tendência (regressão)', data: trend, order: 2, tip: false, borderColor: '#6aa9d8', borderWidth: 2, pointRadius: 0, fill: false },
             { label: 'Projeção', data: proj, order: 3, tip: true, borderColor: '#176ca5', borderWidth: 2.5, borderDash: [7, 5], pointRadius: 0, fill: false },
             { label: 'Limite de atenção', data: limite(L_ATENCAO), order: 4, tip: false, borderColor: '#f59e0b', borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0, fill: false },
@@ -327,18 +325,10 @@ const X_MIN = -HISTORICO_GRAFICO, X_MAX = PREVISAO_GRAFICO;
       cur = c; curD = d; segRecalc = 12;
       const b = c.banner(c, d);
 
-      // faixa de estado
-      cor($('estado'), b.tipo);
-      $('estadoIcone').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICONES[b.tipo] + '</svg>';
+      // resumo da previsão nos indicadores
       $('estadoTitulo').textContent = b.titulo;
       $('estadoTexto').textContent = b.texto;
       $('estadoTag').textContent = TAG[b.tipo];
-      const prog = c.previsao === 'coletando';
-      $('estadoProgresso').hidden = !prog;
-      if (prog) {
-        $('progressoBarra').style.width = (c.coletados / 30 * 100) + '%';
-        $('progressoTexto').textContent = `Histórico disponível: ${c.coletados}/30 minutos`;
-      }
 
       // 1 · agora
       cor($('cardCpu'), d.cpuCor);
@@ -366,7 +356,7 @@ const X_MIN = -HISTORICO_GRAFICO, X_MAX = PREVISAO_GRAFICO;
       const cs = $('cardSat');
       if (c.previsao === 'coletando') {
         cor(cs, 'coletando'); $('satValor').textContent = '—';
-        $('satSub').textContent = `Previsão disponível em ${30 - c.coletados} min`;
+        $('satSub').textContent = 'Saturação estimada às —';
       } else if (c.previsao === 'indisponivel') {
         cor(cs, 'indisp'); $('satValor').textContent = '—';
         $('satSub').textContent = 'Previsão indisponível: comportamento insuficientemente consistente';
@@ -386,14 +376,6 @@ const X_MIN = -HISTORICO_GRAFICO, X_MAX = PREVISAO_GRAFICO;
       // 3 · é normal?
       const dentro = d.hist === 'dentro';
       const historicoDisponivel = d.hist !== 'indisponivel';
-      cor($('cardHist'), !historicoDisponivel ? 'indisp' : dentro ? 'normal' : 'anomalia');
-      $('histValor').textContent = !historicoDisponivel ? 'Sem histórico suficiente' : dentro ? 'Dentro do esperado' : 'Fora do padrão';
-      $('histSub').textContent = historicoDisponivel
-        ? `Faixa esperada às ${hhmm(c.agora)}: ${c.esp.min}–${c.esp.max}%`
-        : 'Ainda não há medições históricas para este horário.';
-      $('histDif').textContent = historicoDisponivel
-        ? `Média histórica ${c.esp.media}% · diferença ${d.dif >= 0 ? '+' : ''}${Math.round(d.dif)} p.p.`
-        : 'A comparação será exibida quando houver histórico.';
 
       // gráficos
       cor($('overlay'), c.previsao === 'coletando' ? 'coletando' : 'indisp');
@@ -425,37 +407,10 @@ const X_MIN = -HISTORICO_GRAFICO, X_MAX = PREVISAO_GRAFICO;
       $('rangeNow').style.left = c.atual + '%';
       $('rangeNow').style.setProperty('--c', !historicoDisponivel ? COR.indisp : dentro ? COR.normal : COR.anomalia);
       $('rangeTexto').textContent = historicoDisponivel
-        ? `Faixa esperada ${c.esp.min}–${c.esp.max}% · média ${c.esp.media}%`
+        ? `${c.esp.min}–${c.esp.max}%`
         : 'Sem histórico por horário';
       montarGraficoPerfil(c, d);
 
-      // anomalia
-      const card = $('cardAnomalia');
-      if (!historicoDisponivel) {
-        cor(card, 'indisp');
-        $('anTitulo').textContent = 'Histórico indisponível';
-        $('anTexto').textContent = 'Ainda não há dados suficientes para avaliar se o consumo está dentro do padrão deste horário.';
-        $('anItens').innerHTML = `<div><span>Consumo atual</span><b>${c.atual}%</b></div>`;
-      } else if (!dentro) {
-        cor(card, 'anomalia');
-        $('anTitulo').textContent = 'Comportamento fora do padrão';
-        $('anTexto').textContent = 'O consumo atual da CPU está significativamente ' + (d.hist === 'acima' ? 'acima' : 'abaixo') + ' do comportamento histórico esperado para este período.';
-        $('anItens').innerHTML =
-          `<div><span>Consumo atual</span><b>${c.atual}%</b></div>` +
-          `<div><span>Faixa esperada neste horário</span><b>${c.esp.min}–${c.esp.max}%</b></div>` +
-          `<div><span>Diferença para a média</span><b>${d.dif >= 0 ? '+' : ''}${Math.round(d.dif)} p.p.</b></div>` +
-          (c.desde ? `<div><span>Fora da faixa há</span><b>${c.desde} min</b></div>` : '');
-      } else {
-        cor(card, 'normal');
-        $('anTitulo').textContent = 'Nenhum desvio identificado';
-        $('anTexto').textContent = c.atual >= L_ATENCAO
-          ? 'O consumo está alto, mas dentro do que costuma acontecer neste horário. Um aumento esperado não é tratado como anomalia.'
-          : 'O consumo atual está dentro da faixa observada historicamente para este horário.';
-        $('anItens').innerHTML =
-          `<div><span>Consumo atual</span><b>${c.atual}%</b></div>` +
-          `<div><span>Faixa esperada neste horário</span><b>${c.esp.min}–${c.esp.max}%</b></div>` +
-          `<div><span>Situação</span><b>Comportamento esperado</b></div>`;
-      }
       atualizarRecalc();
     }
 
@@ -484,7 +439,7 @@ const X_MIN = -HISTORICO_GRAFICO, X_MAX = PREVISAO_GRAFICO;
 
     function converterDadosReais(dados) {
       L_ATENCAO = Number(dados.limiteAtencao) || 80;
-      L_CRITICO = Number(dados.limiteCritico) || 85;
+      L_CRITICO = Number(dados.limiteCritico) || 90;
 
       const faixa = dados.faixaHistorica || { media: dados.cpuAtual || 0, minimo: 0, maximo: 100 };
       const status = dados.previsao.status;
@@ -544,12 +499,17 @@ const X_MIN = -HISTORICO_GRAFICO, X_MAX = PREVISAO_GRAFICO;
     let requisicaoDashboardId = 0;
 
     function exibirErroCarregamento(titulo, mensagem) {
-      cor($('estado'), 'indisp');
-      $('estadoIcone').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICONES.indisp + '</svg>';
+      cor($('cardSat'), 'indisp');
+      cor($('cardConf'), 'indisp');
+      cor($('cardTend'), 'indisp');
       $('estadoTitulo').textContent = titulo;
       $('estadoTexto').textContent = mensagem;
       $('estadoTag').textContent = TAG.indisp;
-      $('estadoProgresso').hidden = true;
+      $('satValor').textContent = '—';
+      $('satSub').textContent = 'Previsão indisponível';
+      $('confValor').textContent = '—';
+      $('tendValor').textContent = '—';
+      $('tendSub').textContent = mensagem;
     }
 
     function carregarServidorInicial(servidores, indice) {

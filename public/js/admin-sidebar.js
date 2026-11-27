@@ -28,17 +28,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       visualizador: 'analista'
     };
     const cargo = cargoAliases[cargoInformado]
-      || cargoInformado
-      || (currentPage === 'overview-gestor.html' ? 'gestor' : '');
+      || cargoInformado;
 
     if (!cargos[cargo] && (cargoInformado || currentPage !== 'overview-gestor.html')) {
       console.error(`Cargo sem sidebar configurada: ${sessionStorage.getItem('cargo') || '(vazio)'}`);
     }
 
     sidebar.querySelector('[data-sidebar-role-label]').textContent =
-      currentPage === 'overview-gestor.html'
-        ? 'Visão do Gestor'
-        : cargos[cargo] || 'Workspace';
+      cargos[cargo] || 'Workspace';
     const overviewLink = sidebar.querySelector('.nav-item a');
     overviewLink.href = cargo === 'gestor' ? 'overview-gestor.html' : 'overview.html';
     sidebar.querySelectorAll('[data-sidebar-admin-only]').forEach((link) => {

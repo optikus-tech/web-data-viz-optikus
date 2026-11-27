@@ -17,97 +17,83 @@
     <script src="./js/admin-sidebar.js" defer></script>
   </head>
 
-  <body>
+  <body class="dash-previsao-page">
     <aside class="sidebar" data-admin-sidebar></aside>
 
     <main class="dashboard-content users-page previsao">
-      <header class="users-page-header">
-        <div class="previsao-titulo">
-          <h2>Previsão de Saturação da CPU</h2>
-          <p class="dash-breadcrumb">
-            Para onde o consumo do servidor está indo e se isso é normal para este horário
-          </p>
-          <h4 id="servidorTitulo">Selecione um servidor</h4>
+      <header class="manager-server-card previsao-server-card">
+        <div class="manager-server-identity">
+          <span class="manager-server-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="8" rx="2"></rect>
+              <rect x="3" y="13" width="18" height="8" rx="2"></rect>
+              <path d="M7 7h.01M7 17h.01M11 7h6M11 17h6"></path>
+            </svg>
+          </span>
+          <div class="manager-server-copy previsao-header-copy">
+            <h2>Previsão de Saturação da CPU</h2>
+            <p class="dash-breadcrumb">
+              Para onde o consumo do servidor está indo e se isso é normal para este horário
+            </p>
+            <h4 id="servidorTitulo">Selecione um servidor</h4>
+          </div>
         </div>
-        <div class="seletor-componente seletor-servidor">
-          <label for="servidorEscolhido">Servidor</label>
+        <div class="manager-server-actions previsao-server-actions">
+          <label class="manager-select-label" for="servidorEscolhido">SERVIDOR</label>
           <select id="servidorEscolhido"></select>
         </div>
       </header>
 
-      <section class="estado" id="estado">
-        <div class="estado-icone" id="estadoIcone"></div>
-        <div class="estado-corpo">
-          <h3 id="estadoTitulo"></h3>
-          <p id="estadoTexto"></p>
-          <div class="progresso" id="estadoProgresso" hidden>
-            <div class="progresso-trilho">
-              <div class="progresso-barra" id="progressoBarra"></div>
-            </div>
-            <small id="progressoTexto"></small>
+      <section class="q-grid" aria-label="Indicadores da previsão">
+        <article class="pv-card kpi-card" id="cardCpu">
+          <div class="pv-label">CPU atual</div>
+          <div class="pv-value" id="cpuValor">—%</div>
+          <div class="pv-sub" id="cpuSub">Situação atual</div>
+          <div class="gauge" id="gauge">
+            <div class="gauge-marker" id="gaugeMarker"></div>
           </div>
-        </div>
-        <span class="estado-tag" id="estadoTag"></span>
+          <div class="kpi-gauge-labels">
+            <span><b id="limAtencao">80%</b> atenção</span>
+            <span><b id="limCritico">90%</b> crítico</span>
+          </div>
+        </article>
+
+        <article class="pv-card kpi-card" id="cardSat">
+          <div class="pv-label">Tempo estimado até 90%</div>
+          <div class="pv-value" id="satValor">— min</div>
+          <div class="pv-sub" id="satSub">Saturação estimada às —</div>
+          <div class="kpi-mini-rule">
+            <span>Projeção do consumo:</span>
+            <strong id="estadoTag">—</strong>
+          </div>
+          <div class="kpi-note" id="estadoTexto">Aguardando dados de previsão.</div>
+        </article>
+
+        <article class="pv-card kpi-card" id="cardTend">
+          <div class="pv-label">Previsão disponível</div>
+
+          <div class="pv-value menor" id="tendValor">—</div>
+          <div class="pv-sub" id="tendSub">Tendência</div>
+        </article>
+
+        <article class="pv-card kpi-card" id="cardConf">
+          <div class="pv-label">Confiabilidade</div>
+          <div class="pv-value menor" id="confValor">—</div>
+          <div class="conf-barras" id="confBarras"><i></i><i></i><i></i></div>
+          <div class="kpi-scale">
+            <span>Baixa</span><span>Média</span><span>Alta</span>
+          </div>
+          <div class="pv-sub" id="confSub">R² — · ajuste da regressão</div>
+          <div class="kpi-model">MODELO · <span id="estadoTitulo">valor calculado</span></div>
+        </article>
       </section>
-
-      <div class="q-grid">
-        <div class="q-group">
-          <div class="q-head"><span class="q-num">1</span>Como o servidor está agora?</div>
-          <div class="pv-card" id="cardCpu">
-            <div class="pv-label">CPU atual</div>
-            <div class="pv-value" id="cpuValor"></div>
-            <div class="gauge" id="gauge">
-              <div class="gauge-marker" id="gaugeMarker"></div>
-            </div>
-            <div class="pv-sub" id="cpuSub"></div>
-          </div>
-          <div class="pv-card" style="--c: #7b8495">
-            <div class="pv-label">Limites configurados</div>
-            <div class="limites">
-              <div>
-                <b id="limAtencao"></b>
-                <span><i style="background: var(--c-atencao)"></i>Limite de atenção</span>
-              </div>
-              <div>
-                <b id="limCritico"></b>
-                <span><i style="background: var(--c-critico)"></i>Limite crítico</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="q-group">
-          <div class="q-head"><span class="q-num">2</span>Para onde o consumo está indo?</div>
-          <div class="pv-grid-2 pv-fill" style="align-content: stretch">
-            <div class="pv-card" id="cardTend">
-              <div class="pv-label">Tendência atual</div>
-              <div class="pv-value menor" id="tendValor"></div>
-              <div class="pv-sub" id="tendSub"></div>
-            </div>
-            <div class="pv-card" id="cardConf">
-              <div class="pv-label">Confiabilidade da previsão</div>
-              <div class="pv-value menor" id="confValor"></div>
-              <div class="conf-barras" id="confBarras"><i></i><i></i><i></i></div>
-              <div class="pv-sub" id="confSub"></div>
-            </div>
-            <div class="pv-card pv-span-2" id="cardSat">
-              <div class="pv-label">Saturação estimada</div>
-              <div class="pv-value" id="satValor"></div>
-              <div class="pv-sub" id="satSub"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="q-group">
-          <div class="q-head"><span class="q-num">3</span>É normal para este horário?</div>
-          <div class="pv-card pv-fill" id="cardHist">
-            <div class="pv-label">Comportamento histórico</div>
-            <div class="pv-value menor" id="histValor"></div>
-            <div class="pv-sub" id="histSub"></div>
-            <div class="pv-sub" id="histDif" style="margin-top: 14px"></div>
-          </div>
-        </div>
-      </div>
 
       <div class="cartao">
         <div class="cabecalho">
@@ -141,43 +127,42 @@
       </div>
 
       <div class="linha-2">
-        <div class="cartao">
+        <div class="cartao normal-card">
           <div class="cabecalho">
             <div>
-              <h2>Comparação com o comportamento esperado</h2>
-              <p style="margin: 4px 0 0; font-size: 13px; color: #667085" id="histTituloSub"></p>
+              <h2>É normal para este horário?</h2>
+              <p style="margin: 4px 0 0; font-size: 13px; color: #667085" id="histTituloSub">Comparando neste horário com os últimos 30 dias</p>
             </div>
           </div>
           <div class="hist-resumo">
             <div><small>Consumo atual</small><b id="hrAtual"></b></div>
             <div><small>Média histórica neste horário</small><b id="hrMedia"></b></div>
+            <div><small>Faixa esperada</small><b id="rangeTexto"></b></div>
             <div><small>Diferença</small><b id="hrDif"></b></div>
-            <div><small>Situação</small><span class="chip" id="hrChip"></span></div>
           </div>
           <div class="range">
             <div class="range-band" id="rangeBand"></div>
             <div class="range-avg" id="rangeAvg"></div>
             <div class="range-now" id="rangeNow"></div>
           </div>
-          <div class="range-legenda">
-            <span>0%</span>
-            <span id="rangeTexto"></span>
-            <span>100%</span>
-          </div>
-          <div class="grafico-perfil"><canvas id="graficoPerfil"></canvas></div>
-          <div class="nota-grafico">
-            <span>Médias e faixa observadas por horário nos últimos 30 dias</span>
+          <div class="situacao-historica">
+            <span>Situação neste horário</span>
+            <span class="chip" id="hrChip">Situação</span>
           </div>
         </div>
 
-        <div class="cartao anomalia-card" id="cardAnomalia">
-          <div class="pv-label" style="margin-bottom: 0">Detecção de anomalias</div>
-          <h4 id="anTitulo"></h4>
-          <p id="anTexto"></p>
-          <div class="anomalia-itens" id="anItens"></div>
-          <p style="margin: 0; font-size: 12px; color: #667085">
-            Este indicador aponta apenas diferença em relação ao padrão observado. Ele não confirma a existência de falha.
-          </p>
+        <div class="cartao profile-card">
+          <div class="cabecalho">
+            <div>
+              <h2>Perfil ao longo do dia</h2>
+              <p style="margin: 4px 0 0; font-size: 13px; color: #667085">MODELO · visualização histórica</p>
+            </div>
+          </div>
+          <div class="grafico-perfil"><canvas id="graficoPerfil"></canvas></div>
+          <div class="profile-legend">
+            <span><i class="lg lg-band"></i>Faixa esperada</span>
+            <span><i class="lg lg-trend"></i>Média histórica</span>
+          </div>
         </div>
       </div>
 
